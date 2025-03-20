@@ -19,7 +19,7 @@ static int count_words(char *str)
 	return (count);
 }
 
-char **split_command(char *input)
+char **split_command(char *input, char **envp)
 {
 	char **args;
 	int i = 0;
@@ -40,7 +40,7 @@ char **split_command(char *input)
 			i++;
 		if(start != i)
 		{
-			args[j] = ft_substr(input, start, i - start);
+			args[j] = expand_env_variable(input + start, envp);
 			j++;
 		}
 	}

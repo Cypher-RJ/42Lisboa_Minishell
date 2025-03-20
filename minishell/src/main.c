@@ -7,6 +7,7 @@ void prompt_loop(char **envp)
 
 	while (1)
 	{
+		setup_signals();
 		input = readline("minishell> ");
 		if (!input)
 		{

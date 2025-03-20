@@ -1,28 +1,29 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = src/main.c src/parser.c src/execution.c
+SRCS = src/main.c src/parser.c src/execution.c src/redirection.c src/pipes.c src/signals.c src/path.c src/env.c
 OBJS = $(SRCS:.c=.o)
-INCLUDES = -I includes
-LIBFT	=	./libft/libft.a
+INCLUDES = -I includes -I libft
+LIBFT_DIR = libft
+LIBFT = $(LIBFT_DIR)/libft.a
 
-all: $(NAME)
+all: $(LIBFT) $(NAME)
 
-$(LIBFT):
-	@make -s -C ./libft
+$(LIBFT): 
+	make -C $(LIBFT_DIR)  # Compile libft
 
-$(NAME): $(OBJS)
-	$(LIBFT) $(CC) $(CFLAGS) $(OBJS) -o $(NAME) -lreadline
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME) -lreadline
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
+	make -C $(LIBFT_DIR) clean
 	rm -f $(OBJS)
-	@make -s clean -C ./libft
 
 fclean: clean
+	make -C $(LIBFT_DIR) fclean
 	rm -f $(NAME)
-	@make -s fclean -C ./libft
 
 re: fclean all

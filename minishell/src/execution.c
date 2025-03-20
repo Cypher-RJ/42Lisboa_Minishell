@@ -1,48 +1,37 @@
 #include "minishell.h"
 
-static char *get_path(char *cmd)
+int has_pipe(char **args)
 {
-	char *path = getenv("PATH");
-	char **paths;
-	char *full_path;
 	int i = 0;
-
-	if(!path || ft_strchr(cmd, '/'))
-		return (ft_strdup(cmd));
-
-	paths = ft_split(path, ':');
-	while (paths[i])
+	while (args[i])
 	{
-		full_path = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(full_path, cmd);
-		if (access(full_path, X_OK) == 0)
-			return (full_path);
-		free(full_path);
+		if(ft_strcmp(args[i], "|") == 0)
+			return(i);
 		i++;
 	}
-	return (NULL);
+	return (-1);
 }
 
 void execute_command(char **args, char **envp)
 {
-	pid_t pid;
-	char *full_path;
+	int pipe_index = has_pipe(args);
 
-	if (!args[0])
-		return ;
-
-	full_path = get_path(args[0]);
-	if (!full_path)
+	if (pipe_index != -1)
 	{
-		printf("minishell: command not found: %s\n", args[0]);
+		args[pipe_index] = NULL;
+		execute_pipe(args, &args[pipe_index + 1], envp);
 		return ;
 	}
-
-	pid = fork();
-	if(pid == 0)
+	int fd_in = -1, fd_out = -1;
+	if (detect_redirections(args, &fd_in, &fd_out))
+		return ;
+	pid_t pid = fork();
+	if (pid == 0)
 	{
-		if (execve(full_path, args, envp) == -1)
-			perror("execve");
+		if (fd_in != -1) dup2(fd_in, STDIN_FILENO);
+		if (fd_out != -1) dup2(fd_out, STDOUT_FILENO);
+		execve(get_path(args[0], envp), args, envp);
+		perror("execve");
 		exit(1);
 	}
 	else if (pid > 0)
@@ -87,7 +76,7 @@ void execute_builtin(char **args)
 	}
 	else if (!ft_strcmp(args[0], "exit"))
 	{
-		printf("Exiting minishell...\n");
+		printf("exit\n");
 		exit(0);
 	}
 }
