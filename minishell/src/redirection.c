@@ -1,14 +1,13 @@
 #include "minishell.h"
 
-void redirect_output(char *filename, int append)
+void	redirect_output(char *filename, int append)
 {
-	int fd;
+	int	fd;
 
 	if (append)
 		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
 	if (fd < 0)
 	{
 		perror("open");
@@ -18,14 +17,15 @@ void redirect_output(char *filename, int append)
 	close(fd);
 }
 
-void redirect_input(char *filename)
+void	redirect_input(char *filename)
 {
-	int fd = open(filename, O_RDONLY);
+	int	fd;
 
-	if(fd < 0)
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 	{
 		perror("open");
-		return;
+		return ;
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);

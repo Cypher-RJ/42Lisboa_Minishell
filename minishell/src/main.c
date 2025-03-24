@@ -1,9 +1,9 @@
 #include "minishell.h"
 
-void prompt_loop(char **envp)
+void	prompt_loop(char **envp)
 {
-	char *input;
-	char **args;
+	char	*input;
+	char	**args;
 
 	while (1)
 	{
@@ -12,29 +12,26 @@ void prompt_loop(char **envp)
 		if (!input)
 		{
 			printf("exit\n");
-			break;
+			break ;
 		}
 		add_history(input);
-
-		args = split_command(input);
-		if(args[0])
+		args = split_command(input, envp);
+		if (args[0])
 		{
 			if (is_builtin(args[0]))
 				execute_builtin(args);
 			else
 				execute_command(args, envp);
 		}
-
+		ft_free_split(args);
 		free(input);
-		free(args);
 	}
 }
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	(void)ac;
 	(void)av;
-	
 	prompt_loop(envp);
-	return(0);
+	return (0);
 }

@@ -1,7 +1,7 @@
 #include "minishell.h"
 #include <signal.h>
 
-void signal_handler(int sig)
+void	signal_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -12,7 +12,7 @@ void signal_handler(int sig)
 	}
 }
 
-void setup_signals(void)
+void	setup_signals(void)
 {
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);
