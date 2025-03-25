@@ -25,11 +25,14 @@ static char	*find_env_value(char *var_name, char **envp)
 char	*expand_env_variable(char *arg, char **envp)
 {
 	char	*var_name;
+	char	*result;
 
 	var_name = get_var_name(arg);
 	if (!var_name)
-		return (ft_strdup(arg));
-	return (find_env_value(var_name, envp));
+		return (arg);
+	result = find_env_value(var_name, envp);
+	free(arg);
+	return (result);
 }
 
 static int	handle_redirection(char **args, int *fd, int flags, int i)

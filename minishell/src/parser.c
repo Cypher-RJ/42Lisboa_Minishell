@@ -46,6 +46,11 @@ char	**split_command(char *input, char **envp)
 		{
 			args[j] = expand_env_variable(ft_substr(input, start, i - start),
 					envp);
+			if (!args[j])
+			{
+				ft_free_split(args);
+				return (NULL);
+			}
 			j++;
 		}
 	}
