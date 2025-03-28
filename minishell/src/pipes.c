@@ -22,7 +22,10 @@ void	execute_pipe(char **cmd1, char **cmd2, char **envp)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		execve(get_path(cmd1[0], envp), cmd1, envp);
+		if (is_builtin(cmd1[0]))
+			execute_builtin(cmd1);
+		else
+			execve(get_path(cmd1[0], envp), cmd1, envp);
 		perror("execve");
 		exit(1);
 	}
@@ -37,7 +40,10 @@ void	execute_pipe(char **cmd1, char **cmd2, char **envp)
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		execve(get_path(cmd2[0], envp), cmd2, envp);
+		if (is_builtin(cmd2[0]))
+			execute_builtin(cmd2);
+		else
+			execve(get_path(cmd2[0], envp), cmd2, envp);
 		perror("execve");
 		exit(1);
 	}
