@@ -23,7 +23,7 @@ void	execute_pipe(char **cmd1, char **cmd2, char **envp)
 		close(fd[0]);
 		close(fd[1]);
 		if (is_builtin(cmd1[0]))
-			execute_builtin(cmd1);
+			execute_builtin(cmd1, envp);
 		else
 			execve(get_path(cmd1[0], envp), cmd1, envp);
 		perror("execve");
@@ -41,7 +41,7 @@ void	execute_pipe(char **cmd1, char **cmd2, char **envp)
 		close(fd[0]);
 		close(fd[1]);
 		if (is_builtin(cmd2[0]))
-			execute_builtin(cmd2);
+			execute_builtin(cmd2, envp);
 		else
 			execve(get_path(cmd2[0], envp), cmd2, envp);
 		perror("execve");

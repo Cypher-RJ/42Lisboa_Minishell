@@ -56,6 +56,7 @@ void	execute_command(char **args, char **envp)
 		wait(NULL);
 	else
 		perror("fork");
+	free(cmd_path);
 }
 
 int	is_builtin(char *cmd)
@@ -65,7 +66,7 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-void	execute_builtin(char **args)
+void	execute_builtin(char **args, char **envp)
 {
 	int	i;
 
@@ -92,6 +93,15 @@ void	execute_builtin(char **args)
 			i++;
 		}
 		printf("\n");
+	}
+	else if (!ft_strcmp(args[0], "env"))
+	{
+		i = 0;
+		while (envp[i])
+		{
+			printf("%s\n", envp[i]);
+			i++;
+		}
 	}
 	else if (!ft_strcmp(args[0], "exit"))
 	{
