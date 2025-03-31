@@ -28,5 +28,8 @@ char	*expand_env_variable(char *arg, char **envp);
 void	ft_free_split(char **array);
 void	increment_shlvl(char **envp);
 char	**copy_shlvl(char **envp);
+char	*ft_strjoin_free(char *s1, const char *s2);
+void	handle_input(char *input, char **envp);
+char	*build_prompt(void);
 
 #endif

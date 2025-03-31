@@ -1,9 +1,9 @@
 #include "minishell.h"
 
-char **copy_shlvl(char **envp)
+char	**copy_shlvl(char **envp)
 {
-	int i;
-	char **new_envp;
+	int		i;
+	char	**new_envp;
 
 	i = 0;
 	while (envp[i])
@@ -21,11 +21,11 @@ char **copy_shlvl(char **envp)
 	return (new_envp);
 }
 
-void increment_shlvl(char **envp)
+void	increment_shlvl(char **envp)
 {
-	int i;
-	int shlvl;
-	char *new_shlvl;
+	int		i;
+	int		shlvl;
+	char	*new_shlvl;
 
 	i = 0;
 	while (envp[i])
@@ -44,37 +44,9 @@ void increment_shlvl(char **envp)
 	envp[i + 1] = NULL;
 }
 
-void	prompt_loop(char **envp)
-{
-	char	*input;
-	char	**args;
-
-	while (1)
-	{
-		setup_signals();
-		input = readline("minishell> ");
-		if (!input)
-		{
-			printf("exit\n");
-			break ;
-		}
-		add_history(input);
-		args = split_command(input, envp);
-		if (args[0])
-		{
-			if (is_builtin(args[0]))
-				execute_builtin(args, envp);
-			else
-				execute_command(args, envp);
-		}
-		ft_free_split(args);
-		free(input);
-	}
-}
-
 int	main(int ac, char **av, char **envp)
 {
-	char **my_envp;
+	char	**my_envp;
 
 	(void)ac;
 	(void)av;

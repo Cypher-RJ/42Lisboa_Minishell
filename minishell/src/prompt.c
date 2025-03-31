@@ -1,0 +1,52 @@
+#include "minishell.h"
+
+char	*build_prompt(void)
+{
+	char	*cwd;
+	char	*prompt;
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		cwd = ft_strdup("unknown");
+	prompt = ft_strjoin("\001\033[1;34m\002", cwd); // Add BOLD_BLUE for cwd
+	free(cwd);
+	prompt = ft_strjoin_free(prompt, "\001\033[1;35m\002 > \001\033[0m\002");
+	return (prompt);
+}
+
+void	handle_input(char *input, char **envp)
+{
+	char	**args;
+
+	add_history(input);
+	args = split_command(input, envp);
+	if (args[0])
+	{
+		if (is_builtin(args[0]))
+			execute_builtin(args, envp);
+		else
+			execute_command(args, envp);
+	}
+	ft_free_split(args);
+}
+
+void	prompt_loop(char **envp)
+{
+	char *input;
+	char *prompt;
+
+	while (1)
+	{
+		setup_signals();
+		prompt = build_prompt();
+		input = readline(prompt);
+		free(prompt);
+		if (!input)
+		{
+			printf("exit\n");
+			break ;
+		}
+		handle_input(input, envp);
+		free(input);
+	}
+}
