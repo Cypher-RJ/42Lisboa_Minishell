@@ -16,7 +16,7 @@ char	*build_prompt(void)
 
 void	handle_input(char *input, char **envp)
 {
-	char	**args;
+	char	***args;
 
 	add_history(input);
 	args = split_command(input, envp);

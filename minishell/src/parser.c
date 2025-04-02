@@ -21,9 +21,9 @@ static int	count_words(char *str)
 	return (count);
 }
 
-char	**split_command(char *input, char **envp)
+char	***split_command(char *input, char **envp)
 {
-	char	**args;
+	char	***args;
 	int		i;
 	int		j;
 	int		start;
