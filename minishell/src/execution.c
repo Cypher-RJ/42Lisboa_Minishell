@@ -20,6 +20,7 @@ void	execute_command(char **args, char **envp)
 	int		fd_in;
 	int		fd_out;
 	pid_t	pid;
+	char	*cmd_path;
 
 	fd_in = -1;
 	pipe_index = has_pipe(args);
@@ -33,6 +34,13 @@ void	execute_command(char **args, char **envp)
 	fd_out = -1;
 	if (detect_redirections(args, &fd_in, &fd_out))
 		return ;
+	cmd_path = get_path(args[0], envp);
+	if (!cmd_path)
+	{
+		write(2, args[0], ft_strlen(args[0]));
+		write(2, ": command not found\n", 20);
+		return ;
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -40,7 +48,7 @@ void	execute_command(char **args, char **envp)
 			dup2(fd_in, STDIN_FILENO);
 		if (fd_out != -1)
 			dup2(fd_out, STDOUT_FILENO);
-		execve(get_path(args[0], envp), args, envp);
+		execve(cmd_path, args, envp);
 		perror("execve");
 		exit(1);
 	}
@@ -48,6 +56,7 @@ void	execute_command(char **args, char **envp)
 		wait(NULL);
 	else
 		perror("fork");
+	free(cmd_path);
 }
 
 int	is_builtin(char *cmd)
@@ -57,7 +66,7 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-void	execute_builtin(char **args)
+void	execute_builtin(char **args, char **envp)
 {
 	int	i;
 
@@ -84,6 +93,15 @@ void	execute_builtin(char **args)
 			i++;
 		}
 		printf("\n");
+	}
+	else if (!ft_strcmp(args[0], "env"))
+	{
+		i = 0;
+		while (envp[i])
+		{
+			printf("%s\n", envp[i]);
+			i++;
+		}
 	}
 	else if (!ft_strcmp(args[0], "exit"))
 	{

@@ -21,9 +21,9 @@ static int	count_words(char *str)
 	return (count);
 }
 
-char	**split_command(char *input, char **envp)
+char	***split_command(char *input, char **envp)
 {
-	char	**args;
+	char	***args;
 	int		i;
 	int		j;
 	int		start;
@@ -46,6 +46,11 @@ char	**split_command(char *input, char **envp)
 		{
 			args[j] = expand_env_variable(ft_substr(input, start, i - start),
 					envp);
+			if (!args[j])
+			{
+				ft_free_split(args);
+				return (NULL);
+			}
 			j++;
 		}
 	}
