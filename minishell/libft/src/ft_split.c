@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 18:09:55 by rcesar-d          #+#    #+#             */
-/*   Updated: 2024/10/14 15:37:41 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/04/07 12:08:49 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static size_t	set_array_size(const char *str, char limiter)
 	size = 0;
 	pos = 0;
 	while (*str && *str == limiter)
-		str++;
+		str++; 
 	while (str[pos])
 	{
 		if (!pos)

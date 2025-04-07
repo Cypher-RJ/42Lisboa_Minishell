@@ -1,1 +1,8 @@
 .qodo
+*.o
+*.a
+*.swo
+*.swp
+.vscode
+minishell_tester
+a.out

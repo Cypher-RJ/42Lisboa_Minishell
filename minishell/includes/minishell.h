@@ -9,6 +9,29 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 
+typedef struct s_shell
+{
+	char **envp;
+	char *cwd;
+	int exit_status;
+} t_shell;
+
+typedef struct s_redirect
+{
+	char *direction;	//! string com direcao
+	char *passorfile;
+	struct s_redirect *direction;
+} t_redirect;
+
+typedef struct s_command
+{
+	int n_cmd;	//! numero de comandos
+	char **args;	//! array para execve
+	t_redirect *direction;	//! possiveis redirecoes
+	char *path;
+	struct s_command *next;
+} t_command;	
+
 void	prompt_loop(char **envp);
 char	**split_command(char *input, char **envp);
 void	execute_command(char **args, char **envp);
