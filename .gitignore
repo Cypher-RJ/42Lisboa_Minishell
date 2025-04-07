@@ -6,3 +6,5 @@
 .vscode
 minishell_tester
 a.out
+tests
+minishell_complete.c
