@@ -21,7 +21,7 @@ static int	count_words(char *str)
 	return (count);
 }
 
-char	***split_command(char *input, char **envp)
+/* char	***split_command(char *input, char **envp)
 {
 	char	***args;
 	int		i;
@@ -56,4 +56,47 @@ char	***split_command(char *input, char **envp)
 	}
 	args[j] = NULL;
 	return (args);
+} */
+
+char **split_cmds(char *input)
+{
+	char **args;
+	int i;
+	int j;
+	int in_quotes;
+	int start;
+
+	i = 0;
+	j = 0;
+	in_quotes = 0;
+	args = maloc(sizeof(char *) * (count_words(input) + 1));
+	if (!args)
+		return (NULL);
+	while (input[i])
+	{
+		while (input[i] == ' ')
+			i++;
+		start = i;
+		while (input[i])
+		{
+			if (input[i] == '"' && (i == 0 || input[i - 1] != '\\'))
+				in_quotes = !in_quotes;
+			else if (input[i] == '|' && !in_quotes)
+				break;
+			i++;
+		}
+		if (start != i)
+		{
+			args[j] = ft_substr(input, start, i - start);
+			if (!args[j++])
+			{
+				ft_free_split(args);
+				return (NULL);
+			}
+			if (input[i] == '|')
+				i++;
+		}
+		args[j] = NULL;
+		return (args);
+	}
 }
