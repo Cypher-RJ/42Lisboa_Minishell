@@ -54,18 +54,18 @@ void	execute_pipe(char **cmd1, char **cmd2, char **envp)
 }
 
 // integrar esta função com o que ja está dos pipes
-void	execute_pipeline(char ***commands, int num_cmds)
+void	execute_pipeline(t_command **cmds, t_shell *shell)
 {
-	int		i;
+	t_command	*cmd;
 	int		fd[2];
 	int		prev_fd;
-	pid_t	pid;
+	pid_t		pid;
 
+	cmd = *cmds;
 	prev_fd = -1;
-	i = 0;
-	while (i < num_cmds)
+	while (cmd != NULL)
 	{
-		if (i < num_cmds - 1)
+		if (cmd->next != NULL)
 		{
 			if (pipe(fd) == -1)
 			{
@@ -86,7 +86,7 @@ void	execute_pipeline(char ***commands, int num_cmds)
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			if (i < num_cmds - 1)
+			if (cmd->next != NULL)
 			{
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[0]);
@@ -94,23 +94,27 @@ void	execute_pipeline(char ***commands, int num_cmds)
 			}
 			// isto tem que ser adaptado para usar
 			//
-			execve(get_path(cmd2[0], envp), cmd2, envp);
-			;
-			perror("execvp");
-			exit(EXIT_FAILURE);
+			if (execve(cmd->path, cmd->args, shell->envp) ==  -1)
+			{
+				perror("execvp");
+				exit(EXIT_FAILURE);
+			}
 		}
 		// Processo pai
 		if (prev_fd != -1)
 			close(prev_fd);
-		if (i < num_cmds - 1)
+		if (cmd->next != NULL)
 		{
 			close(fd[1]);
 			prev_fd = fd[0];
 		}
-		i++;
+		cmd = cmd->next;
 	}
 	// Esperar pelos filhos
-	i = 0;
-	while (i++ < num_cmds)
+	cmd = *cmds;
+	while (cmd != NULL)
+	{
 		wait(NULL);
+		cmd = cmd->next;
+	}
 }
