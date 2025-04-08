@@ -17,16 +17,35 @@ void	redirect_output(char *filename, int append)
 	close(fd);
 }
 
-void	redirect_input(char *filename)
+void	redirect_input(t_redirect *temp)
 {
 	int	fd;
 
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
+	if (ft_strlen(temp->direction) == 1)
 	{
-		perror("open");
-		return ;
+		fd = open(temp->passorfile, O_RDONLY);
+		if (fd < 0)
+			return (perror("open"), 1);
 	}
-	dup2(fd, STDOUT_FILENO);
+	else
+	{
+
+	}
+	dup2(fd, STDIN_FILENO);
 	close(fd);
+}
+
+void	redirector(t_redirect *redir)
+{
+	t_redirect	*temp;
+
+	temp = redir;
+	while (temp->next != NULL)
+	{
+		 if (temp->direction[0] == "<")
+		 	redirect_input(temp);
+		else
+			redirect_output(temp);
+		temp = temp->next;
+	}
 }

@@ -28,7 +28,9 @@ void	execute_pipe(t_command **cmds, t_shell *shell)
 		}
 		if (pid == 0) // Processo filho
 		{
-			if (prev_fd != -1)
+			if (cmd->redir)
+				redirector(cmd->redir);
+			if (prev_fd != -1 /* && !redirect_in*/)
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);

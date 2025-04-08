@@ -20,7 +20,7 @@ typedef struct s_redirect
 {
 	char				*direction;	//! string com direcao
 	char				*passorfile;
-	struct s_redirect	*redir;
+	struct s_redirect	*next;
 }	t_redirect;
 
 typedef struct s_command
