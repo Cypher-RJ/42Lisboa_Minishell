@@ -4,19 +4,25 @@ static int	count_words(char *str)
 {
 	int	count;
 	int	in_word;
+	int	in_quotes;
+	int	i;
 
 	count = 0;
 	in_word = 0;
-	while (*str)
+	in_quotes = 0;
+	i = 0;
+	while (str[i])
 	{
-		if (*str != ' ' && in_word == 0)
+		if (str[i] == '"' && (i == 0 || str[i - 1] != '\\'))
+			in_quotes = !in_quotes;
+		if (str[i] != '|' && str[i] != ' ' && in_word == 0)
 		{
 			in_word = 1;
 			count++;
 		}
-		else if (*str == ' ')
+		else if ((str[i] == '|' && !in_quotes) || str[i] == ' ')
 			in_word = 0;
-		str++;
+		i++;
 	}
 	return (count);
 }
@@ -58,18 +64,18 @@ static int	count_words(char *str)
 	return (args);
 } */
 
-char **split_cmds(char *input)
+char	**split_cmds(char *input, t_shell *shell)
 {
-	char **args;
-	int i;
-	int j;
-	int in_quotes;
-	int start;
+	char	**args;
+	int		i;
+	int		j;
+	int		in_quotes;
+	int		start;
 
 	i = 0;
 	j = 0;
 	in_quotes = 0;
-	args = maloc(sizeof(char *) * (count_words(input) + 1));
+	args = malloc(sizeof(char *) * (count_words(input) + 1));
 	if (!args)
 		return (NULL);
 	while (input[i])
@@ -82,21 +88,23 @@ char **split_cmds(char *input)
 			if (input[i] == '"' && (i == 0 || input[i - 1] != '\\'))
 				in_quotes = !in_quotes;
 			else if (input[i] == '|' && !in_quotes)
-				break;
+				break ;
 			i++;
 		}
 		if (start != i)
 		{
 			args[j] = ft_substr(input, start, i - start);
-			if (!args[j++])
-			{
-				ft_free_split(args);
-				return (NULL);
-			}
-			if (input[i] == '|')
-				i++;
+			if (!args[j])
+				return (ft_free_split(args), NULL);
+			args[j] = expand_env_variable(args[j], shell->envp);
+			if (!args[j])
+				return (ft_free_split(args), NULL);
+			j++;
 		}
-		args[j] = NULL;
-		return (args);
+		if (input[i] == '|')
+			i++;
 	}
+	args[j] = NULL;
+	return (args);
 }
+

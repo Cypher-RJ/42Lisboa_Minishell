@@ -33,7 +33,7 @@ typedef struct s_command
 }	t_command;	
 
 void	prompt_loop(char **envp);
-char	**split_command(char *input, char **envp);
+//char	**split_command(char *input, char **envp);
 void	execute_command(char **args, char **envp);
 int		detect_redirections(char **args, int *fd_in, int *fd_out);
 void	execute_builtin(char **args, char **envp);
@@ -54,5 +54,8 @@ char	**copy_shlvl(char **envp);
 char	*ft_strjoin_free(char *s1, const char *s2);
 void	handle_input(char *input, char **envp);
 char	*build_prompt(void);
+void	redirector(t_redirect *redir);
+char	*ft_strjoin_chr(char *s, char c);
+char	**split_cmds(char *input, t_shell *shell);
 
 #endif

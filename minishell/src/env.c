@@ -24,13 +24,42 @@ static char	*find_env_value(char *var_name, char **envp)
 
 char	*expand_env_variable(char *arg, char **envp)
 {
-	char	*var_name;
-	char	*result;
+	int		i = 0;
+	int		in_single = 0;
+	int		in_double = 0;
+	char	*result = ft_strdup("");
+	char	*var;
+	char	*val;
+	char	*tmp;
 
-	var_name = get_var_name(arg);
-	if (!var_name)
-		return (arg);
-	result = find_env_value(var_name, envp);
+	while (arg[i])
+	{
+		if (arg[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (arg[i] == '"' && !in_single)
+			in_double = !in_double;
+		else if (arg[i] == '$' && !in_single && arg[i + 1])
+		{
+			int start = ++i;
+			while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
+				i++;
+			var = ft_substr(arg, start, i - start);
+			val = find_env_value(var, envp);
+			free(var);
+			tmp = ft_strjoin(result, val);
+			free(result);
+			free(val);
+			result = tmp;
+			continue ;
+		}
+		else
+		{
+			tmp = ft_strjoin_chr(result, arg[i]);
+			free(result);
+			result = tmp;
+			i++;
+		}
+	}
 	free(arg);
 	return (result);
 }

@@ -33,3 +33,18 @@ char	*ft_strjoin_free(char *s1, const char *s2)
 	free(s1);
 	return (joined);
 }
+
+char	*ft_strjoin_chr(char *s, char c)
+{
+	char	*new;
+	size_t	len;
+
+	len = ft_strlen(s);
+	new = malloc(len + 2);
+	if (!new)
+		return (NULL);
+	ft_memcpy(new, s, len);
+	new[len] = c;
+	new[len + 1] = '\0';
+	return (new);
+}
