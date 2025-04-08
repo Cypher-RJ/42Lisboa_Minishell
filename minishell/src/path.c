@@ -10,15 +10,15 @@ int	is_executable(char *filepath)
 }
 
 // Gets the PATH variable from `envp`
-char	*get_env_path(char **envp)
+char	*get_env_path(t_shell *shell)
 {
 	int	i;
 
 	i = 0;
-	while (envp[i])
+	while (shell->envp[i])
 	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-			return (ft_strdup(envp[i] + 5));
+		if (ft_strncmp(shell->envp[i], "PATH=", 5) == 0)
+			return (ft_strdup(shell->envp[i] + 5));
 		i++;
 	}
 	return (NULL);
@@ -47,35 +47,20 @@ char	*search_path(char *cmd, char **paths)
 }
 
 // Finds the full path of a command
-char	*get_path(char *cmd, char **envp)
+char	*get_path(char *cmd, t_shell *shell)
 {
 	char	*path_var;
 	char	**paths;
 	char	*full_path;
-	int		i;
-	char	*temp;
 
-	full_path = NULL;
-	i = 0;
 	if (!cmd || ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
-	path_var = get_env_path(envp);
+	path_var = get_env_path(shell);
 	if (!path_var)
 		return (NULL);
 	paths = ft_split(path_var, ':');
 	free(path_var);
-	while (paths[i] && !full_path)
-	{
-		temp = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(temp, cmd);
-		free(temp);
-		if (access(full_path, X_OK) != 0)
-		{
-			free(full_path);
-			full_path = NULL;
-		}
-		i++;
-	}
+	full_path = search_path(cmd, paths);
 	ft_free_split(paths);
 	return (full_path);
 }
