@@ -52,7 +52,7 @@ static int	handle_redirection(char **args, int *fd, int flags, int i)
 
 int	detect_redirections(char **args, int *fd_in, int *fd_out)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (args[i])
