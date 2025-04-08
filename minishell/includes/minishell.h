@@ -39,7 +39,7 @@ int		detect_redirections(char **args, int *fd_in, int *fd_out);
 void	execute_builtin(char **args, char **envp);
 int		is_builtin(char *cmd);
 void	redirect_output(char *filename, int append);
-void	execute_pipe(char **cmd1, char **cmd2, char **envp);
+void	execute_pipe(t_command **cmds, t_shell *shell);
 void	redirect_input(char *filename);
 char	*get_path(char *cmd, char **envp);
 char	*search_path(char *cmd, char **paths);
