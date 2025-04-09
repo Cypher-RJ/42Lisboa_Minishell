@@ -1,5 +1,31 @@
 #include "minishell.h"
 
+static int	handle_segment(char *input, char **arg_slot, int *i, t_shell *shell)
+{
+	int	start;
+	int	in_quotes;
+
+	in_quotes = 0;
+	while (input[*i] == ' ')
+		(*i)++;
+	start = *i;
+	while (input[*i])
+	{
+		if (input[*i] == '"' && (*i == 0 || input[*i - 1] != '\\'))
+			in_quotes = !in_quotes;
+		else if (input[*i] == '|' && !in_quotes)
+			break ;
+		(*i)++;
+	}
+	if (start == *i)
+		return (1);
+	*arg_slot = ft_substr(input, start, *i - start);
+	if (!*arg_slot)
+		return (0);
+	*arg_slot = expand_env_variable(*arg_slot, shell->envp);
+	return (*arg_slot != NULL);
+}
+
 static int	count_words(char *str)
 {
 	int	count;
@@ -34,6 +60,9 @@ static int	count_words(char *str)
 	int		j;
 	int		start;
 	int		word_count;
+	char	**args;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
@@ -63,48 +92,26 @@ static int	count_words(char *str)
 	args[j] = NULL;
 	return (args);
 } */
-
 char	**split_cmds(char *input, t_shell *shell)
 {
 	char	**args;
 	int		i;
 	int		j;
-	int		in_quotes;
-	int		start;
 
 	i = 0;
 	j = 0;
-	in_quotes = 0;
 	args = malloc(sizeof(char *) * (count_words(input) + 1));
 	if (!args)
 		return (NULL);
 	while (input[i])
 	{
-		while (input[i] == ' ')
-			i++;
-		start = i;
-		while (input[i])
-		{
-			if (input[i] == '"' && (i == 0 || input[i - 1] != '\\'))
-				in_quotes = !in_quotes;
-			else if (input[i] == '|' && !in_quotes)
-				break ;
-			i++;
-		}
-		if (start != i)
-		{
-			args[j] = ft_substr(input, start, i - start);
-			if (!args[j])
-				return (ft_free_split(args), NULL);
-			args[j] = expand_env_variable(args[j], shell->envp);
-			if (!args[j])
-				return (ft_free_split(args), NULL);
+		if (!handle_segment(input, &args[j], &i, shell))
+			return (ft_free_split(args), NULL);
+		if (args[j])
 			j++;
-		}
 		if (input[i] == '|')
 			i++;
 	}
 	args[j] = NULL;
 	return (args);
 }
-
