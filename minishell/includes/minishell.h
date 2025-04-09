@@ -54,7 +54,7 @@ char	**copy_shlvl(char **envp);
 char	*ft_strjoin_free(char *s1, const char *s2);
 void	handle_input(char *input, char **envp);
 char	*build_prompt(void);
-void	redirector(t_redirect *redir);
+void	redirector(t_redirect *redir, int **fd);
 char	*ft_strjoin_chr(char *s, char c);
 char	**split_cmds(char *input, t_shell *shell);
 
