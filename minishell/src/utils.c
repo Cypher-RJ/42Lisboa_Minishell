@@ -48,3 +48,9 @@ char	*ft_strjoin_chr(char *s, char c)
 	new[len + 1] = '\0';
 	return (new);
 }
+
+int	print_syntax_error(char *msg)
+{
+	ft_putstr_fd(msg, 2);
+	return (1);
+}

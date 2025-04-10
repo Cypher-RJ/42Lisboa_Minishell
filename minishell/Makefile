@@ -1,7 +1,7 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = src/main.c src/parser.c src/execution.c src/redirection.c src/pipes.c src/signals.c src/path.c src/env.c src/utils.c src/prompt.c
+SRCS = src/main.c src/parser.c src/execution.c src/redirection.c src/pipes.c src/signals.c src/path.c src/env.c src/utils.c src/prompt.c src/syntax.c
 OBJS = $(SRCS:.c=.o)
 INCLUDES = -I includes -I libft
 LIBFT_DIR = libft

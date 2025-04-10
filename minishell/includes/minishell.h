@@ -11,28 +11,27 @@
 
 typedef struct s_shell
 {
-	char	**envp;
-	char	*cwd;
-	int		exit_status;
-}	t_shell;
+	char				**envp;
+	char				*cwd;
+	int					exit_status;
+}						t_shell;
 
 typedef struct s_redirect
 {
-	char				*direction;	//! string com direcao
+	char *direction; //! string com direcao
 	char				*passorfile;
 	struct s_redirect	*next;
-}	t_redirect;
+}						t_redirect;
 
 typedef struct s_command
 {
-	char				**args;	//! array para execve
+	char **args; //! array para execve
 	char				*path;
-	t_redirect			*redir;	//! redirecoes seguintes
+	t_redirect *redir; //! redirecoes seguintes
 	struct s_command	*next;
-}	t_command;	
+}						t_command;
 
 void	prompt_loop(char **envp);
-//char	**split_command(char *input, char **envp);
 void	execute_command(char **args, char **envp);
 int		detect_redirections(char **args, int *fd_in, int *fd_out);
 void	execute_builtin(char **args, char **envp);
@@ -54,5 +53,11 @@ char	*build_prompt(void);
 void	redirector(t_redirect *redir);
 char	*ft_strjoin_chr(char *s, char c);
 char	**split_cmds(char *input, t_shell *shell);
+int		handle_segment(char *input, char **arg_slot, int *i, t_shell *shell);
+int		check_pipe_and_ampersand(char *input, int *i, int *expect);
+int		is_only_spaces(char *input);
+int		has_unclosed_quotes(char *input);
+int		check_syntax(char *input);
+int		print_syntax_error(char *msg);
 
 #endif

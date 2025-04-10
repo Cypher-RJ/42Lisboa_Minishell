@@ -82,7 +82,7 @@ void	redirector(t_redirect **redir)
 	while (temp->next != NULL)
 	{
 		if (ft_strncmp(temp->direction, "<", 1) == 0)
-		 	redirect_input(temp);
+			redirect_input(temp);
 		else if (ft_strncmp(temp->direction, "<<", 2) == 0)
 			redirect_heredoc(temp);
 		else if (ft_strncmp(temp->direction, ">", 1) == 0)
