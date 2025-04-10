@@ -25,7 +25,6 @@ typedef struct s_redirect
 
 typedef struct s_command
 {
-	int 				n_cmd;	//! numero de comandos
 	char				**args;	//! array para execve
 	char				*path;
 	t_redirect			*redir;	//! redirecoes seguintes
@@ -38,9 +37,7 @@ void	execute_command(char **args, char **envp);
 int		detect_redirections(char **args, int *fd_in, int *fd_out);
 void	execute_builtin(char **args, char **envp);
 int		is_builtin(char *cmd);
-void	redirect_output(char *filename, int append);
 void	execute_pipe(t_command **cmds, t_shell *shell);
-void	redirect_input(char *filename);
 char	*get_path(char *cmd, t_shell *shell);
 char	*search_path(char *cmd, char **paths);
 char	*get_env_path(t_shell *shell);
@@ -54,7 +51,7 @@ char	**copy_shlvl(char **envp);
 char	*ft_strjoin_free(char *s1, const char *s2);
 void	handle_input(char *input, char **envp);
 char	*build_prompt(void);
-void	redirector(t_redirect *redir, int **fd);
+void	redirector(t_redirect *redir);
 char	*ft_strjoin_chr(char *s, char c);
 char	**split_cmds(char *input, t_shell *shell);
 

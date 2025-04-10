@@ -28,20 +28,20 @@ void	execute_pipe(t_command **cmds, t_shell *shell)
 		}
 		if (pid == 0) // Processo filho
 		{
-			if (cmd->redir)
-				redirector(&cmd->redir, &fd); // Passar isto para o fim. Fazer os pipes como se não houvesse redirecionamentos e depois sobrepor caso haja!!
-			if (prev_fd != -1 /* && (has_redir(&cmd->redir, '<'))?? ??? ??*/)
+			if (prev_fd != -1) // se nao for primeiro comando
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			if (cmd->next != NULL)
+			if (cmd->next != NULL) // se nao for ultimo comando
 			{
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[0]);
 				close(fd[1]);
 			}
-			if (execve(cmd->path, cmd->args, shell->envp) ==  -1)
+			if (cmd->redir) // se ha redir, sobrepor o que foi feito aos pipes
+				redirector(&cmd->redir);
+			if (execve(cmd->path, cmd->args, shell->envp) == -1)
 			{
 				perror("execvp");
 				exit(EXIT_FAILURE);
