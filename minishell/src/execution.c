@@ -14,49 +14,13 @@ int	has_pipe(char **args)
 	return (-1);
 }
 
-void	execute_command(char **args, char **envp)
+void	execute_command(t_command *cmd, t_shell *shell)
 {
-	int		pipe_index;
-	int		fd_in;
-	int		fd_out;
-	pid_t	pid;
-	char	*cmd_path;
-
-	fd_in = -1;
-	pipe_index = has_pipe(args);
-	if (pipe_index != -1)
+	if (execve(cmd->path, cmd->args, shell->envp) == -1)
 	{
-		args[pipe_index] = NULL;
-		execute_pipe(args, &args[pipe_index + 1], envp);
-		return ;
-	}
-	fd_in = -1;
-	fd_out = -1;
-	if (detect_redirections(args, &fd_in, &fd_out))
-		return ;
-	cmd_path = get_path(args[0], envp);
-	if (!cmd_path)
-	{
-		write(2, args[0], ft_strlen(args[0]));
-		write(2, ": command not found\n", 20);
-		return ;
-	}
-	pid = fork();
-	if (pid == 0)
-	{
-		if (fd_in != -1)
-			dup2(fd_in, STDIN_FILENO);
-		if (fd_out != -1)
-			dup2(fd_out, STDOUT_FILENO);
-		execve(cmd_path, args, envp);
 		perror("execve");
 		exit(1);
 	}
-	else if (pid > 0)
-		wait(NULL);
-	else
-		perror("fork");
-	free(cmd_path);
 }
 
 int	is_builtin(char *cmd)
@@ -66,7 +30,7 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-void	execute_builtin(char **args, char **envp)
+void	execute_builtin(char **args, t_shell *shell)
 {
 	int	i;
 
@@ -89,7 +53,7 @@ void	execute_builtin(char **args, char **envp)
 		{
 			printf("%s", args[i]);
 			if (args[i + 1])
-				printf(" ");
+				printf(" "); // acho que o echo transforma todos os argumentos numa unica string
 			i++;
 		}
 		printf("\n");
@@ -97,13 +61,13 @@ void	execute_builtin(char **args, char **envp)
 	else if (!ft_strcmp(args[0], "env"))
 	{
 		i = 0;
-		while (envp[i])
+		while (shell->envp[i])
 		{
-			printf("%s\n", envp[i]);
+			printf("%s\n", shell->envp[i]);
 			i++;
 		}
 	}
-	else if (!ft_strcmp(args[0], "exit"))
+	else if (!ft_strcmp(args[0], "exit")) // isto precisa de verificar se so tem uma palavar. Acho que se tiver mais passa tudo a string
 	{
 		printf("exit\n");
 		exit(0);

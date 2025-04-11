@@ -3,16 +3,16 @@
 // integrar esta função com o que ja está dos pipes
 void	execute_pipe(t_command **cmds, t_shell *shell)
 {
-	t_command	*cmd;
+	t_command	*thiscmd;
 	int		fd[2];
 	int		prev_fd;
 	pid_t		pid;
 
-	cmd = *cmds;
+	thiscmd = *cmds;
 	prev_fd = -1;
-	while (cmd != NULL)
+	while (thiscmd != NULL)
 	{
-		if (cmd->next != NULL)
+		if (thiscmd->next != NULL)
 		{
 			if (pipe(fd) == -1)
 			{
@@ -33,35 +33,34 @@ void	execute_pipe(t_command **cmds, t_shell *shell)
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			if (cmd->next != NULL) // se nao for ultimo comando
+			if (thiscmd->next != NULL) // se nao for ultimo comando
 			{
 				dup2(fd[1], STDOUT_FILENO);
 				close(fd[0]);
 				close(fd[1]);
 			}
-			if (cmd->redir) // se ha redir, sobrepor o que foi feito aos pipes
-				redirector(&cmd->redir);
-			if (execve(cmd->path, cmd->args, shell->envp) == -1)
-			{
-				perror("execvp");
-				exit(EXIT_FAILURE);
-			}
+			if (thiscmd->redir) // se ha redir, sobrepor o que foi feito aos pipes
+				redirector(&thiscmd->redir);
+			if (is_builtin(thiscmd->args[0]) == 1)
+				execute_builtin(thiscmd->args, shell);
+			else
+				execute_command(thiscmd, shell->envp);
 		}
 		// Processo pai
 		if (prev_fd != -1)
 			close(prev_fd);
-		if (cmd->next != NULL)
+		if (thiscmd->next != NULL)
 		{
 			close(fd[1]);
 			prev_fd = fd[0];
 		}
-		cmd = cmd->next;
+		thiscmd = thiscmd->next;
 	}
 	// Esperar pelos filhos
-	cmd = *cmds;
-	while (cmd != NULL)
+	thiscmd = *cmds;
+	while (thiscmd != NULL)
 	{
 		wait(NULL);
-		cmd = cmd->next;
+		thiscmd = thiscmd->next;
 	}
 }
