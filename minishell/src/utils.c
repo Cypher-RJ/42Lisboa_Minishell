@@ -1,25 +1,31 @@
 #include "minishell.h"
 
-void	ft_free_split(char **array)
+void	free_commands(t_command *head)
 {
-	int	i;
+	t_command	*temp;
 
-	i = 0;
-	if (!array)
-		return ;
-	while (array[i])
+	while (head)
 	{
-		free(array[i]);
-		i++;
+		temp = head;
+		head = head->next;
+		ft_free_split(temp->args);
+		free(temp);
 	}
-	free(array);
+}
+
+void	ft_free_split(char **arr)
+{
+	int	i = 0;
+	while (arr && arr[i])
+		free(arr[i++]);
+	free(arr);
 }
 
 char	*ft_strjoin_free(char *s1, const char *s2)
 {
-	char *joined;
-	size_t len1;
-	size_t len2;
+	char	*joined;
+	size_t	len1;
+	size_t	len2;
 
 	if (!s1 || !s2)
 		return (NULL);

@@ -53,12 +53,14 @@ char		*build_prompt(void);
 void		redirector(t_redirect *redir);
 char		*ft_strjoin_chr(char *s, char c);
 char		**split_cmds(char *input, t_shell *shell);
-int			handle_segment(char *input, char **arg_slot, int *i, t_shell *shell);
+int			handle_segment(char *input, char **arg_slot, int *i);
 int			check_pipe_and_ampersand(char *input, int *i, int *expect);
 int			is_only_spaces(char *input);
 int			has_unclosed_quotes(char *input);
 int			check_syntax(char *input);
 int			print_syntax_error(char *msg);
-t_command	*build_command_list(char *input, t_shell *shell);
+t_command	*build_command_list(char **split_cmds, t_shell *shell);
+void		free_commands(t_command *head);
+int			check_syntax_redir(char *input);
 
 #endif

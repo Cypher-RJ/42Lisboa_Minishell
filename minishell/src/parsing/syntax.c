@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	handle_segment(char *input, char **arg_slot, int *i, t_shell *shell)
+int	handle_segment(char *input, char **arg_slot, int *i)
 {
 	int	start;
 	int	in_quotes;
@@ -22,7 +22,6 @@ int	handle_segment(char *input, char **arg_slot, int *i, t_shell *shell)
 	*arg_slot = ft_substr(input, start, *i - start);
 	if (!*arg_slot)
 		return (0);
-	*arg_slot = expand_env_variable(*arg_slot, shell->envp);
 	return (*arg_slot != NULL);
 }
 
@@ -97,12 +96,40 @@ int	check_syntax(char *input)
 			in_s = !in_s;
 		else if (input[i] == '"' && !in_s)
 			in_d = !in_d;
-			else if (!in_s && !in_d)
+		else if (!in_s && !in_d)
 			if (check_pipe_and_ampersand(input, &i, &expect))
-			return (1);
-			i++;
-		}
-		if (expect)
-		return (print_syntax_error("minishell: syntax error: unexpected end of input\n"));
-		return (has_unclosed_quotes(input));
+				return (1);
+		i++;
 	}
+	if (expect)
+		return (print_syntax_error("minishell: syntax error: unexpected end of input\n"));
+	return (has_unclosed_quotes(input));
+}
+
+int check_syntax_redir(char *input)
+{
+	int i;
+	int expect_command;
+	
+	i = 0;
+	expect_command = 1;
+	while (input[i])
+	{
+		if (input[i] == '>' || input[i] == '<')
+		{
+		if (input[i + 1] == '>' || input[i + 1] == '<')
+            {
+				if (input[i + 2] == '>' || input[i + 2] == '<')
+					return print_syntax_error("minishell: syntax error near unexpected token `>'\n");
+				i++;
+			}
+			expect_command = 1;
+		}
+		else if (input[i] != ' ' && input[i] != '\t')
+			expect_command = 0;
+		i++;
+	}
+	if (expect_command)
+		return print_syntax_error("minishell: syntax error near unexpected token `newline'\n");
+	return 0;
+}

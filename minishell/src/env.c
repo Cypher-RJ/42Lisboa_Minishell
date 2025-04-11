@@ -9,14 +9,15 @@ static char	*get_var_name(char *arg)
 
 static char	*find_env_value(char *var_name, char **envp)
 {
-	int	i;
+	int		i;
+	size_t	len;
 
 	i = 0;
+	len = ft_strlen(var_name);
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], var_name, ft_strlen(var_name)) == 0
-			&& envp[i][ft_strlen(var_name)] == '=')
-			return (ft_strdup(envp[i] + ft_strlen(var_name) + 1));
+		if (!ft_strncmp(envp[i], var_name, len) && envp[i][len] == '=')
+			return (ft_strdup(envp[i] + len + 1));
 		i++;
 	}
 	return (ft_strdup(""));
@@ -41,12 +42,14 @@ char	*expand_env_variable(char *arg, char **envp)
 		else if (arg[i] == '$' && !in_single && arg[i + 1])
 		{
 			int start = ++i;
-			while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
+			while (arg[i] && (arg[i] == '_' || ('0' <= arg[i] && arg[i] <= '9') || ('a' <= arg[i] && arg[i] <= 'z') || ('A' <= arg[i] && arg[i] <= 'Z')))
 				i++;
 			var = ft_substr(arg, start, i - start);
 			val = find_env_value(var, envp);
 			free(var);
-			tmp = ft_strjoin(result, val);
+			tmp = malloc(ft_strlen(result) + ft_strlen(val) + 1);
+			strcpy(tmp, result);
+			strcat(tmp, val);
 			free(result);
 			free(val);
 			result = tmp;
@@ -54,11 +57,14 @@ char	*expand_env_variable(char *arg, char **envp)
 		}
 		else
 		{
-			tmp = ft_strjoin_chr(result, arg[i]);
+			char buf[2] = { arg[i], '\0' };
+			tmp = malloc(ft_strlen(result) + 2);
+			strcpy(tmp, result);
+			strcat(tmp, buf);
 			free(result);
 			result = tmp;
-			i++;
 		}
+		i++;
 	}
 	free(arg);
 	return (result);
