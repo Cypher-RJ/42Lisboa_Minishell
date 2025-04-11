@@ -25,9 +25,9 @@ typedef struct s_redirect
 
 typedef struct s_command
 {
-	char				**args; //! array para execve
-	char				*path;
-	t_redirect			*redir; //! redirecoes seguintes
+	char				**args; //! array para execve ou builtin
+	char				*path; //path para execve
+	t_redirect			*redir; //! redirecoes seguintes - pra builtins fica null
 	struct s_command	*next;
 }						t_command;
 
@@ -36,7 +36,7 @@ void		execute_command(char **args, char **envp);
 int			detect_redirections(char **args, int *fd_in, int *fd_out);
 void		execute_builtin(char **args, char **envp);
 int			is_builtin(char *cmd);
-void		execute_pipe(t_command **cmds, t_shell *shell);
+void		executor(t_command **cmds, t_shell *shell);
 char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
 char		*get_env_path(t_shell *shell);
