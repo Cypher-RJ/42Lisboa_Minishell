@@ -10,6 +10,7 @@ SRCS = src/main.c \
 		src/env.c \
 		src/utils.c \
 		src/prompt.c \
+		src/pipe_functions.c \
 \
 		src/parcing/parser.c \
 		src/parcing/syntax.c

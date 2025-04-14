@@ -1,84 +1,93 @@
 #include "minishell.h"
 
-void	redirect_input(t_redirect *temp)
+void	redirect_input(t_redirect *thiscmd)
 {
 	int	fd;
 
-	fd = open(temp->passorfile, O_RDONLY);
+	fd = open(thiscmd->passorfile, O_RDONLY);
 	if (fd < 0)
 	{
 		perror("Failed to open file");
-		//free tudo
 		exit(EXIT_FAILURE);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("Failed to dup2 file fd");
 		close(fd);
-		//free tudo
 		exit(EXIT_FAILURE);
 	}
 	close(fd);
 }
 
-void	redirect_output(t_redirect *temp, int append)
+int	heredoc_readline(char *password, int fd[])
 {
-	int	fd;
+	char *line;
 
-	if (append == 0)
-		fd = open(temp->passorfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else
-		fd = open(temp->passorfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd < 0)
+	line = readline("> ");
+	if (!line) // isto precisa de um signal handler. Se for ctr-d faz return, outros sinais ou erro faz exit
+		return (-1);
+	if (strcmp(line, password) == 0)
 	{
-		perror("Failed to open file");
-		//free tudo
-		exit(EXIT_FAILURE);
+		free(line);
+		return (-1);
 	}
-	if (dup2(fd, STDIN_FILENO) == -1)
-	{
-		perror("Failed to dup2 file fd");
-		close(fd);
-		//free tudo
-		exit(EXIT_FAILURE);
-	}
-	close(fd);
+	write(fd[1], line, strlen(line));
+	write(fd[1], "\n", 1);
+	free(line);
+	return (0);
 }
 
-void	redirect_heredoc(t_redirect *temp)
+void	redirect_heredoc(t_redirect *thiscmd)
 {
 	int		fd[2];
-	char	*line;
 
 	if (pipe(fd) == -1)
 	{
-		perror("pipe");
+		perror("Failed to open HEREDOC pipe");
 		exit(EXIT_FAILURE);
 	}
 	while (1)
 	{
-		line = readline("> ");
-		if (!line)
+		if (heredoc_readline(thiscmd->passorfile, fd) == -1)
 			break;
-		if (strcmp(line, temp->passorfile) == 0)
-		{
-			free(line);
-			break;
-		}
-		write(fd[1], line, strlen(line));
-		write(fd[1], "\n", 1);
-		free(line);
 	}
 	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
+	if (dup2(fd[0], STDIN_FILENO) == -1)
+	{
+		perror("Failed to dup2 HEREDOC fd[0] to STDIN");
+		close(fd[0]);
+		exit(EXIT_FAILURE);
+	}
 	close(fd[0]);
 }
 
-void	redirector(t_redirect **redir)
+void	redirect_output(t_redirect *thiscmd, int append)
+{
+	int	fd;
+
+	if (append == 0)
+		fd = open(thiscmd->passorfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else
+		fd = open(thiscmd->passorfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd < 0)
+	{
+		perror("Failed to open file");
+		exit(EXIT_FAILURE);
+	}
+	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		perror("Failed to dup2 file fd");
+		close(fd);
+		exit(EXIT_FAILURE);
+	}
+	close(fd);
+}
+
+void	redirector(t_redirect *redir)
 {
 	t_redirect	*temp;
 
-	temp = *redir;
+	temp = redir;
 	while (temp->next != NULL)
 	{
 		if (ft_strncmp(temp->direction, "<", 1) == 0)

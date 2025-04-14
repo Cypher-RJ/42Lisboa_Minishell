@@ -32,11 +32,7 @@ typedef struct s_command
 }						t_command;
 
 void		prompt_loop(char **envp);
-void		execute_command(char **args, char **envp);
 int			detect_redirections(char **args, int *fd_in, int *fd_out);
-void		execute_builtin(char **args, char **envp);
-int			is_builtin(char *cmd);
-void		executor(t_command **cmds, t_shell *shell);
 char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
 char		*get_env_path(t_shell *shell);
@@ -50,7 +46,6 @@ char		**copy_shlvl(char **envp);
 char		*ft_strjoin_free(char *s1, const char *s2);
 void		handle_input(char *input, char **envp);
 char		*build_prompt(void);
-void		redirector(t_redirect *redir);
 char		*ft_strjoin_chr(char *s, char c);
 char		**split_cmds(char *input, t_shell *shell);
 int			handle_segment(char *input, char **arg_slot, int *i);
@@ -63,4 +58,19 @@ t_command	*build_command_list(char **split_cmds, t_shell *shell);
 void		free_commands(t_command *head);
 int			check_syntax_redir(char *input);
 char		**ft_split_quotes(char *str);
+
+// pipes & pipe_functions
+void		executor(t_command **cmds, t_shell *shell);
+void		child_pipes(int prev_fd, bool next, int fd[]);
+pid_t		forkit();
+int			make_pipe(int fd[], bool has_next);
+
+// redirection
+void		redirector(t_redirect *redir);
+
+//execution
+void		execute_command(t_command *cmd, t_shell *shell);
+void		execute_builtin(char **args, t_shell *shell);
+int			is_builtin(char *cmd);
+
 #endif

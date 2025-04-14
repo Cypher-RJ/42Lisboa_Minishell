@@ -1,53 +1,24 @@
 #include "minishell.h"
 
-int	make_pipe(int fd[], bool has_next)
+
+void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 {
-	if (has_next == 1)
-	{
-		if (pipe(fd) == -1)
-			return (perror("Failed to create pipe"), -1);
-		return (0);
-	}
-	else
-		return (0);
+	child_pipes(prev_fd, (thiscmd->next != NULL), fd); // se falhar faz exit da child, sem espinhas
+	redirector(thiscmd->redir); // se redir != null, faz redir ate == null. Se comeca null, nao faz nada
+	execute_builtin(thiscmd->args, shell);//se encontra comando faz exit success ou failure deposi de executar, se nao segue para exec_command
+	execute_command(thiscmd, shell->envp);//executa e faz exit success ou exit com erro
 }
 
-pid_t	forkit()
+int	daddy_time(int prev_fd, bool next, int fd[])
 {
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == -1)
-		perror("Failed create a fork");
-	return (pid);
-}
-
-void	child_pipes(int prev_fd, bool next, int fd[])
-{
-	int	res;
-
-	res = 0;
-	if (prev_fd != -1) // se nao for primeiro comando
-	{
-		res = dup2(prev_fd, STDIN_FILENO);
+	if (prev_fd != -1)
 		close(prev_fd);
-		if (res == -1)
-		{
-			perror("dup2 faile on prev_fd");
-			exit(EXIT_FAILURE);
-		}
-	}
-	if (next == 1) // se nao for ultimo comando
+	if (next == 1)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
 		close(fd[1]);
-		if (res == -1)
-		{
-			perror("dup2 failed on fd[1]");
-			exit(EXIT_FAILURE);
-		}
+		prev_fd = fd[0];
 	}
+	return (prev_fd);
 }
 
 void	executor(t_command **cmds, t_shell *shell)
@@ -67,26 +38,10 @@ void	executor(t_command **cmds, t_shell *shell)
 		if (pid == -1)
 			break;
 		if (pid == 0) // Processo filho
-		{
-			child_pipes(prev_fd, (thiscmd->next != NULL), fd); // se falhar faz exit da child, sem espinhas
-			if (thiscmd->redir) // se ha redir, sobrepoe o que foi feito aos pipes
-				redirector(&thiscmd->redir);
-			if (is_builtin(thiscmd->args[0]) == 1)
-				execute_builtin(thiscmd->args, shell);
-			else
-				execute_command(thiscmd, shell->envp);
-		}
-		// Processo pai
-		if (prev_fd != -1)
-			close(prev_fd);
-		if (thiscmd->next != NULL)
-		{
-			close(fd[1]);
-			prev_fd = fd[0];
-		}
+			child_labor(prev_fd, thiscmd, fd, shell);
+		prev_fd = daddy_time(&prev_fd, (thiscmd->next != NULL), fd);// So o pai chega aqui
 		thiscmd = thiscmd->next;
 	}
-	// Esperar pelos filhos
 	thiscmd = *cmds;
 	while (thiscmd != NULL)
 	{

@@ -1,19 +1,5 @@
 #include "minishell.h"
 
-int	has_pipe(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-	{
-		if (ft_strcmp(args[i], "|") == 0)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
 void	execute_command(t_command *cmd, t_shell *shell)
 {
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
@@ -31,7 +17,7 @@ int	is_builtin(char *cmd)
 }
 
 void	execute_builtin(char **args, t_shell *shell)
-{
+{//colocar um exit sucess em todos os comandos
 	int	i;
 
 	if (!ft_strcmp(args[0], "cd"))
