@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 t_command	*build_command_list(char **split_cmds, t_shell *shell)
 {
@@ -15,7 +15,7 @@ t_command	*build_command_list(char **split_cmds, t_shell *shell)
 	i = 0;
 	while (split_cmds[i])
 	{
-		args = ft_split_quotes(split_cmds[i], ' ');
+		args = ft_split_quotes(split_cmds[i]);
 		if (!args)
 		{
 			free_commands(head);
@@ -25,6 +25,12 @@ t_command	*build_command_list(char **split_cmds, t_shell *shell)
 		while (args[j])
 		{
 			expanded = expand_env_variable(args[j], shell->envp);
+			if (!expanded)
+			{
+				ft_free_split(args);
+				free_commands(head);
+				return (NULL);
+			}
 			args[j] = expanded;
 			j++;
 		}

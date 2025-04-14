@@ -62,5 +62,5 @@ int			print_syntax_error(char *msg);
 t_command	*build_command_list(char **split_cmds, t_shell *shell);
 void		free_commands(t_command *head);
 int			check_syntax_redir(char *input);
-
+char		**ft_split_quotes(char *str);
 #endif

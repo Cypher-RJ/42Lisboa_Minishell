@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 void	free_commands(t_command *head)
 {
@@ -16,6 +16,8 @@ void	free_commands(t_command *head)
 void	ft_free_split(char **arr)
 {
 	int	i = 0;
+	if (!arr)
+		return ;
 	while (arr && arr[i])
 		free(arr[i++]);
 	free(arr);

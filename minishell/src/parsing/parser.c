@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 static int	count_words(char *str)
 {
@@ -69,9 +69,11 @@ char	**split_cmds(char *input, t_shell *shell)
 	args = malloc(sizeof(char *) * (count_words(input) + 1));
 	if (!args)
 		return (NULL);
-	ft_memset(args, 0, sizeof(char *) * (count_words(input) + 1));
+	//ft_memset(args, 0, sizeof(char *) * (count_words(input) + 1));
 	while (input[i])
 	{
+		while (input[i] == ' ')
+			i++;
 		if (!handle_segment(input, &args[j], &i))
 			return (ft_free_split(args), NULL);
 		if (args[j])
