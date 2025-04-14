@@ -92,11 +92,12 @@ char	**ft_split_quotes(char *str)
 	int		in_quotes;
 	int		i;
 	char	quote_char;
+	char next = *(str + 1);
 	
 	result = malloc(sizeof(char *) * (count_words(str) + 1));
 	if (!result)
 		return (NULL);
-	start = str;
+	start = NULL;
 	in_quotes = 0;
 	quote_char = '\0';
 	i = 0;
@@ -104,16 +105,19 @@ char	**ft_split_quotes(char *str)
 	{
 		if ((*str == '\'' || *str == '\"'))
 			handle_quotes(*str, &in_quotes, &quote_char);
-		else if (*str == ' ' && !in_quotes)
+		else if (!in_quotes && *str != ' ' && (!start))
+			start = str;
+		else if (!in_quotes && start && (*str == ' ' || (*str != '\0' && next == '\0')))
 		{
-			*str = '\0';
-			result[i++] = strdup(start);
-			start = str + 1;
+			if (*str == ' ')
+				*str = '\0'; // Null-terminate the word
+			else if (*(str + 1) == '\0') // Handle last word
+				str++;
+			result[i++] = ft_strdup(start); // Copy the word
+			start = NULL;
 		}
 		str++;
 	}
-	if (*start)
-		result[i++] = strdup(start);
 	result[i] = NULL;
 	return (result);
 }

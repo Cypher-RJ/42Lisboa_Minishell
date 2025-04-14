@@ -6,7 +6,7 @@ int	handle_segment(char *input, char **arg_slot, int *i)
 	int	in_quotes;
 	
 	in_quotes = 0;
-	while (input[*i] == ' ' && input[*i] == '\t')
+	while (input[*i] == ' ' || input[*i] == '\t')
 		(*i)++;
 	start = *i;
 	while (input[*i])

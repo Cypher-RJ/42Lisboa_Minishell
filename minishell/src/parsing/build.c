@@ -24,6 +24,17 @@ t_command	*build_command_list(char **split_cmds, t_shell *shell)
 		j = 0;
 		while (args[j])
 		{
+			if (ft_strlen(args[j]) == 0)
+			{
+				free(args[j]);
+				int k = j;
+				while (args[k])
+				{
+					args[k] = args[k + 1];
+					k++;
+				}
+				continue;
+			}
 			expanded = expand_env_variable(args[j], shell->envp);
 			if (!expanded)
 			{
