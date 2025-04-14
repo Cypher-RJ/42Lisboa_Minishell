@@ -17,7 +17,7 @@ int	is_builtin(char *cmd)
 }
 
 void	execute_builtin(char **args, t_shell *shell)
-{//colocar um exit sucess em todos os comandos
+{//colocar um exit sucess ou error em todos os comandos
 	int	i;
 
 	if (!ft_strcmp(args[0], "cd"))
@@ -25,17 +25,27 @@ void	execute_builtin(char **args, t_shell *shell)
 		if (args[1])
 		{
 			if (chdir(args[1]) != 0)
+			{
 				perror("cd");
+				exit (EXIT_FAILURE);
+			}
+			exit (EXIT_SUCCESS);
 		}
 		else
-			printf("cd: missing argument\n");
+		{
+			printf("cd: missing argument\n");// se nao tem args, vai para a root.
+			exit (EXIT_SUCCESS); 
+		}
 	}
 	else if (!ft_strcmp(args[0], "pwd"))
+	{
 		printf("%s\n", getcwd(NULL, 0));
+		exit (EXIT_SUCCESS);
+	}
 	else if (!ft_strcmp(args[0], "echo"))
 	{
 		i = 1;
-		while (args[i])
+		while (args[i])// falta ver se tem -n(nao mete \n no fim)
 		{
 			printf("%s", args[i]);
 			if (args[i + 1])
@@ -52,10 +62,11 @@ void	execute_builtin(char **args, t_shell *shell)
 			printf("%s\n", shell->envp[i]);
 			i++;
 		}
+		exit (EXIT_SUCCESS);
 	}
-	else if (!ft_strcmp(args[0], "exit")) // isto precisa de verificar se so tem uma palavar. Acho que se tiver mais passa tudo a string
+	else if (!ft_strcmp(args[0], "exit")) // isto precisa de verificar se so tem uma palavra. Acho que se tiver mais passa tudo a string
 	{
-		printf("exit\n");
-		exit(0);
+		printf("exit\n");//e suposto escrever algo?
+		exit(EXIT_SUCCESS);
 	}
 }
