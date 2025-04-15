@@ -42,16 +42,19 @@ void	prompt_loop(t_shell *shell)
 		setup_signals();
 		prompt = build_prompt();
 		input = readline(prompt);
+		if (!input)
+		{
+			print_syntax_error("exit\n");
+			break ;
+		}
+		if (!*input)
+			continue ;
 		add_history(input);
 		free(prompt);
 		strs = split_cmds(input);
 		cmds = build_command_list(strs, shell);
-		if (!input)
-		{
-			printf("exit\n");
-			break ;
-		}
-		// handle_input(input, shell->envp);
+		resolve_path(cmds, shell);
+		printf("%s\n", cmds->path);
 		free(input);
 	}
 }

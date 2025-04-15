@@ -28,17 +28,15 @@ char	*search_path(char *cmd, char **paths)
 {
 	int		i;
 	char	*full_path;
+	char *tmp;
 
 	i = 0;
 	while (paths[i])
 	{
-		full_path = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(full_path, cmd);
+		tmp = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(tmp, cmd);
 		if (is_executable(full_path))
-		{
-			ft_free_split(paths);
 			return (full_path);
-		}
 		free(full_path);
 		i++;
 	}
@@ -62,4 +60,25 @@ char	*get_path(char *cmd, t_shell *shell)
 	full_path = search_path(cmd, paths);
 	ft_free_split(paths);
 	return (full_path);
+}
+
+void resolve_path(t_command *cmds, t_shell *shell)
+{
+	t_command *current;
+
+	current = cmds;
+	while (current)
+	{
+		if (current->args && current->args[0] && !is_builtin(current->args[0]))
+		{
+			current->path = get_path(current->args[0], shell);
+			if (!current->path)
+			{
+				ft_putstr_fd("minishell: command not found: ", 2);
+				ft_putendl_fd(current->args[0], 2);
+				shell->exit_status = 127;
+			}
+		}
+		current = current->next;
+	}
 }

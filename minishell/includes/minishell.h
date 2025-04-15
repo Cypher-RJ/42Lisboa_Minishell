@@ -61,6 +61,9 @@ void		free_commands(t_command *head);
 int			check_syntax_redir(char *input);
 char		**ft_split_quotes(char *str);
 int			is_single_quoted(char *str);
+void		resolve_path(t_command *head, t_shell *shell);
+void		free_all(t_command *cmds, t_shell *shell);
+void		free_command_list(t_command *cmd);
 
 // pipes & pipe_functions
 void		executor(t_command **cmds, t_shell *shell);
