@@ -8,11 +8,13 @@
 # include <readline/readline.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 typedef struct s_shell
 {
 	char	**envp;
-	char	*cwd;
+	// char	*cwd;
 	int		exit_status;
 }			t_shell;
 
@@ -31,7 +33,7 @@ typedef struct s_command
 	struct s_command	*next;
 }						t_command;
 
-void		prompt_loop(char **envp);
+void		prompt_loop(t_shell *shell);
 int			detect_redirections(char **args, int *fd_in, int *fd_out);
 char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
@@ -47,14 +49,14 @@ char		*ft_strjoin_free(char *s1, const char *s2);
 void		handle_input(char *input, char **envp);
 char		*build_prompt(void);
 char		*ft_strjoin_chr(char *s, char c);
-char		**split_cmds(char *input, t_shell *shell);
+char		**split_cmds(char *input);
 int			handle_segment(char *input, char **arg_slot, int *i);
 int			check_pipe_and_ampersand(char *input, int *i, int *expect);
 int			is_only_spaces(char *input);
 int			has_unclosed_quotes(char *input);
 int			check_syntax(char *input);
 int			print_syntax_error(char *msg);
-t_command	*build_command_list(char **split_cmds, t_shell *shell);
+t_command	*build_command_list(char **cmds, t_shell *shell);
 void		free_commands(t_command *head);
 int			check_syntax_redir(char *input);
 char		**ft_split_quotes(char *str);
@@ -63,7 +65,7 @@ int			is_single_quoted(char *str);
 // pipes & pipe_functions
 void		executor(t_command **cmds, t_shell *shell);
 void		child_pipes(int prev_fd, bool next, int fd[]);
-pid_t		forkit();
+pid_t		fork_it();
 int			make_pipe(int fd[], bool has_next);
 
 // redirection

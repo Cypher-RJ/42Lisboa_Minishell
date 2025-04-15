@@ -1,11 +1,11 @@
 #include "../includes/minishell.h"
 
-static char	*get_var_name(char *arg)
+/* static char	*get_var_name(char *arg)
 {
 	if (arg[0] != '$' || arg[1] == '\0')
 		return (NULL);
 	return (arg + 1);
-}
+} */
 
 static char	*find_env_value(char *var_name, char **envp)
 {

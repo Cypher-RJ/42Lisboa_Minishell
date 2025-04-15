@@ -27,7 +27,7 @@ static int	count_words(char *str)
 	return (count);
 }
 
-static void	free_result(char **result, int count)
+/* static void	free_result(char **result, int count)
 {
 	int	i;
 
@@ -38,9 +38,9 @@ static void	free_result(char **result, int count)
 		i++;
 	}
 	free(result);
-}
+} */
 
-static void	handle_quotes(char c, int *in_quotes, char *quote_char)
+/* static void	handle_quotes(char c, int *in_quotes, char *quote_char)
 {
 	if (*in_quotes == 0)
 	{
@@ -52,9 +52,9 @@ static void	handle_quotes(char c, int *in_quotes, char *quote_char)
 		*in_quotes = 0;
 		*quote_char = '\0';
 	}
-}
+} */
 
-char	**split_cmds(char *input, t_shell *shell)
+char	**split_cmds(char *input)
 {
 	char	**args;
 	int		i;

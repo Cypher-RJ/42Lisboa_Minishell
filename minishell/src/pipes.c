@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 
 void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
@@ -6,19 +6,19 @@ void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 	child_pipes(prev_fd, (thiscmd->next != NULL), fd); // se falhar faz exit da child, sem espinhas
 	redirector(thiscmd->redir); // se redir != null, faz redir ate == null. Se comeca null, nao faz nada
 	execute_builtin(thiscmd->args, shell);//se encontra comando faz exit success ou failure deposi de executar, se nao segue para exec_command
-	execute_command(thiscmd, shell->envp);//executa e faz exit success ou exit com erro
+	execute_command(thiscmd, shell);//executa e faz exit success ou exit com erro
 }
 
-int	daddy_time(int prev_fd, bool next, int fd[])
+int	daddy_time(int *prev_fd, bool next, int fd[])
 {
-	if (prev_fd != -1)
-		close(prev_fd);
+	if (*prev_fd != -1)
+		close(*prev_fd);
 	if (next == 1)
 	{
 		close(fd[1]);
-		prev_fd = fd[0];
+		*prev_fd = fd[0];
 	}
-	return (prev_fd);
+	return (*prev_fd);
 }
 
 void	executor(t_command **cmds, t_shell *shell)

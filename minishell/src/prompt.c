@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 char	*build_prompt(void)
 {
@@ -14,7 +14,7 @@ char	*build_prompt(void)
 	return (prompt);
 }
 
-void	handle_input(char *input, t_shell *shell)
+/* void	handle_input(char *input, t_shell *shell)
 {
 	char	***args;
 
@@ -28,26 +28,30 @@ void	handle_input(char *input, t_shell *shell)
 			execute_command(args, shell->envp);
 	}
 	ft_free_split(args);
-}
+} */
 
 void	prompt_loop(t_shell *shell)
 {
 	char *input;
 	char *prompt;
+	t_command *cmds;
+	char **strs;
 
 	while (1)
 	{
 		setup_signals();
 		prompt = build_prompt();
 		input = readline(prompt);
+		add_history(input);
 		free(prompt);
-		t_command *cmd_list = build_command_list(input, shell->envp);
+		strs = split_cmds(input);
+		cmds = build_command_list(strs, shell);
 		if (!input)
 		{
 			printf("exit\n");
 			break ;
 		}
-		handle_input(input, shell->envp);
+		// handle_input(input, shell->envp);
 		free(input);
 	}
 }

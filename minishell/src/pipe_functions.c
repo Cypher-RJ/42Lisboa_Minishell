@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int	make_pipe(int fd[], bool has_next)
 {
@@ -12,7 +12,7 @@ int	make_pipe(int fd[], bool has_next)
 		return (0);
 }
 
-pid_t	forkit()
+pid_t	fork_it()
 {
 	pid_t	pid;
 
@@ -26,7 +26,7 @@ void	child_pipes(int prev_fd, bool next, int fd[])
 {
 	if (prev_fd != -1) // se nao for primeiro comando
 	{
-		if (dup2(prev_fd, STDIN_FILENO) == -1);
+		if (dup2(prev_fd, STDIN_FILENO) == -1)
 		{
 			close(prev_fd);
 			close(fd[0]);
@@ -38,7 +38,7 @@ void	child_pipes(int prev_fd, bool next, int fd[])
 	}
 	if (next == 1) // se nao for ultimo comando
 	{
-		if (dup2(fd[1], STDOUT_FILENO) == -1);
+		if (dup2(fd[1], STDOUT_FILENO) == -1)
 		{
 			close(fd[0]);
 			close(fd[1]);

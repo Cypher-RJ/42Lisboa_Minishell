@@ -12,8 +12,9 @@ SRCS = src/main.c \
 		src/prompt.c \
 		src/pipe_functions.c \
 \
-		src/parcing/parser.c \
-		src/parcing/syntax.c
+		src/parsing/parser.c \
+		src/parsing/syntax.c \
+		src/parsing/build.c
 
 OBJS = $(SRCS:.c=.o)
 INCLUDES = -I includes -I libft

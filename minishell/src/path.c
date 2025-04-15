@@ -1,5 +1,4 @@
-#include "minishell.h"
-#include <sys/stat.h>
+#include "../includes/minishell.h"
 
 // Checks if a file exists and is executable
 int	is_executable(char *filepath)
