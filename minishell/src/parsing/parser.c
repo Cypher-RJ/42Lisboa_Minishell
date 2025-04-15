@@ -40,7 +40,7 @@ static void	free_result(char **result, int count)
 	free(result);
 }
 
-static void handle_quotes(char c, int *in_quotes, char *quote_char)
+static void	handle_quotes(char c, int *in_quotes, char *quote_char)
 {
 	if (*in_quotes == 0)
 	{
@@ -56,10 +56,10 @@ static void handle_quotes(char c, int *in_quotes, char *quote_char)
 
 char	**split_cmds(char *input, t_shell *shell)
 {
-	char **args;
-	int i;
-	int j;
-	
+	char	**args;
+	int		i;
+	int		j;
+
 	i = 0;
 	j = 0;
 	if (!input || input[0] == '\0' || is_only_spaces(input))
@@ -69,13 +69,15 @@ char	**split_cmds(char *input, t_shell *shell)
 	args = malloc(sizeof(char *) * (count_words(input) + 1));
 	if (!args)
 		return (NULL);
-	//ft_memset(args, 0, sizeof(char *) * (count_words(input) + 1));
 	while (input[i])
 	{
 		while (input[i] == ' ')
 			i++;
 		if (!handle_segment(input, &args[j], &i))
-			return (ft_free_split(args), NULL);
+		{
+			ft_free_split(args);
+			return (NULL);
+		}
 		if (args[j])
 			j++;
 		if (input[i] == '|')
@@ -88,36 +90,49 @@ char	**split_cmds(char *input, t_shell *shell)
 char	**ft_split_quotes(char *str)
 {
 	char	**result;
-	char	*start;
+	char	*buffer;
 	int		in_quotes;
-	int		i;
 	char	quote_char;
-	char next = *(str + 1);
-	
-	result = malloc(sizeof(char *) * (count_words(str) + 1));
-	if (!result)
-		return (NULL);
-	start = NULL;
+	int		i = 0, j = 0, start = 0, k;
+
 	in_quotes = 0;
 	quote_char = '\0';
-	i = 0;
-	while (*str)
+	i = 0, j = 0, start = 0, k = 0;
+	if (!str)
+		return (NULL);
+	result = malloc(sizeof(char *) * (count_words(str) + 2));
+	while (str[i])
 	{
-		if ((*str == '\'' || *str == '\"'))
-			handle_quotes(*str, &in_quotes, &quote_char);
-		else if (!in_quotes && *str != ' ' && (!start))
-			start = str;
-		else if (!in_quotes && start && (*str == ' ' || (*str != '\0' && next == '\0')))
+		if (!in_quotes && (str[i] == '\'' || str[i] == '"'))
 		{
-			if (*str == ' ')
-				*str = '\0'; // Null-terminate the word
-			else if (*(str + 1) == '\0') // Handle last word
-				str++;
-			result[i++] = ft_strdup(start); // Copy the word
-			start = NULL;
+			in_quotes = 1;
+			quote_char = str[i++];
+			start = i;
+			while (str[i])
+			{
+				if (str[i] == '\\' && str[i + 1])
+					i += 2;
+				else if (str[i] == quote_char)
+					break ;
+				else
+					i++;
+			}
+			buffer = ft_substr(str, start, i - start);
+			result[k++] = buffer;
+			if (str[i] == quote_char)
+				i++;
 		}
-		str++;
+		else if (!in_quotes && str[i] != ' ')
+		{
+			start = i;
+			while (str[i] && str[i] != ' ' && str[i] != '\'' && str[i] != '"')
+				i++;
+			buffer = ft_substr(str, start, i - start);
+			result[k++] = buffer;
+		}
+		else
+			i++;
 	}
-	result[i] = NULL;
+	result[k] = NULL;
 	return (result);
 }

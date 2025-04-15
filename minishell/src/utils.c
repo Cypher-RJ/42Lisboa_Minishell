@@ -18,9 +18,10 @@ void	ft_free_split(char **arr)
 	int	i = 0;
 	if (!arr)
 		return ;
-	while (arr && arr[i])
+	while (arr[i])
 		free(arr[i++]);
 	free(arr);
+	arr = NULL;
 }
 
 char	*ft_strjoin_free(char *s1, const char *s2)
@@ -35,7 +36,10 @@ char	*ft_strjoin_free(char *s1, const char *s2)
 	len2 = ft_strlen(s2);
 	joined = malloc(len1 + len2 + 1);
 	if (!joined)
+	{
+		free(s1);
 		return (NULL);
+	}
 	ft_strlcpy(joined, s1, len1 + 1);
 	ft_strlcat(joined, s2, len1 + len2 + 1);
 	free(s1);
@@ -47,6 +51,8 @@ char	*ft_strjoin_chr(char *s, char c)
 	char	*new;
 	size_t	len;
 
+	if (!s)
+		return (NULL);
 	len = ft_strlen(s);
 	new = malloc(len + 2);
 	if (!new)

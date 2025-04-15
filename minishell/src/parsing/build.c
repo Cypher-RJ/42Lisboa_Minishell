@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-t_command	*build_command_list(char **split_cmds, t_shell *shell)
+t_command	*build_command_list(char **cmds, t_shell *shell)
 {
 	t_command	*head;
 	t_command	*current;
@@ -13,9 +13,9 @@ t_command	*build_command_list(char **split_cmds, t_shell *shell)
 	head = NULL;
 	current = NULL;
 	i = 0;
-	while (split_cmds[i])
+	while (cmds[i])
 	{
-		args = ft_split_quotes(split_cmds[i]);
+		args = ft_split_quotes(cmds[i]);
 		if (!args)
 		{
 			free_commands(head);
@@ -35,14 +35,17 @@ t_command	*build_command_list(char **split_cmds, t_shell *shell)
 				}
 				continue;
 			}
-			expanded = expand_env_variable(args[j], shell->envp);
-			if (!expanded)
+			if (!is_single_quoted(args[j]))
 			{
-				ft_free_split(args);
-				free_commands(head);
-				return (NULL);
+				expanded = expand_env_variable(args[j], shell->envp);
+				if (!expanded)
+				{
+					ft_free_split(args);
+					free_commands(head);
+					return (NULL);
+				}
+				args[j] = expanded;
 			}
-			args[j] = expanded;
 			j++;
 		}
 		new_node = ft_calloc(1, sizeof(t_command));
