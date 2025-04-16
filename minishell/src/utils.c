@@ -15,9 +15,11 @@ void	free_commands(t_command *head)
 
 void	ft_free_split(char **arr)
 {
-	int	i = 0;
+	int	i;
+
 	if (!arr)
 		return ;
+	i = 0;
 	while (arr[i])
 		free(arr[i++]);
 	free(arr);

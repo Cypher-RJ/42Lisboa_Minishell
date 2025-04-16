@@ -4,57 +4,71 @@ char	*build_prompt(void)
 {
 	char	*cwd;
 	char	*prompt;
+	char	*tmp;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		cwd = ft_strdup("unknown");
-	prompt = ft_strjoin("\001\033[1;34m\002", cwd); // Add BOLD_BLUE for cwd
+	tmp = ft_strjoin("\001\033[1;34m\002", cwd); // Add BOLD_BLUE for cwd
 	free(cwd);
-	prompt = ft_strjoin_free(prompt, "\001\033[1;35m\002 > \001\033[0m\002");
+	if (!tmp)
+		return(NULL);
+	prompt = ft_strjoin_free(tmp, "\001\033[1;35m\002 > \001\033[0m\002");
 	return (prompt);
 }
 
-/* void	handle_input(char *input, t_shell *shell)
+void	handle_input(char *input, t_shell *shell, t_command **cmds)
 {
-	char	***args;
+	char	**strs;
 
+	if (!*input)
+		return ;
 	add_history(input);
-	args = split_command(input, shell->envp);
-	if (args[0])
+	strs = split_cmds(input);
+	if (*cmds)
 	{
-		if (is_builtin(args[0]))
-			execute_builtin(args, shell->envp);
-		else
-			execute_command(args, shell->envp);
+		free_command_list(*cmds);
+		*cmds = NULL;
 	}
-	ft_free_split(args);
-} */
+	*cmds = build_command_list(strs, shell);
+	resolve_path(*cmds, shell);
+	printf("%s\n", (*cmds)->path);
+}
+
+void	cleanup_and_exit(t_shell *shell, t_command *cmds)
+{
+	int exit_code;
+
+	exit_code = shell->exit_status;
+	print_syntax_error("exit\n");
+	free_all(shell);
+	if (cmds)
+		free_command_list(cmds);
+	free(shell);
+	exit(exit_code);
+}
 
 void	prompt_loop(t_shell *shell)
 {
-	char *input;
-	char *prompt;
-	t_command *cmds;
-	char **strs;
+	char		*input;
+	char		*prompt;
+	t_command	*cmds;
 
+	cmds = NULL;
 	while (1)
 	{
 		setup_signals();
 		prompt = build_prompt();
 		input = readline(prompt);
-		if (!input)
-		{
-			print_syntax_error("exit\n");
-			break ;
-		}
-		if (!*input)
-			continue ;
-		add_history(input);
 		free(prompt);
-		strs = split_cmds(input);
-		cmds = build_command_list(strs, shell);
-		resolve_path(cmds, shell);
-		printf("%s\n", cmds->path);
+		if (!input)
+			cleanup_and_exit(shell, cmds);
+		if (!*input)
+		{
+			free(input);
+			continue ;
+		}
+		handle_input(input, shell, &cmds);
 		free(input);
 	}
 }

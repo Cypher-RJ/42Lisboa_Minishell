@@ -26,6 +26,7 @@ void	increment_shlvl(char **envp)
 	int		i;
 	int		shlvl;
 	char	*new_shlvl;
+	char	*tmp;
 
 	i = 0;
 	while (envp[i])
@@ -33,9 +34,12 @@ void	increment_shlvl(char **envp)
 		if (ft_strncmp(envp[i], "SHLVL=", 6) == 0)
 		{
 			shlvl = ft_atoi(envp[i] + 6) + 1;
-			new_shlvl = ft_strjoin("SHLVL=", ft_itoa(shlvl));
+			tmp = ft_itoa(shlvl);
+			new_shlvl = ft_strjoin("SHLVL=", tmp);
+			free(tmp);
 			free(envp[i]);
 			envp[i] = new_shlvl;
+			// free(new_shlvl);
 			return ;
 		}
 		i++;
@@ -58,5 +62,6 @@ int	main(int ac, char **av, char **envp)
 	shell->exit_status = 0;
 	prompt_loop(shell);
 	ft_free_split(my_envp);
+	free(shell);
 	return (0);
 }

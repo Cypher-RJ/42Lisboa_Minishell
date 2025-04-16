@@ -14,7 +14,6 @@
 typedef struct s_shell
 {
 	char	**envp;
-	// char	*cwd;
 	int		exit_status;
 }			t_shell;
 
@@ -28,7 +27,7 @@ typedef struct s_redirect
 typedef struct s_command
 {
 	char				**args; //! array para execve ou builtin
-	char				*path; //path para execve
+	char				*path; //! path para execve
 	t_redirect			*redir; //! redirecoes seguintes - pra builtins fica null
 	struct s_command	*next;
 }						t_command;
@@ -46,7 +45,6 @@ void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
 char		**copy_shlvl(char **envp);
 char		*ft_strjoin_free(char *s1, const char *s2);
-void		handle_input(char *input, char **envp);
 char		*build_prompt(void);
 char		*ft_strjoin_chr(char *s, char c);
 char		**split_cmds(char *input);
@@ -62,8 +60,11 @@ int			check_syntax_redir(char *input);
 char		**ft_split_quotes(char *str);
 int			is_single_quoted(char *str);
 void		resolve_path(t_command *head, t_shell *shell);
-void		free_all(t_command *cmds, t_shell *shell);
 void		free_command_list(t_command *cmd);
+void		free_all(t_shell *shell);
+void	handle_input(char *input, t_shell *shell, t_command **cmds);
+void	cleanup_and_exit(t_shell *shell, t_command *cmds);
+
 
 // pipes & pipe_functions
 void		executor(t_command **cmds, t_shell *shell);

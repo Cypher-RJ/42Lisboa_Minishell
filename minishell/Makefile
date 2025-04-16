@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 SRCS = src/main.c \
 		src/execution.c \
 		src/redirection.c \
@@ -11,6 +11,7 @@ SRCS = src/main.c \
 		src/utils.c \
 		src/prompt.c \
 		src/pipe_functions.c \
+		src/free.c \
 \
 		src/parsing/parser.c \
 		src/parsing/syntax.c \
