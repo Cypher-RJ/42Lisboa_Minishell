@@ -8,13 +8,15 @@ void	redirect_input(t_redirect *thiscmd, bool has_fork)
 	if (fd < 0)
 	{
 		perror("Failed to open file");
-		exit(EXIT_FAILURE);
+		if (has_fork == 1)
+			exit(EXIT_FAILURE);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("Failed to dup2 file fd");
 		close(fd);
-		exit(EXIT_FAILURE);
+		if (has_fork == 1)
+			exit(EXIT_FAILURE);
 	}
 	close(fd);
 }
@@ -44,7 +46,8 @@ void	redirect_heredoc(t_redirect *thiscmd, bool has_fork)
 	if (pipe(fd) == -1)
 	{
 		perror("Failed to open HEREDOC pipe");
-		exit(EXIT_FAILURE);
+		if (has_fork == 1)
+			exit(EXIT_FAILURE);
 	}
 	while (1)
 	{
@@ -56,7 +59,8 @@ void	redirect_heredoc(t_redirect *thiscmd, bool has_fork)
 	{
 		perror("Failed to dup2 HEREDOC fd[0] to STDIN");
 		close(fd[0]);
-		exit(EXIT_FAILURE);
+		if (has_fork == 1)
+			exit(EXIT_FAILURE);
 	}
 	close(fd[0]);
 }
@@ -87,6 +91,7 @@ int	redirect_output(t_redirect *thiscmd, int append, bool has_fork)
 			return (-1);
 	}
 	close(fd);
+	return (fd);
 }
 
 void	redirector(t_redirect *redir, bool has_fork)

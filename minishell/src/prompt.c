@@ -32,7 +32,8 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	}
 	*cmds = build_command_list(strs, shell);
 	resolve_path(*cmds, shell);
-	printf("%s\n", (*cmds)->path);
+	executor(*cmds, shell);
+	// printf("%s\n", (*cmds)->path);
 }
 
 void	cleanup_and_exit(t_shell *shell, t_command *cmds)

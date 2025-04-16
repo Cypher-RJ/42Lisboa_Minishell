@@ -67,7 +67,7 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds);
 
 
 // pipes & pipe_functions
-void		executor(t_command **cmds, t_shell *shell);
+void		executor(t_command *cmds, t_shell *shell);
 void		child_pipes(int prev_fd, bool next, int fd[]);
 pid_t		fork_it();
 int			make_pipe(int fd[], bool has_next);
@@ -77,7 +77,7 @@ void		redirector(t_redirect *redir, bool has_fork);
 
 //execution
 void		execute_command(t_command *cmd, t_shell *shell);
-void		execute_builtin(char *args, t_shell *shell, bool has_fork);
+void		execute_builtin(char **args, t_shell *shell, bool has_fork);
 int			is_builtin(char *cmd);
 
 #endif
