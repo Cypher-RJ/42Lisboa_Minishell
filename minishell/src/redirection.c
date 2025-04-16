@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	redirect_input(t_redirect *thiscmd)
+void	redirect_input(t_redirect *thiscmd, bool has_fork)
 {
 	int	fd;
 
@@ -37,7 +37,7 @@ int	heredoc_readline(char *password, int fd[])
 	return (0);
 }
 
-void	redirect_heredoc(t_redirect *thiscmd)
+void	redirect_heredoc(t_redirect *thiscmd, bool has_fork)
 {
 	int		fd[2];
 
@@ -61,7 +61,7 @@ void	redirect_heredoc(t_redirect *thiscmd)
 	close(fd[0]);
 }
 
-void	redirect_output(t_redirect *thiscmd, int append)
+int	redirect_output(t_redirect *thiscmd, int append, bool has_fork)
 {
 	int	fd;
 
@@ -72,18 +72,24 @@ void	redirect_output(t_redirect *thiscmd, int append)
 	if (fd < 0)
 	{
 		perror("Failed to open file");
-		exit(EXIT_FAILURE);
+		if (has_fork == 1)
+			exit(EXIT_FAILURE);
+		else
+			return (fd);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("Failed to dup2 file fd");
 		close(fd);
-		exit(EXIT_FAILURE);
+		if (has_fork == 1)
+			exit(EXIT_FAILURE);
+		else
+			return (-1);
 	}
 	close(fd);
 }
 
-void	redirector(t_redirect *redir)
+void	redirector(t_redirect *redir, bool has_fork)
 {
 	t_redirect	*temp;
 
@@ -91,13 +97,13 @@ void	redirector(t_redirect *redir)
 	while (temp->next != NULL)
 	{
 		if (ft_strncmp(temp->direction, "<", 1) == 0)
-			redirect_input(temp);
+			redirect_input(temp, has_fork);
 		else if (ft_strncmp(temp->direction, "<<", 2) == 0)
-			redirect_heredoc(temp);
+			redirect_heredoc(temp, has_fork);
 		else if (ft_strncmp(temp->direction, ">", 1) == 0)
-			redirect_output(temp, 0);
+			redirect_output(temp, 0, has_fork);
 		else if (ft_strncmp(temp->direction, ">>", 2) == 0)
-			redirect_output(temp, 1);
+			redirect_output(temp, 1, has_fork);
 		temp = temp->next;
 	}
 }

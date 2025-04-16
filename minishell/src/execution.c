@@ -2,9 +2,19 @@
 
 void	execute_command(t_command *cmd, t_shell *shell)
 {
+	char *errstr;
+
+	errstr = NULL;
+	if (cmd->path == NULL)
+	{
+		errstr = ft_strjoin(cmd->args[0], ": command not found\n");
+		perror(errstr);
+		free(errstr);
+		exit(127);
+	}
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
 	{
-		perror("execve");
+		perror("Failure to execute execve\n");
 		exit(1);
 	}
 }
@@ -16,7 +26,7 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-void	execute_builtin(char **args, t_shell *shell)
+void	execute_builtin(char **args, t_shell *shell, bool has_fork)
 {//colocar um exit sucess ou error em todos os comandos
 	int	i;
 
@@ -26,21 +36,25 @@ void	execute_builtin(char **args, t_shell *shell)
 		{
 			if (chdir(args[1]) != 0)
 			{
-				perror("cd");
-				exit (EXIT_FAILURE);
+				perror("cd\n");
+				if (has_fork == 1)
+					exit (EXIT_FAILURE);
 			}
-			exit (EXIT_SUCCESS);
+			if (has_fork == 1)
+				exit (EXIT_SUCCESS);
 		}
 		else
 		{
 			printf("cd: missing argument\n");// se nao tem args, vai para a root.
-			exit (EXIT_SUCCESS); 
+			if (has_fork == 1)
+				exit (EXIT_SUCCESS); 
 		}
 	}
 	else if (!ft_strcmp(args[0], "pwd"))
 	{
 		printf("%s\n", getcwd(NULL, 0));
-		exit (EXIT_SUCCESS);
+		if (has_fork == 1)
+			exit (EXIT_SUCCESS);
 	}
 	else if (!ft_strcmp(args[0], "echo"))
 	{
@@ -62,11 +76,13 @@ void	execute_builtin(char **args, t_shell *shell)
 			printf("%s\n", shell->envp[i]);
 			i++;
 		}
-		exit (EXIT_SUCCESS);
+		if (has_fork == 1)
+			exit (EXIT_SUCCESS);
 	}
 	else if (!ft_strcmp(args[0], "exit")) // isto precisa de verificar se so tem uma palavra. Acho que se tiver mais passa tudo a string
 	{
 		printf("exit\n");//e suposto escrever algo?
-		exit(EXIT_SUCCESS);
+		if (has_fork == 1)
+			exit(EXIT_SUCCESS);
 	}
 }
