@@ -58,6 +58,8 @@ void	executor(t_command *cmds, t_shell *shell)
 		execute_builtin(cmds->args, shell, 0);
 	}
 	else
+	{
+		ft_printf("\n\n\n\nola\n\n\n\n");
 		executor_fork(cmds, shell);
-	//Aqui devia limpar tudo ? qd sai tem que passar por aqui, devia limpar aqui tudo.
+	}//Aqui devia limpar tudo ? qd sai tem que passar por aqui, devia limpar aqui tudo.
 }

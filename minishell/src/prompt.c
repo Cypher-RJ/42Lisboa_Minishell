@@ -12,14 +12,15 @@ char	*build_prompt(void)
 	tmp = ft_strjoin("\001\033[1;34m\002", cwd); // Add BOLD_BLUE for cwd
 	free(cwd);
 	if (!tmp)
-		return(NULL);
+		return (NULL);
 	prompt = ft_strjoin_free(tmp, "\001\033[1;35m\002 > \001\033[0m\002");
 	return (prompt);
 }
 
 void	handle_input(char *input, t_shell *shell, t_command **cmds)
 {
-	char	**strs;
+	char		**strs;
+	t_command	*current;
 
 	if (!*input)
 		return ;
@@ -31,6 +32,18 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 		*cmds = NULL;
 	}
 	*cmds = build_command_list(strs, shell);
+	current = *cmds;
+	while (current)
+	{
+		if (!build_redir(current))
+		{
+			ft_free_split(strs);
+			free_command_list(*cmds);
+			*cmds = NULL;
+			return ;
+		}
+		current = current->next;
+	}
 	resolve_path(*cmds, shell);
 	executor(*cmds, shell);
 	// printf("%s\n", (*cmds)->path);
@@ -38,7 +51,7 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 
 void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 {
-	int exit_code;
+	int	exit_code;
 
 	exit_code = shell->exit_status;
 	print_syntax_error("exit\n");

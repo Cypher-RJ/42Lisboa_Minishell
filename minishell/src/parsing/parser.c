@@ -27,33 +27,6 @@ static int	count_words(char *str)
 	return (count);
 }
 
-/* static void	free_result(char **result, int count)
-{
-	int	i;
-
-	i = 0;
-	while (i < count)
-	{
-		free(result[i]);
-		i++;
-	}
-	free(result);
-} */
-
-/* static void	handle_quotes(char c, int *in_quotes, char *quote_char)
-{
-	if (*in_quotes == 0)
-	{
-		*in_quotes = 1;
-		*quote_char = c;
-	}
-	else if (c == *quote_char)
-	{
-		*in_quotes = 0;
-		*quote_char = '\0';
-	}
-} */
-
 char	**split_cmds(char *input)
 {
 	char	**args;

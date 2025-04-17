@@ -62,8 +62,10 @@ int			is_single_quoted(char *str);
 void		resolve_path(t_command *head, t_shell *shell);
 void		free_command_list(t_command *cmd);
 void		free_all(t_shell *shell);
-void	handle_input(char *input, t_shell *shell, t_command **cmds);
-void	cleanup_and_exit(t_shell *shell, t_command *cmds);
+void		handle_input(char *input, t_shell *shell, t_command **cmds);
+void		cleanup_and_exit(t_shell *shell, t_command *cmds);
+t_command	*build_redir(t_command *cmds);
+void		free_redir_list(t_redirect *redir);
 
 
 // pipes & pipe_functions
