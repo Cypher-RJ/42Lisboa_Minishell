@@ -98,9 +98,7 @@ void	redirector(t_redirect *redir, bool has_fork)
 {
 	t_redirect	*temp;
 
-	ft_printf("Entrei no redir\n");
 	temp = redir;
-	ft_printf("igualei temp\n");
 	while (temp != NULL)
 	{
 		if (ft_strncmp(temp->direction, "<", 1) == 0)

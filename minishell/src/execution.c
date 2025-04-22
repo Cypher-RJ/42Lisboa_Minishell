@@ -82,7 +82,7 @@ void	execute_builtin(char **args, t_shell *shell, bool has_fork)
 	else if (!ft_strcmp(args[0], "exit")) // isto precisa de verificar se so tem uma palavra. Acho que se tiver mais passa tudo a string
 	{
 		printf("exit\n");//e suposto escrever algo?
-		if (has_fork == 1)
-			exit(EXIT_SUCCESS);
+		// mandar limpar tudo!!
+		exit(EXIT_SUCCESS);
 	}
 }
