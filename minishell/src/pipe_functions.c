@@ -9,7 +9,9 @@ int	make_pipe(int fd[], bool has_next)
 		return (0);
 	}
 	else
+	{
 		return (0);
+	}
 }
 
 pid_t	fork_it()

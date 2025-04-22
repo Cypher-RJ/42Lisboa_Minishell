@@ -3,9 +3,13 @@
 
 void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 {
+	ft_printf("vendo se tem pipes\n");
 	child_pipes(prev_fd, (thiscmd->next != NULL), fd); // se falhar faz exit da child, sem espinhas
+	ft_printf("tratar redir\n");
 	redirector(thiscmd->redir, 1); // se redir != null, faz redir ate == null. Se comeca null, nao faz nada
+	ft_printf("ver se e builtin\n");
 	execute_builtin(thiscmd->args, shell, 1);//se encontra comando faz exit success ou failure deposi de executar, se nao segue para exec_command
+	ft_printf("executar comando\n");
 	execute_command(thiscmd, shell);//executa e faz exit success ou exit com erro
 }
 
@@ -52,6 +56,7 @@ void	executor_fork(t_command *cmds, t_shell *shell)
 
 void	executor(t_command *cmds, t_shell *shell)
 {
+	/*
 	// echo(ou outro) arg1 "arg2" arg3
 	// arg3 nao esta a aparecer. argumentos depois de um argumento em "" ja nao estao
 	// a entrar 
@@ -91,8 +96,7 @@ void	executor(t_command *cmds, t_shell *shell)
 		}
 		i++;
 		cmds = cmds->next;
-	}
-	/*
+	}*/
 	if (cmds->next == NULL && is_builtin(cmds->args[0]))
 	{
 		redirector(cmds->redir, 0);
@@ -103,6 +107,5 @@ void	executor(t_command *cmds, t_shell *shell)
 		ft_printf("\n\n\n\nola\n\n\n\n");
 		executor_fork(cmds, shell);
 	}
-	*/
 	//Aqui devia limpar tudo ? qd sai tem que passar por aqui, devia limpar aqui tudo.
 }

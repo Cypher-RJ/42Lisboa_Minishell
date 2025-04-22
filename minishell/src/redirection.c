@@ -98,8 +98,10 @@ void	redirector(t_redirect *redir, bool has_fork)
 {
 	t_redirect	*temp;
 
+	ft_printf("Entrei no redir\n");
 	temp = redir;
-	while (temp->next != NULL)
+	ft_printf("igualei temp\n");
+	while (temp != NULL)
 	{
 		if (ft_strncmp(temp->direction, "<", 1) == 0)
 			redirect_input(temp, has_fork);
@@ -111,4 +113,5 @@ void	redirector(t_redirect *redir, bool has_fork)
 			redirect_output(temp, 1, has_fork);
 		temp = temp->next;
 	}
+	ft_printf("saindo do redir\n");
 }
