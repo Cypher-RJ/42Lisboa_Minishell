@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	redirect_input(t_redirect *thiscmd, bool has_fork)
+void	redirect_input(t_redirect *thiscmd)
 {
 	int	fd;
 
@@ -8,15 +8,13 @@ void	redirect_input(t_redirect *thiscmd, bool has_fork)
 	if (fd < 0)
 	{
 		perror("Failed to open file");
-		if (has_fork == 1)
-			exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("Failed to dup2 file fd");
 		close(fd);
-		if (has_fork == 1)
-			exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	close(fd);
 }
@@ -39,15 +37,14 @@ int	heredoc_readline(char *password, int fd[])
 	return (0);
 }
 
-void	redirect_heredoc(t_redirect *thiscmd, bool has_fork)
+void	redirect_heredoc(t_redirect *thiscmd)
 {
 	int		fd[2];
 
 	if (pipe(fd) == -1)
 	{
 		perror("Failed to open HEREDOC pipe");
-		if (has_fork == 1)
-			exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	while (1)
 	{
@@ -59,13 +56,12 @@ void	redirect_heredoc(t_redirect *thiscmd, bool has_fork)
 	{
 		perror("Failed to dup2 HEREDOC fd[0] to STDIN");
 		close(fd[0]);
-		if (has_fork == 1)
-			exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	close(fd[0]);
 }
 
-int	redirect_output(t_redirect *thiscmd, int append, bool has_fork)
+void	redirect_output(t_redirect *thiscmd, int append)
 {
 	int	fd;
 
@@ -76,40 +72,32 @@ int	redirect_output(t_redirect *thiscmd, int append, bool has_fork)
 	if (fd < 0)
 	{
 		perror("Failed to open file");
-		if (has_fork == 1)
-			exit(EXIT_FAILURE);
-		else
-			return (fd);
+		exit(EXIT_FAILURE);
 	}
-	if (dup2(fd, STDIN_FILENO) == -1)
+	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("Failed to dup2 file fd");
 		close(fd);
-		if (has_fork == 1)
-			exit(EXIT_FAILURE);
-		else
-			return (-1);
+		exit(EXIT_FAILURE);
 	}
 	close(fd);
-	return (fd);
 }
 
-void	redirector(t_redirect *redir, bool has_fork)
+void	redirector(t_redirect *redir)
 {
 	t_redirect	*temp;
 
 	temp = redir;
 	while (temp != NULL)
 	{
-		if (ft_strncmp(temp->direction, "<", 1) == 0)
-			redirect_input(temp, has_fork);
-		else if (ft_strncmp(temp->direction, "<<", 2) == 0)
-			redirect_heredoc(temp, has_fork);
-		else if (ft_strncmp(temp->direction, ">", 1) == 0)
-			redirect_output(temp, 0, has_fork);
+		if (ft_strncmp(temp->direction, "<<", 2) == 0)
+			redirect_heredoc(temp);
+		else if (ft_strncmp(temp->direction, "<", 1) == 0)
+			redirect_input(temp);
 		else if (ft_strncmp(temp->direction, ">>", 2) == 0)
-			redirect_output(temp, 1, has_fork);
+			redirect_output(temp, 1);
+		else if (ft_strncmp(temp->direction, ">", 1) == 0)
+			redirect_output(temp, 0);
 		temp = temp->next;
 	}
-	ft_printf("saindo do redir\n");
 }

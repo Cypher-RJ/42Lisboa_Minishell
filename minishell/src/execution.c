@@ -26,7 +26,7 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-void	execute_builtin(char **args, t_shell *shell, bool has_fork)
+void	execute_builtin(char **args, t_shell *shell)
 {//colocar um exit sucess ou error em todos os comandos
 	int	i;
 
@@ -37,36 +37,33 @@ void	execute_builtin(char **args, t_shell *shell, bool has_fork)
 			if (chdir(args[1]) != 0)
 			{
 				perror("cd\n");
-				if (has_fork == 1)
-					exit (EXIT_FAILURE);
+				exit (EXIT_FAILURE);
 			}
-			if (has_fork == 1)
-				exit (EXIT_SUCCESS);
+			exit (EXIT_SUCCESS);
 		}
 		else
 		{
 			printf("cd: missing argument\n");// se nao tem args, vai para a root.
-			if (has_fork == 1)
-				exit (EXIT_SUCCESS); 
+			exit (EXIT_SUCCESS); 
 		}
 	}
 	else if (!ft_strcmp(args[0], "pwd"))
 	{
-		printf("%s\n", getcwd(NULL, 0));
-		if (has_fork == 1)
-			exit (EXIT_SUCCESS);
+		ft_printf("%s\n", getcwd(NULL, 0));
+		exit (EXIT_SUCCESS);
 	}
 	else if (!ft_strcmp(args[0], "echo"))
 	{
 		i = 1;
 		while (args[i])// falta ver se tem -n(nao mete \n no fim)
 		{
-			printf("%s", args[i]);
+			write(1 , args[i], ft_strlen(args[i]));
 			if (args[i + 1])
-				printf(" "); // acho que o echo transforma todos os argumentos numa unica string
+				write(1, " ", 1); // acho que o echo transforma todos os argumentos numa unica string
 			i++;
 		}
-		printf("\n");
+		write(1, "\n", 1);
+		exit (EXIT_SUCCESS);
 	}
 	else if (!ft_strcmp(args[0], "env"))
 	{
@@ -76,8 +73,7 @@ void	execute_builtin(char **args, t_shell *shell, bool has_fork)
 			printf("%s\n", shell->envp[i]);
 			i++;
 		}
-		if (has_fork == 1)
-			exit (EXIT_SUCCESS);
+		exit (EXIT_SUCCESS);
 	}
 	else if (!ft_strcmp(args[0], "exit")) // isto precisa de verificar se so tem uma palavra. Acho que se tiver mais passa tudo a string
 	{

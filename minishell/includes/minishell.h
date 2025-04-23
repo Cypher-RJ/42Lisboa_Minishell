@@ -75,11 +75,11 @@ pid_t		fork_it();
 int			make_pipe(int fd[], bool has_next);
 
 // redirection
-void		redirector(t_redirect *redir, bool has_fork);
+void		redirector(t_redirect *redir);
 
 //execution
 void		execute_command(t_command *cmd, t_shell *shell);
-void		execute_builtin(char **args, t_shell *shell, bool has_fork);
+void		execute_builtin(char **args, t_shell *shell);
 int			is_builtin(char *cmd);
 
 #endif
