@@ -52,6 +52,19 @@ void	executor_fork(t_command *cmds, t_shell *shell)
 
 void	executor(t_command *cmds, t_shell *shell)
 {
+	//Caso seja comando unico e seja cd, exit, export ou unset, nao pode
+	//ser feito com fork pois as suas accoes nao ficam capturadas no processo 
+	//principal.
+	if (cmds->next == NULL && !ft_strcmp(cmds->args[0], "exit"))
+	{
+		write(1, "exit\n", 5);
+		exit(EXIT_SUCCESS);//falta limpeza de memoria
+	}
+	else
+		executor_fork(cmds, shell);
+	//Aqui devia limpar tudo ? qd sai tem que passar por aqui, devia limpar aqui tudo.
+}
+
 	/*
 	// echo(ou outro) arg1 "arg2" arg3
 	// arg3 nao esta a aparecer. argumentos depois de um argumento em "" ja nao estao
@@ -93,18 +106,3 @@ void	executor(t_command *cmds, t_shell *shell)
 		i++;
 		cmds = cmds->next;
 	}*/
-	// retirei esta parte pq parece que tenho que fazer sempre um fork
-	//para conseguir terminar os comandos de forma limpa
-	/*
-	if (cmds->next == NULL && is_builtin(cmds->args[0]))
-	{
-		redirector(cmds->redir, 0);
-		execute_builtin(cmds->args, shell, 0);
-	}
-	else
-	{
-		executor_fork(cmds, shell);
-	}*/
-	executor_fork(cmds, shell);
-	//Aqui devia limpar tudo ? qd sai tem que passar por aqui, devia limpar aqui tudo.
-}

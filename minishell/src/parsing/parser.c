@@ -66,11 +66,13 @@ char	**ft_split_quotes(char *str)
 	char	*buffer;
 	int		in_quotes;
 	char	quote_char;
-	int		i = 0, j = 0, start = 0, k;
+	int		i = 0, start = 0, k;
+	//, j = 0 tive que tirar isto senao nao compilava em casa
 
 	in_quotes = 0;
 	quote_char = '\0';
-	i = 0, j = 0, start = 0, k = 0;
+	i = 0, start = 0, k = 0;
+	//, j = 0 Mas na 42 compila. Como nao estava a ser usado deixei aqui
 	if (!str)
 		return (NULL);
 	result = malloc(sizeof(char *) * (count_words(str) + 2));
