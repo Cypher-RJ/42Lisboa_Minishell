@@ -79,7 +79,7 @@ void		redirector(t_redirect *redir);
 
 //execution
 void		execute_command(t_command *cmd, t_shell *shell);
-void		execute_builtin(char **args, t_shell *shell);
+void		execute_builtin(char **args, t_shell *shell, bool has_fork);
 int			is_builtin(char *cmd);
 
 #endif
