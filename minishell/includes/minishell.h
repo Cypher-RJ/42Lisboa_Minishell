@@ -67,19 +67,29 @@ void		cleanup_and_exit(t_shell *shell, t_command *cmds);
 t_command	*build_redir(t_command *cmds);
 void		free_redir_list(t_redirect *redir);
 
-
 // pipes & pipe_functions
-void		executor(t_command *cmds, t_shell *shell);
 void		child_pipes(int prev_fd, bool next, int fd[]);
 pid_t		fork_it();
 int			make_pipe(int fd[], bool has_next);
+void	executor_fork(t_command *cmds, t_shell *shell);
 
 // redirection
 void		redirector(t_redirect *redir);
 
 //execution
+void		executor(t_command *cmds, t_shell *shell);
 void		execute_command(t_command *cmd, t_shell *shell);
 void		execute_builtin(char **args, t_shell *shell, bool has_fork);
+
+//builtins && builtins_special
 int			is_builtin(char *cmd);
+int			is_unique_builtin(char *cmd);
+void		builtin_pwd();
+void		builtin_echo(char **args);
+void		builtin_env(t_shell *shell);
+int			builtin_cd(char **args, bool has_fork);
+void		builtin_exit(bool has_fork);
+int			builtin_export(char **args, t_shell *shell, bool has_fork);
+int			builtin_unset(char **args, t_shell *shell, bool has_fork);
 
 #endif

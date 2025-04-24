@@ -1,17 +1,19 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-SRCS = src/main.c \
-		src/execution.c \
-		src/redirection.c \
-		src/pipes.c \
-		src/signals.c \
-		src/path.c \
+SRCS = src/builtins_special.c \
+		src/builtins.c \
 		src/env.c \
-		src/utils.c \
-		src/prompt.c \
-		src/pipe_functions.c \
+		src/execution.c \
 		src/free.c \
+		src/main.c \
+		src/path.c \
+		src/pipe_functions.c \
+		src/pipes.c \
+		src/prompt.c \
+		src/redirection.c \
+		src/signals.c \
+		src/utils.c \
 \
 		src/parsing/parser.c \
 		src/parsing/syntax.c \
