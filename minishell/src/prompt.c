@@ -55,7 +55,7 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 
 	exit_code = shell->exit_status;
 	print_syntax_error("exit\n");
-	free_all(shell);
+	free_shell(shell);
 	if (cmds)
 		free_command_list(cmds);
 	free(shell);

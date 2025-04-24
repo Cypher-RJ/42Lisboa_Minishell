@@ -32,11 +32,19 @@ void	free_command_list(t_command *cmds)
 	}
 }
 
-void	free_all(t_shell *shell)
+void	free_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
 	if (shell->envp)
 		ft_free_split(shell->envp);
 	rl_clear_history();
+}
+
+void	free_total(t_command *cmds, t_shell *shell)
+{
+	if (cmds)
+		free_commands(cmds);
+	if (shell)
+		free_shell(shell);
 }

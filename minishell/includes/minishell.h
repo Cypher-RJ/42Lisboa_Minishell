@@ -19,16 +19,16 @@ typedef struct s_shell
 
 typedef struct s_redirect
 {
-	char				*direction; //! string com direcao
+	char				*direction;
 	char				*passorfile;
 	struct s_redirect	*next;
 }						t_redirect;
 
 typedef struct s_command
 {
-	char				**args; //! array para execve ou builtin
-	char				*path; //! path para execve
-	t_redirect			*redir; //! redirecoes seguintes - pra builtins fica null
+	char				**args;
+	char				*path;
+	t_redirect			*redir;
 	struct s_command	*next;
 }						t_command;
 
@@ -61,7 +61,7 @@ char		**ft_split_quotes(char *str);
 int			is_single_quoted(char *str);
 void		resolve_path(t_command *head, t_shell *shell);
 void		free_command_list(t_command *cmd);
-void		free_all(t_shell *shell);
+void		free_shell(t_shell *shell);
 void		handle_input(char *input, t_shell *shell, t_command **cmds);
 void		cleanup_and_exit(t_shell *shell, t_command *cmds);
 t_command	*build_redir(t_command *cmds);
@@ -88,8 +88,12 @@ void		builtin_pwd();
 void		builtin_echo(char **args);
 void		builtin_env(t_shell *shell);
 int			builtin_cd(char **args, bool has_fork);
-void		builtin_exit(bool has_fork);
+int			builtin_exit(char **args, t_shell *shell, bool has_fork);
 int			builtin_export(char **args, t_shell *shell, bool has_fork);
 int			builtin_unset(char **args, t_shell *shell, bool has_fork);
+
+//builtin utils
+int			is_str_numeric(const char *str);
+long long	ft_atoll(const char *str);
 
 #endif

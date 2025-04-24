@@ -39,7 +39,6 @@ void	increment_shlvl(char **envp)
 			free(tmp);
 			free(envp[i]);
 			envp[i] = new_shlvl;
-			// free(new_shlvl);
 			return ;
 		}
 		i++;

@@ -26,7 +26,7 @@ void	execute_builtin(char **args, t_shell *shell, bool has_fork)
 	else if (!ft_strcmp(args[0], "unset"))
 		builtin_unset(args, shell, has_fork);
 	else if (!ft_strcmp(args[0], "exit"))
-		builtin_exit(has_fork);
+		builtin_exit(args, shell, has_fork);
 	else if (!ft_strcmp(args[0], "export"))
 		builtin_export(args, shell, has_fork);
 	else if (!ft_strcmp(args[0], "pwd"))

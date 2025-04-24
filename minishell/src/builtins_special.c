@@ -28,14 +28,31 @@ int	builtin_cd(char **args, bool has_fork)
 	}
 }
 
-void	builtin_exit(bool has_fork)
+int	builtin_exit(char **args, t_shell *shell, bool has_fork)
 {
-	// vericar o comportamento quando tem extras. 
-	// ignoro? declaro erro e nao faz nada?
+	long long status;
+
+	ft_putendl_fd("exit", STDERR_FILENO);
+	if (!args[1])
+		status = EXIT_SUCCESS;
+	else if (args[2])
+	{
+		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		status = 1;
+	}
+	else if (!is_str_numeric(args[1]))
+	{
+		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+		ft_putstr_fd(args[1], STDERR_FILENO);
+		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+		status = 255;
+	}
+	else
+		status = ft_atoll(args[1]);
+	shell->exit_status = status;
 	if (!has_fork)
 		//limpar tudo!!
-	printf("exit\n");
-	exit(EXIT_SUCCESS);
+	exit(status);
 }
 
 int builtin_export(char **args, t_shell *shell, bool has_fork)
