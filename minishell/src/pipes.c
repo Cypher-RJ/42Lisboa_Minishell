@@ -5,7 +5,7 @@ void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 {
 	child_pipes(prev_fd, (thiscmd->next != NULL), fd); // se falhar faz exit da child, sem espinhas
 	redirector(thiscmd->redir); // se redir != null, faz redir ate == null. Se comeca null, nao faz nada
-	execute_builtin(thiscmd->args, shell, 1);//se encontra comando faz exit success ou failure deposi de executar, se nao segue para exec_command
+	execute_builtin(thiscmd, shell, 1);//se encontra comando faz exit success ou failure deposi de executar, se nao segue para exec_command
 	execute_command(thiscmd, shell);//executa e faz exit success ou exit com erro
 }
 

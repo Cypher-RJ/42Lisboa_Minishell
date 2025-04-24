@@ -19,22 +19,22 @@ void	execute_command(t_command *cmd, t_shell *shell)
 	}
 }
 
-void	execute_builtin(char **args, t_shell *shell, bool has_fork)
+void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 {
-	if (!ft_strcmp(args[0], "cd"))
-		builtin_cd(args, has_fork);
-	else if (!ft_strcmp(args[0], "unset"))
-		builtin_unset(args, shell, has_fork);
-	else if (!ft_strcmp(args[0], "exit"))
-		builtin_exit(args, shell, has_fork);
-	else if (!ft_strcmp(args[0], "export"))
-		builtin_export(args, shell, has_fork);
-	else if (!ft_strcmp(args[0], "pwd"))
+	if (!ft_strcmp(cmds->args[0], "cd"))
+		builtin_cd(cmds, has_fork);
+	else if (!ft_strcmp(cmds->args[0], "unset"))
+		builtin_unset(cmds, shell, has_fork);
+	else if (!ft_strcmp(cmds->args[0], "exit"))
+		builtin_exit(cmds, shell, has_fork);
+	else if (!ft_strcmp(cmds->args[0], "export"))
+		builtin_export(cmds, shell, has_fork);
+	else if (!ft_strcmp(cmds->args[0], "pwd"))
 		builtin_pwd();
-	else if (!ft_strcmp(args[0], "echo"))
-		builtin_echo(args);
-	else if (!ft_strcmp(args[0], "env"))
-		builtin_env(shell);
+	else if (!ft_strcmp(cmds->args[0], "echo"))
+		builtin_echo(cmds);
+	else if (!ft_strcmp(cmds->args[0], "env"))
+		builtin_env(cmds, shell);
 }
 
 void	executor(t_command *cmds, t_shell *shell)
@@ -44,7 +44,7 @@ void	executor(t_command *cmds, t_shell *shell)
 	//principal.
 	if (cmds->next == NULL && (is_unique_builtin(cmds->args[0]) == 1))
 	{
-		execute_builtin(cmds->args, shell, 0);
+		execute_builtin(cmds, shell, 0);
 	}
 	else
 		executor_fork(cmds, shell);

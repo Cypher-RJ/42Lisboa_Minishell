@@ -55,17 +55,14 @@ int			has_unclosed_quotes(char *input);
 int			check_syntax(char *input);
 int			print_syntax_error(char *msg);
 t_command	*build_command_list(char **cmds, t_shell *shell);
-void		free_commands(t_command *head);
 int			check_syntax_redir(char *input);
 char		**ft_split_quotes(char *str);
 int			is_single_quoted(char *str);
 void		resolve_path(t_command *head, t_shell *shell);
-void		free_command_list(t_command *cmd);
-void		free_shell(t_shell *shell);
 void		handle_input(char *input, t_shell *shell, t_command **cmds);
 void		cleanup_and_exit(t_shell *shell, t_command *cmds);
 t_command	*build_redir(t_command *cmds);
-void		free_redir_list(t_redirect *redir);
+void		free_commands(t_command *head);
 
 // pipes & pipe_functions
 void		child_pipes(int prev_fd, bool next, int fd[]);
@@ -79,21 +76,27 @@ void		redirector(t_redirect *redir);
 //execution
 void		executor(t_command *cmds, t_shell *shell);
 void		execute_command(t_command *cmd, t_shell *shell);
-void		execute_builtin(char **args, t_shell *shell, bool has_fork);
+void		execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
 
 //builtins && builtins_special
 int			is_builtin(char *cmd);
 int			is_unique_builtin(char *cmd);
 void		builtin_pwd();
-void		builtin_echo(char **args);
-void		builtin_env(t_shell *shell);
-int			builtin_cd(char **args, bool has_fork);
-int			builtin_exit(char **args, t_shell *shell, bool has_fork);
-int			builtin_export(char **args, t_shell *shell, bool has_fork);
-int			builtin_unset(char **args, t_shell *shell, bool has_fork);
+void		builtin_echo(t_command *cmds);
+void		builtin_env(t_command *cmds, t_shell *shell);
+int			builtin_cd(t_command *cmds, bool has_fork);
+int			builtin_exit(t_command *cmds, t_shell *shell, bool has_fork);
+int			builtin_export(t_command *cmds, t_shell *shell, bool has_fork);
+int			builtin_unset(t_command *cmds, t_shell *shell, bool has_fork);
 
 //builtin utils
 int			is_str_numeric(const char *str);
 long long	ft_atoll(const char *str);
+
+//free
+void		free_total(t_command *cmds, t_shell *shell);
+void		free_shell(t_shell *shell);
+void		free_command_list(t_command *cmd);
+void		free_redir_list(t_redirect *redir);
 
 #endif

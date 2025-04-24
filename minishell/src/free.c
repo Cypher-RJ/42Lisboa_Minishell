@@ -44,7 +44,7 @@ void	free_shell(t_shell *shell)
 void	free_total(t_command *cmds, t_shell *shell)
 {
 	if (cmds)
-		free_commands(cmds);
+		free_command_list(cmds);
 	if (shell)
 		free_shell(shell);
 }
