@@ -15,17 +15,25 @@ void	builtin_pwd()
 
 void	builtin_echo(t_command *thiscmd)
 {
-	int	i;
+	int		i;
+	bool	no_nl;
 
 	i = 1;
-	while (thiscmd->args[i])// falta ver se tem -n(nao mete \n no fim)
+	no_nl = false;
+	if (thiscmd->args[i] && !(ft_strcmp(thiscmd->args[i], "-n")))
+	{
+		no_nl = true;
+		i++;
+	}
+	while (thiscmd->args[i])
 	{
 		write(1 , thiscmd->args[i], ft_strlen(thiscmd->args[i]));
 		if (thiscmd->args[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
-	write(1, "\n", 1);
+	if (!no_nl)
+		write(1, "\n", 1);
 	exit (EXIT_SUCCESS);
 }
 
