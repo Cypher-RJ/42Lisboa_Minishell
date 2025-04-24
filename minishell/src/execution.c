@@ -30,7 +30,7 @@ void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 	else if (!ft_strcmp(cmds->args[0], "export"))
 		builtin_export(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "pwd"))
-		builtin_pwd();
+		builtin_pwd(cmds);
 	else if (!ft_strcmp(cmds->args[0], "echo"))
 		builtin_echo(cmds);
 	else if (!ft_strcmp(cmds->args[0], "env"))

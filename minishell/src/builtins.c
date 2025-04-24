@@ -7,9 +7,23 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-void	builtin_pwd()
+void	builtin_pwd(t_command *thiscmd)
 {
-	ft_printf("%s\n", getcwd(NULL, 0));
+	char *cwd;
+
+	cwd = NULL;
+	if (thiscmd->args[1])
+	{
+		write(STDERR_FILENO, "pwd: too many arguments\n", 24);
+		exit(1);
+	}
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("Getcwd() failed to allocate\n");
+	}
+	ft_putendl_fd(cwd, STDOUT_FILENO);
+	free(cwd);
 	exit (EXIT_SUCCESS);
 }
 
