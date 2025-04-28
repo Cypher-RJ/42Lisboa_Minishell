@@ -56,6 +56,11 @@ void	builtin_env(t_command *cmds, t_shell *shell)
 	int	i;
 
 	i = 0;
+	if (cmds->args[1])
+	{
+		ft_putendl_fd("env: too many arguments", STDERR_FILENO);
+		exit (EXIT_FAILURE);
+	}
 	while (shell->envp[i] && cmds)
 	{
 		printf("%s\n", shell->envp[i]);
