@@ -6,26 +6,37 @@ int	is_unique_builtin(char *cmd)
 		!ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
 }
 
-int	builtin_cd(t_command *thiscmd, bool has_fork)
+int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 {
-	if (thiscmd->args[1])
+	int i;
+
+	i = 0;
+	if (thiscmd->args[2])
 	{
-		if (chdir(thiscmd->args[1]) != 0)
-		{
-			perror("cd\n");
+		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
+		if (has_fork)
 			exit (EXIT_FAILURE);
-		}
-		if (has_fork)
-			exit (EXIT_SUCCESS);
-		return (0);
+		return (1);
 	}
-	else
+	else if (!thiscmd->args[1])
 	{
-		printf("cd: missing argument\n");// se nao tem args, vai para a root.
-		if (has_fork)
-			exit (EXIT_SUCCESS);
-		return (0);
+		while (shell->envp[i] && ft_strncmp(shell->envp[i], "HOME=", 5))
+			i++;
+		if (!shell->envp[i] || shell->envp[i][5] != '\0')
+		{
+			ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
+			if (has_fork)
+				exit (EXIT_FAILURE);
+			return (1);
+		}
+		else
+		{
+			//Mandar o que esta depois de home para chdir
+		}
 	}
+	if (has_fork)
+		exit (EXIT_SUCCESS);
+	return (0);
 }
 
 int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
@@ -48,7 +59,7 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 		status = 255;
 	}
 	else
-		status = ft_atoll(thiscmd->args[1]);
+		status = ft_ms_atoll(thiscmd->args[1]);
 	shell->exit_status = (unsigned char)status;
 	if (!has_fork)
 		free_total(thiscmd, shell);

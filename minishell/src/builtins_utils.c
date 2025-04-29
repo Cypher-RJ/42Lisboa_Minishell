@@ -17,7 +17,7 @@ int	is_str_numeric(const char *str)
 	return (1);
 }
 
-long long	ft_atoll(const char *str)
+long long	ft_ms_atoll(const char *str)
 {
 	long long	result = 0;
 	int			sign = 1;

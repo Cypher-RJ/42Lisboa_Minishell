@@ -22,7 +22,7 @@ void	execute_command(t_command *cmd, t_shell *shell)
 void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 {
 	if (!ft_strcmp(cmds->args[0], "cd"))
-		builtin_cd(cmds, has_fork);
+		builtin_cd(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "unset"))
 		builtin_unset(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "exit"))

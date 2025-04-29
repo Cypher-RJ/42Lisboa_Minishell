@@ -84,14 +84,14 @@ int			is_unique_builtin(char *cmd);
 void		builtin_pwd(t_command *thiscmd);
 void		builtin_echo(t_command *cmds);
 void		builtin_env(t_command *cmds, t_shell *shell);
-int			builtin_cd(t_command *cmds, bool has_fork);
+int			builtin_cd(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_exit(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_export(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_unset(t_command *cmds, t_shell *shell, bool has_fork);
 
 //builtin utils
 int			is_str_numeric(const char *str);
-long long	ft_atoll(const char *str);
+long long	ft_ms_atoll(const char *str);
 
 //free
 void		free_total(t_command *cmds, t_shell *shell);
