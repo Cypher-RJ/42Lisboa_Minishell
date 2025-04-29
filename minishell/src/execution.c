@@ -35,6 +35,7 @@ void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 		builtin_echo(cmds);
 	else if (!ft_strcmp(cmds->args[0], "env"))
 		builtin_env(cmds, shell);
+	free_command_list(cmds);
 }
 
 void	executor(t_command *cmds, t_shell *shell)
@@ -97,3 +98,5 @@ void	executor(t_command *cmds, t_shell *shell)
 		cmds = cmds->next;
 	}
 }*/
+
+//  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell

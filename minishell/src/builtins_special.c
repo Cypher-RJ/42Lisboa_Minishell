@@ -34,6 +34,8 @@ int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 			//Mandar o que esta depois de home para chdir
 		}
 	}
+	else
+		//Mandar o args[1] para chdir
 	if (has_fork)
 		exit (EXIT_SUCCESS);
 	return (0);
@@ -44,8 +46,8 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 	long long status;
 
 	ft_putendl_fd("exit", STDERR_FILENO);
-	if (!thiscmd->args[1])
-		status = EXIT_SUCCESS;
+	if (!thiscmd->args[1]){
+		status = EXIT_SUCCESS;}
 	else if (thiscmd->args[2])
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
