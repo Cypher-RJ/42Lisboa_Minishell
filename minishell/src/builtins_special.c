@@ -12,33 +12,19 @@ int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 
 	i = 0;
 	if (thiscmd->args[2])
-	{
-		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
-		if (has_fork)
-			exit (EXIT_FAILURE);
-		return (1);
-	}
+		return (how_exit("minishell: cd: too many arguments\n", has_fork, 1));
 	else if (!thiscmd->args[1])
 	{
 		while (shell->envp[i] && ft_strncmp(shell->envp[i], "HOME=", 5))
 			i++;
 		if (!shell->envp[i] || shell->envp[i][5] != '\0')
-		{
-			ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
-			if (has_fork)
-				exit (EXIT_FAILURE);
-			return (1);
-		}
+			return (how_exit("minishell: cd: HOME not set\n", has_fork, 1));
 		else
-		{
-			//Mandar o que esta depois de home para chdir
-		}
+			return (builtin_cd_exec(&shell->envp[i][5], shell, has_fork));
 	}
 	else
-		//Mandar o args[1] para chdir
-	if (has_fork)
-		exit (EXIT_SUCCESS);
-	return (0);
+		return (builtin_cd_exec(thiscmd->args[1], shell, has_fork));
+	return (how_exit(NULL, has_fork, 0));
 }
 
 int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
@@ -46,8 +32,8 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 	long long status;
 
 	ft_putendl_fd("exit", STDERR_FILENO);
-	if (!thiscmd->args[1]){
-		status = EXIT_SUCCESS;}
+	if (!thiscmd->args[1])
+		status = EXIT_SUCCESS;
 	else if (thiscmd->args[2])
 	{
 		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);

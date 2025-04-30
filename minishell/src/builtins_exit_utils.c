@@ -6,7 +6,7 @@ int	is_str_numeric(const char *str)
 		return (0);
 	if (*str == '+' || *str == '-')
 		str++;
-	if (!*str) // só sinal, sem números
+	if (!*str)
 		return (0);
 	while (*str)
 	{

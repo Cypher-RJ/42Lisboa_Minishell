@@ -7,6 +7,15 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
+int	how_exit(char *msg, bool has_fork, int out)
+{
+	if (msg)
+		perror(msg);
+	if (has_fork)
+		exit (out);
+	return (out);
+}
+
 void	builtin_pwd(t_command *thiscmd)
 {
 	char *cwd;
@@ -21,6 +30,7 @@ void	builtin_pwd(t_command *thiscmd)
 	if (!cwd)
 	{
 		perror("Getcwd() failed to allocate\n");
+		exit (EXIT_FAILURE);
 	}
 	ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
