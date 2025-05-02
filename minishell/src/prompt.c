@@ -53,7 +53,6 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 	free_shell(shell);
 	if (cmds)
 		free_command_list(cmds);
-	free(shell);
 	exit(exit_code);
 }
 

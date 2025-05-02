@@ -40,6 +40,7 @@ char	*search_path(char *cmd, char **paths)
 			free(tmp);
 			return (full_path);
 		}
+		free(tmp);
 		free(full_path);
 		i++;
 	}
