@@ -12,19 +12,21 @@ int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 
 	i = 0;
 	if (thiscmd->args[2])
-		return (how_exit("minishell: cd: too many arguments\n", has_fork, 1));
+		return (how_exit("minishell: cd: too many arguments\n", has_fork, \
+			EXIT_FAILURE, shell));
 	else if (!thiscmd->args[1])
 	{
 		while (shell->envp[i] && ft_strncmp(shell->envp[i], "HOME=", 5))
 			i++;
 		if (!shell->envp[i] || shell->envp[i][5] != '\0')
-			return (how_exit("minishell: cd: HOME not set\n", has_fork, 1));
+			return (how_exit("minishell: cd: HOME not set\n", has_fork, \
+				EXIT_FAILURE, shell));
 		else
 			return (builtin_cd_exec(&shell->envp[i][5], shell, has_fork));
 	}
 	else
 		return (builtin_cd_exec(thiscmd->args[1], shell, has_fork));
-	return (how_exit(NULL, has_fork, 0));
+	return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
 }
 
 int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)

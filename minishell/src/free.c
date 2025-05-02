@@ -38,6 +38,7 @@ void	free_shell(t_shell *shell)
 		return ;
 	if (shell->envp)
 		ft_free_split(shell->envp);
+	free(shell);
 	rl_clear_history();
 }
 

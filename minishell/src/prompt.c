@@ -26,11 +26,6 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 		return ;
 	add_history(input);
 	strs = split_cmds(input);
-	if (*cmds)
-	{
-		free_command_list(*cmds);
-		*cmds = NULL;
-	}
 	*cmds = build_command_list(strs, shell);
 	current = *cmds;
 	while (current)
@@ -44,8 +39,8 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 		}
 		current = current->next;
 	}
+	ft_free_split(strs);
 	resolve_path(*cmds, shell);
-	executor(*cmds, shell);
 	// printf("%s\n", (*cmds)->path);
 }
 
@@ -84,5 +79,7 @@ void	prompt_loop(t_shell *shell)
 		}
 		handle_input(input, shell, &cmds);
 		free(input);
+		executor(cmds, shell);
+		free_command_list(cmds);
 	}
 }

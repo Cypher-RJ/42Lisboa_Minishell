@@ -7,16 +7,17 @@ int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "echo"));
 }
 
-int	how_exit(char *msg, bool has_fork, int out)
+int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 {
+	shell->exit_status = out;
 	if (msg)
-		perror(msg);
+		ft_putstr_fd(msg, STDERR_FILENO);
 	if (has_fork)
 		exit (out);
 	return (out);
 }
 
-void	builtin_pwd(t_command *thiscmd)
+void	builtin_pwd(t_command *thiscmd, t_shell *shell)
 {
 	char *cwd;
 
@@ -24,20 +25,23 @@ void	builtin_pwd(t_command *thiscmd)
 	if (thiscmd->args[1])
 	{
 		write(STDERR_FILENO, "pwd: too many arguments\n", 24);
-		exit(1);
+		shell->exit_status = EXIT_FAILURE;
+		exit(EXIT_FAILURE);
 	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
 		perror("Getcwd() failed to allocate\n");
-		exit (EXIT_FAILURE);
+		shell->exit_status = EXIT_FAILURE;
+		exit(EXIT_FAILURE);
 	}
 	ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
+	shell->exit_status = EXIT_SUCCESS;
 	exit (EXIT_SUCCESS);
 }
 
-void	builtin_echo(t_command *thiscmd)
+void	builtin_echo(t_command *thiscmd, t_shell *shell)
 {
 	int		i;
 	bool	no_nl;
@@ -51,13 +55,14 @@ void	builtin_echo(t_command *thiscmd)
 	}
 	while (thiscmd->args[i])
 	{
-		write(1 , thiscmd->args[i], ft_strlen(thiscmd->args[i]));
+		ft_putstr_fd(thiscmd->args[i], STDOUT_FILENO);
 		if (thiscmd->args[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
 	if (!no_nl)
 		write(1, "\n", 1);
+	shell->exit_status = EXIT_SUCCESS;
 	exit (EXIT_SUCCESS);
 }
 
@@ -69,12 +74,14 @@ void	builtin_env(t_command *cmds, t_shell *shell)
 	if (cmds->args[1])
 	{
 		ft_putendl_fd("env: too many arguments", STDERR_FILENO);
-		exit (EXIT_FAILURE);
+		shell->exit_status = EXIT_FAILURE;
+		exit(EXIT_FAILURE);
 	}
 	while (shell->envp[i] && cmds)
 	{
-		printf("%s\n", shell->envp[i]);
+		ft_putendl_fd( shell->envp[i], STDOUT_FILENO);
 		i++;
 	}
+	shell->exit_status = EXIT_SUCCESS;
 	exit (EXIT_SUCCESS);
 }

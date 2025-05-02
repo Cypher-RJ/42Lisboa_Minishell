@@ -43,8 +43,9 @@ void	increment_shlvl(char **envp)
 		}
 		i++;
 	}
-	// se chega aqui, ja esta no \0. Precisas fazer um malloc de new_envp de i+1,
+	// se SHLVL não existir, ele aqui esta no \0. Precisas fazer um malloc de new_envp de i+1,
 	// recopiar o envp para new_envp, liberar o envp, e depois fazer estas linhas seguintes. 
+	// ou podes assumir que ele existe sempre....
 	envp[i] = ft_strdup("SHLVL=1");
 	envp[i + 1] = NULL;
 }

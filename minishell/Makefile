@@ -1,7 +1,8 @@
 NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-SRCS = src/builtins_exit_utils.c \
+SRCS = src/builtins_cd_utils.c \
+		src/builtins_exit_utils.c \
 		src/builtins_special.c \
 		src/builtins.c \
 		src/env.c \

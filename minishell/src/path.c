@@ -28,7 +28,7 @@ char	*search_path(char *cmd, char **paths)
 {
 	int		i;
 	char	*full_path;
-	char *tmp;
+	char	*tmp;
 
 	i = 0;
 	while (paths[i])
@@ -36,7 +36,10 @@ char	*search_path(char *cmd, char **paths)
 		tmp = ft_strjoin(paths[i], "/");
 		full_path = ft_strjoin(tmp, cmd);
 		if (is_executable(full_path))
+		{
+			free(tmp);
 			return (full_path);
+		}
 		free(full_path);
 		i++;
 	}
