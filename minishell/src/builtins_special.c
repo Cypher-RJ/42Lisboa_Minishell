@@ -52,7 +52,7 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 		status = ft_ms_atoll(thiscmd->args[1]);
 	shell->exit_status = (unsigned char)status;
 	if (!has_fork)
-		free_total(thiscmd, shell);
+		free_total(shell);
 	exit((unsigned char)status);
 }
 

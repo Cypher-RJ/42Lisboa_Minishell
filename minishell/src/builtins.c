@@ -13,7 +13,10 @@ int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 	if (msg)
 		ft_putstr_fd(msg, STDERR_FILENO);
 	if (has_fork)
+	{
+		free_total(shell);
 		exit (out);
+	}
 	return (out);
 }
 

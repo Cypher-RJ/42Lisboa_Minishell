@@ -24,7 +24,7 @@ pid_t	fork_it()
 	return (pid);
 }
 
-void	child_pipes(int prev_fd, bool next, int fd[])
+void	child_pipes(int prev_fd, bool next, int fd[], t_shell *shell)
 {
 	if (prev_fd != -1) // se nao for primeiro comando
 	{
@@ -33,8 +33,7 @@ void	child_pipes(int prev_fd, bool next, int fd[])
 			close(prev_fd);
 			close(fd[0]);
 			close(fd[1]);
-			perror("dup2 faile on prev_fd");
-			exit(EXIT_FAILURE);
+			how_exit("faile on prev_fd", 1, EXIT_FAILURE, shell);
 		}
 		close(prev_fd);
 	}
@@ -44,8 +43,7 @@ void	child_pipes(int prev_fd, bool next, int fd[])
 		{
 			close(fd[0]);
 			close(fd[1]);
-			perror("dup2 failed on fd[1]");
-			exit(EXIT_FAILURE);
+			how_exit("dup2 failed on fd[1]", 1, EXIT_FAILURE, shell);
 		}
 		close(fd[0]);
 		close(fd[1]);

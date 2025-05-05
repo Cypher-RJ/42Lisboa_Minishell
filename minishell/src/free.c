@@ -42,10 +42,10 @@ void	free_shell(t_shell *shell)
 	rl_clear_history();
 }
 
-void	free_total(t_command *cmds, t_shell *shell)
+void	free_total(t_shell *shell)
 {
-	if (cmds)
-		free_command_list(cmds);
+	if (shell->cmds)
+		free_command_list(shell->cmds);
 	if (shell)
 		free_shell(shell);
 }

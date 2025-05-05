@@ -66,16 +66,16 @@ t_command	*build_redir(t_command *cmds);
 void		free_commands(t_command *head);
 
 // pipes & pipe_functions
-void		child_pipes(int prev_fd, bool next, int fd[]);
+void		child_pipes(int prev_fd, bool next, int fd[], t_shell *shell);
 pid_t		fork_it();
 int			make_pipe(int fd[], bool has_next);
-void		executor_fork(t_command *cmds, t_shell *shell);
+void		executor_fork(t_shell *shell);
 
 // redirection
-void		redirector(t_redirect *redir);
+int			redirector(t_redirect *redir, t_shell *shell, bool has_fork);
 
 //execution
-void		executor(t_command *cmds, t_shell *shell);
+void		executor(t_shell *shell);
 void		execute_command(t_command *cmd, t_shell *shell);
 void		execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
 
@@ -97,7 +97,7 @@ long long	ft_ms_atoll(const char *str);
 int			builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork);
 
 //free
-void		free_total(t_command *cmds, t_shell *shell);
+void		free_total(t_shell *shell);
 void		free_shell(t_shell *shell);
 void		free_command_list(t_command *cmd);
 void		free_redir_list(t_redirect *redir);
