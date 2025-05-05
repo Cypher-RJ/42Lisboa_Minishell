@@ -78,7 +78,8 @@ void	prompt_loop(t_shell *shell)
 		}
 		handle_input(input, shell, &cmds);
 		free(input);
-		executor(cmds, shell);
+		shell->cmds = cmds;
+		executor(shell);
 		free_command_list(cmds);
 	}
 }

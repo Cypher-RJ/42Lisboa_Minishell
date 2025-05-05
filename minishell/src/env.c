@@ -26,49 +26,69 @@ static char	*find_env_value(char *var_name, char **envp)
 char	*expand_env_variable(char *arg, char **envp)
 {
 	int		i = 0;
-	int		in_single = 0;
-	int		in_double = 0;
 	char	*result = ft_strdup("");
-	char	*var;
-	char	*val;
 	char	*tmp;
 
 	while (arg[i])
 	{
-		if (arg[i] == '\'' && !in_double)
-			in_single = !in_single;
-		else if (arg[i] == '"' && !in_single)
-			in_double = !in_double;
-		else if (arg[i] == '$' && !in_single && arg[i + 1])
+		if (arg[i] == '\'') // aspas simples -> literal até próxima
+		{
+			int	start = ++i;
+			while (arg[i] && arg[i] != '\'')
+				i++;
+			tmp = ft_substr(arg, start, i - start);
+			result = ft_strjoin_free(result, tmp);
+			if (arg[i] == '\'')
+				i++;
+		}
+		else if (arg[i] == '"') // aspas duplas -> permite expansão
+		{
+			int	start = ++i;
+			char	*inside = ft_strdup("");
+			while (arg[i] && arg[i] != '"')
+			{
+				if (arg[i] == '$' && arg[i + 1])
+				{
+					int	var_start = ++i;
+					while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
+						i++;
+					char *var = ft_substr(arg, var_start, i - var_start);
+					char *val = find_env_value(var, envp);
+					free(var);
+					inside = ft_strjoin_free(inside, val);
+					free(val);
+				}
+				else
+				{
+					char buf[2] = { arg[i++], '\0' };
+					inside = ft_strjoin_free(inside, buf);
+				}
+			}
+			if (arg[i] == '"')
+				i++;
+			result = ft_strjoin_free(result, inside);
+		}
+		else if (arg[i] == '$' && arg[i + 1]) // fora de aspas
 		{
 			int start = ++i;
-			while (arg[i] && (arg[i] == '_' || ('0' <= arg[i] && arg[i] <= '9') || ('a' <= arg[i] && arg[i] <= 'z') || ('A' <= arg[i] && arg[i] <= 'Z')))
+			while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
 				i++;
-			var = ft_substr(arg, start, i - start);
-			val = find_env_value(var, envp);
+			char *var = ft_substr(arg, start, i - start);
+			char *val = find_env_value(var, envp);
 			free(var);
-			tmp = malloc(ft_strlen(result) + ft_strlen(val) + 1);
-			strcpy(tmp, result);
-			strcat(tmp, val);
-			free(result);
+			result = ft_strjoin_free(result, val);
 			free(val);
-			result = tmp;
-			continue ;
 		}
 		else
 		{
-			char buf[2] = { arg[i], '\0' };
-			tmp = malloc(ft_strlen(result) + 2);
-			strcpy(tmp, result);
-			strcat(tmp, buf);
-			free(result);
-			result = tmp;
+			char buf[2] = { arg[i++], '\0' };
+			result = ft_strjoin_free(result, buf);
 		}
-		i++;
 	}
 	free(arg);
 	return (result);
 }
+
 
 static int	handle_redirection(char **args, int *fd, int flags, int i)
 {

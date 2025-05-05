@@ -13,9 +13,10 @@
 
 typedef struct s_shell
 {
-	char	**envp;
-	int		exit_status;
-}			t_shell;
+	char		**envp;
+	int			exit_status;
+	t_command	*cmds;
+}				t_shell;
 
 typedef struct s_redirect
 {

@@ -4,5 +4,6 @@
 		"sstream": "cpp",
 		"minishell.h": "c",
 		"stat.h": "c"
-	}
+	},
+	"cmake.sourceDirectory": "/home/rcesar-d/42_student/Rank03/my_minishell/minishell/tests"
 }

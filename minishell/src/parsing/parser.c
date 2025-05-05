@@ -62,49 +62,39 @@ char	**split_cmds(char *input)
 
 char	**ft_split_quotes(char *str)
 {
-	char	**result;
-	char	*buffer;
-	int		in_quotes;
-	char	quote_char;
-	int		i = 0, start = 0, k;
+	int		i = 0, k = 0, start;
+	char	**result = malloc(sizeof(char *) * (count_words(str) + 2));
+	char	quote;
 
-	in_quotes = 0;
-	quote_char = '\0';
-	i = 0, start = 0, k = 0;
-	if (!str)
+	if (!str || !result)
 		return (NULL);
-	result = malloc(sizeof(char *) * (count_words(str) + 2));
 	while (str[i])
 	{
-		if (!in_quotes && (str[i] == '\'' || str[i] == '"'))
+		while (str[i] == ' ')
+			i++;
+		if (!str[i])
+			break;
+
+		if (str[i] == '\'' || str[i] == '"')
 		{
-			in_quotes = 1;
-			quote_char = str[i++];
+			quote = str[i++];
 			start = i;
-			while (str[i])
-			{
-				if (str[i] == '\\' && str[i + 1])
-					i += 2;
-				else if (str[i] == quote_char)
-					break ;
-				else
-					i++;
-			}
-			buffer = ft_substr(str, start, i - start);
-			result[k++] = buffer;
-			if (str[i] == quote_char)
+			while (str[i] && str[i] != quote)
+				i++;
+			if (quote == '\'') // Single quotes: tudo literal
+				result[k++] = ft_substr(str, start, i - start);
+			else // Double quotes: para já igual — expansão seria numa fase separada
+				result[k++] = ft_substr(str, start, i - start);
+			if (str[i])
 				i++;
 		}
-		else if (!in_quotes && str[i] != ' ')
+		else
 		{
 			start = i;
 			while (str[i] && str[i] != ' ' && str[i] != '\'' && str[i] != '"')
 				i++;
-			buffer = ft_substr(str, start, i - start);
-			result[k++] = buffer;
+			result[k++] = ft_substr(str, start, i - start);
 		}
-		else
-			i++;
 	}
 	result[k] = NULL;
 	return (result);

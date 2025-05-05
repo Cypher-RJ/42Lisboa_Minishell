@@ -37,7 +37,7 @@ void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 		builtin_env(cmds, shell);
 }
 
-void	executor(t_command *cmds, t_shell *shell)
+/* void	executor(t_command *cmds, t_shell *shell)
 {
 	//Caso seja comando unico e seja cd, exit, export ou unset, nao pode
 	//ser feito com fork pois as suas accoes nao ficam capturadas no processo 
@@ -49,9 +49,9 @@ void	executor(t_command *cmds, t_shell *shell)
 	else
 		executor_fork(cmds, shell);
 	//Aqui devia limpar tudo ? qd sai tem que passar por aqui, devia limpar aqui tudo.
-}
+} */
 
-/*
+
 void	executor(t_command *cmds, t_shell *shell)
 {
 	//usar isto para ver se esta a capturar e parsar as linhas 
@@ -96,6 +96,6 @@ void	executor(t_command *cmds, t_shell *shell)
 		i++;
 		cmds = cmds->next;
 	}
-}*/
+}
 
 //  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell
