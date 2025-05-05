@@ -33,27 +33,24 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 {
 	long long status;
 
+	status = EXIT_SUCCESS;
 	ft_putendl_fd("exit", STDERR_FILENO);
 	if (!thiscmd->args[1])
-		status = EXIT_SUCCESS;
-	else if (thiscmd->args[2])
-	{
-		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
-		status = 1;
-	}
+		how_exit(NULL, 1, EXIT_SUCCESS, shell);
 	else if (!is_str_numeric(thiscmd->args[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(thiscmd->args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		status = 255;
+		how_exit(NULL, 1, EXIT_FAILURE, shell); //
 	}
+	else if (thiscmd->args[2])
+		return (how_exit("minishell: exit: too many arguments", \
+			has_fork, EXIT_FAILURE, shell));
 	else
 		status = ft_ms_atoll(thiscmd->args[1]);
 	shell->exit_status = (unsigned char)status;
-	if (!has_fork)
-		free_total(shell);
-	exit((unsigned char)status);
+	return (how_exit(NULL, 1, (unsigned char)status, shell));
 }
 
 int builtin_export(t_command *thiscmd, t_shell *shell, bool has_fork)
