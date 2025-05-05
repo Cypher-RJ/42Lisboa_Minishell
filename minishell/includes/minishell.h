@@ -77,7 +77,7 @@ int			redirector(t_redirect *redir, t_shell *shell, bool has_fork);
 //execution
 void		executor(t_shell *shell);
 void		execute_command(t_command *cmd, t_shell *shell);
-void		execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
+int			execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
 
 //builtins && builtins_special
 int			is_builtin(char *cmd);

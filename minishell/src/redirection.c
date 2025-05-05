@@ -18,7 +18,7 @@ int	redirect_input(char *file, t_shell *shell, bool has_fork)
 	return (EXIT_SUCCESS);
 }
 
-int	heredoc_readline(char *word, int fd[], t_shell *shell)
+int	heredoc_readline(char *word, int fd[])
 {
 	char *line;
 
@@ -45,7 +45,7 @@ int	redirect_heredoc(char *word, t_shell *shell, bool has_fork)
 			has_fork, EXIT_FAILURE, shell));
 	while (1)
 	{
-		if (heredoc_readline(word, fd, shell) == -1)
+		if (heredoc_readline(word, fd) == -1)
 			break;
 	}
 	close(fd[1]);
@@ -96,7 +96,7 @@ int	redirector(t_redirect *redir, t_shell *shell, bool has_fork)
 			res = redirect_output(temp->passorfile, 1, shell, has_fork);
 		else if (ft_strncmp(temp->direction, ">", 1) == 0)
 			res = redirect_output(temp->passorfile, 0, shell, has_fork);
-		if (res = 0)
+		if (res == 0)
 			temp = temp->next;
 		else
 			return (res);

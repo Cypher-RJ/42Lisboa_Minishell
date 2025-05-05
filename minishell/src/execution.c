@@ -19,11 +19,11 @@ void	execute_command(t_command *cmd, t_shell *shell)
 	}
 }
 
-void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
+int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 {
 	if (!has_fork && cmds->redir)
 	{
-		if (redirector(cmds->redir, shell, 0) != 0);
+		if (redirector(cmds->redir, shell, 0) != 0)
 			return (1);
 	}
 	if (!ft_strcmp(cmds->args[0], "cd"))
@@ -40,8 +40,9 @@ void	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 		builtin_echo(cmds, shell);
 	else if (!ft_strcmp(cmds->args[0], "env"))
 		builtin_env(cmds, shell);
+	return (0);
 }
-
+/* 
 void	executor(t_shell *shell)
 {
 	if (shell->cmds->next == NULL && (is_unique_builtin(shell->cmds->args[0]) == 1))
@@ -51,8 +52,8 @@ void	executor(t_shell *shell)
 	else
 		executor_fork(shell);
 }
+ */
 
-/* 
 void	executor(t_shell *shell)
 {
 	//usar isto para ver se esta a capturar e parsar as linhas 
@@ -97,6 +98,6 @@ void	executor(t_shell *shell)
 		i++;
 		shell->cmds = shell->cmds->next;
 	}
-} */
+}
 
 //  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell
