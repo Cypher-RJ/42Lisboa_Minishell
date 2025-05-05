@@ -11,7 +11,7 @@ int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 {
 	shell->exit_status = out;
 	if (msg)
-		ft_putstr_fd(msg, STDERR_FILENO);
+		ft_putendl_fd(msg, STDERR_FILENO);
 	if (has_fork)
 	{
 		free_total(shell);
@@ -26,22 +26,13 @@ void	builtin_pwd(t_command *thiscmd, t_shell *shell)
 
 	cwd = NULL;
 	if (thiscmd->args[1])
-	{
-		write(STDERR_FILENO, "pwd: too many arguments\n", 24);
-		shell->exit_status = EXIT_FAILURE;
-		exit(EXIT_FAILURE);
-	}
+		how_exit("pwd: too many arguments", 1, EXIT_FAILURE, shell);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-	{
-		perror("Getcwd() failed to allocate\n");
-		shell->exit_status = EXIT_FAILURE;
-		exit(EXIT_FAILURE);
-	}
+		how_exit("failed to allocate\n", 1, EXIT_FAILURE, shell);
 	ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
-	shell->exit_status = EXIT_SUCCESS;
-	exit (EXIT_SUCCESS);
+	how_exit(NULL, 1, EXIT_SUCCESS, shell);
 }
 
 void	builtin_echo(t_command *thiscmd, t_shell *shell)
@@ -51,11 +42,8 @@ void	builtin_echo(t_command *thiscmd, t_shell *shell)
 
 	i = 1;
 	no_nl = false;
-	if (thiscmd->args[i] && !(ft_strcmp(thiscmd->args[i], "-n")))
-	{
+	if (thiscmd->args[i] && !(ft_strcmp(thiscmd->args[i++], "-n")))
 		no_nl = true;
-		i++;
-	}
 	while (thiscmd->args[i])
 	{
 		ft_putstr_fd(thiscmd->args[i], STDOUT_FILENO);
@@ -65,8 +53,7 @@ void	builtin_echo(t_command *thiscmd, t_shell *shell)
 	}
 	if (!no_nl)
 		write(1, "\n", 1);
-	shell->exit_status = EXIT_SUCCESS;
-	exit (EXIT_SUCCESS);
+	how_exit(NULL, 1, EXIT_SUCCESS, shell);
 }
 
 void	builtin_env(t_command *cmds, t_shell *shell)
@@ -75,16 +62,11 @@ void	builtin_env(t_command *cmds, t_shell *shell)
 
 	i = 0;
 	if (cmds->args[1])
-	{
-		ft_putendl_fd("env: too many arguments", STDERR_FILENO);
-		shell->exit_status = EXIT_FAILURE;
-		exit(EXIT_FAILURE);
-	}
+		how_exit("env: too many arguments", 1, EXIT_FAILURE, shell);
 	while (shell->envp[i] && cmds)
 	{
 		ft_putendl_fd( shell->envp[i], STDOUT_FILENO);
 		i++;
 	}
-	shell->exit_status = EXIT_SUCCESS;
-	exit (EXIT_SUCCESS);
+	how_exit(NULL, 1, EXIT_SUCCESS, shell);
 }
