@@ -11,13 +11,6 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 
-typedef struct s_shell
-{
-	char		**envp;
-	int			exit_status;
-	t_command	*cmds;
-}				t_shell;
-
 typedef struct s_redirect
 {
 	char				*direction;
@@ -32,6 +25,13 @@ typedef struct s_command
 	t_redirect			*redir;
 	struct s_command	*next;
 }						t_command;
+
+typedef struct s_shell
+{
+	char		**envp;
+	int			exit_status;
+	t_command	*cmds;
+}				t_shell;
 
 void		prompt_loop(t_shell *shell);
 int			detect_redirections(char **args, int *fd_in, int *fd_out);
