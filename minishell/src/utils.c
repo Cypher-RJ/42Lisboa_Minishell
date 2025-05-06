@@ -23,7 +23,6 @@ void	ft_free_split(char **arr)
 	while (arr[i])
 		free(arr[i++]);
 	free(arr);
-	//arr = NULL;
 }
 
 char	*ft_strjoin_free(char *s1, const char *s2)
