@@ -37,6 +37,7 @@ char	*expand_env_variable(char *arg, char **envp)
 	{
 		if (arg[i] == '\'' && !in_double)
 		{
+			printf("ola");
 			in_single = !in_single;
 			i++; // não adiciona aspas externas ao resultado
 			continue ;
