@@ -43,7 +43,7 @@ int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 	return (0);
 }
 
-void	executor(t_shell *shell)
+/* void	executor(t_shell *shell)
 {
 	if (shell->cmds->next == NULL && (is_unique_builtin(shell->cmds->args[0]) == 1))
 	{
@@ -51,9 +51,9 @@ void	executor(t_shell *shell)
 	}
 	else
 		executor_fork(shell);
-}
+} */
 
-/* 
+
 void	executor(t_shell *shell)
 {
 	//usar isto para ver se esta a capturar e parsar as linhas 
@@ -98,6 +98,8 @@ void	executor(t_shell *shell)
 		i++;
 		shell->cmds = shell->cmds->next;
 	}
+}
+
 }
  */
 //  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell

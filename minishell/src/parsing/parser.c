@@ -78,15 +78,12 @@ char	**ft_split_quotes(char *str)
 		if (str[i] == '\'' || str[i] == '"')
 		{
 			quote = str[i++];
-			start = i;
+			start = i - 1;
 			while (str[i] && str[i] != quote)
 				i++;
-			if (quote == '\'') // Single quotes: tudo literal
-				result[k++] = ft_substr(str, start, i - start);
-			else // Double quotes: para já igual — expansão seria numa fase separada
-				result[k++] = ft_substr(str, start, i - start);
 			if (str[i])
 				i++;
+			result[k++] = ft_substr(str, start, i - start);
 		}
 		else
 		{
@@ -95,6 +92,7 @@ char	**ft_split_quotes(char *str)
 				i++;
 			result[k++] = ft_substr(str, start, i - start);
 		}
+		printf("%s\n", result[k]);
 	}
 	result[k] = NULL;
 	return (result);
