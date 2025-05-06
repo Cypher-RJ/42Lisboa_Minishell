@@ -10,12 +10,12 @@ void	execute_command(t_command *cmd, t_shell *shell)
 		errstr = ft_strjoin(cmd->args[0], ": command not found\n");
 		perror(errstr);
 		free(errstr);
-		exit(127);
+		how_exit(NULL, 1, 127, shell);
 	}
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
 	{
 		perror("Failure to execute execve\n");
-		exit(1);
+		how_exit(NULL, 1, EXIT_FAILURE, shell);
 	}
 }
 
@@ -98,6 +98,6 @@ void	executor(t_shell *shell)
 		i++;
 		shell->cmds = shell->cmds->next;
 	}
-}*/
-
+}
+ */
 //  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell
