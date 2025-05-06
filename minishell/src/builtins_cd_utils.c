@@ -1,30 +1,69 @@
 #include "../includes/minishell.h"
 
-int	rep_add_arrstr(char *trgt, char *str, t_shell *shell, bool has_fork)
+int	increase_envp(t_shell *shell)
 {
-	char	*tmp;
 	char	**envtmp;
 	int		i;
 
 	envtmp = NULL;
+	i = 0;
+	while (shell->envp[i])
+		i++;
+	envtmp = ft_calloc(i + 2, sizeof(char *));
+	if (!envtmp)
+		return (write(2, "Failed to malloc new envp", 26), EXIT_FAILURE);
+	i = 0;
+	while (shell->envp[i] != NULL)
+	{
+		envtmp[i] = shell->envp[i];
+		i++;
+	}
+	ft_free_split(shell->envp);
+	shell->envp = envtmp;
+	return (EXIT_SUCCESS);
+}
+
+int	rep_add_envp(char *trgt, char *str, t_shell *shell)
+{
+	char	*tmp;
+	int		i;
+	int		res;
+
 	tmp	= NULL;
+	res = 0;
 	i = 0;
 	while (shell->envp[i] && ft_strncmp(shell->envp[i], trgt, ft_strlen(trgt)))
 		i++;
 	if (shell->envp[i] == NULL)
+		res = increase_envp(shell);
+	if (res)
+		return (res);
+	tmp = ft_strjoin(trgt, str);
+	if (!tmp)
+		return (write(2, "Failed to add var to envp", 26), EXIT_FAILURE);
+	if (shell->envp[i])
+		free(shell->envp[i]);
+	shell->envp[i] = tmp;
+	return (0);
+}
+
+int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
+{
+	if (rep_add_envp("OLDPWD=", oldpwd, shell))
 	{
-		envtmp = ft_calloc(i + 2, sizeof(char *));
-		if (!envtmp)
-			return (how_exit("Failed to malloc envtmp", has_fork, EXIT_FAILURE, shell));
-		i = 0;
-		while (shell->envp[i] != NULL)
-		{
-			envtmp[i] = shell->envp[i];
-			i++;
-		}
-		ft_free_split(shell->envp);
-		shell->envp = envtmp;
+		free(oldpwd);
+		free(newpwd);
+		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
 	}
+	if (rep_add_envp("PWD=", newpwd, shell))
+	{
+		free(oldpwd);
+		free(newpwd);
+		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
+	}
+	free(oldpwd);
+	free(newpwd);
+	return (EXIT_SUCCESS);
 }
 
 int builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
@@ -49,5 +88,7 @@ int builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 		return (how_exit("getcwd() failed to allocate", has_fork, \
 			EXIT_FAILURE, shell));
 	}
+	if (adjust_envp(old_pwd, new_pwd,has_fork, shell))
+		return (EXIT_FAILURE);
     return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
 }
