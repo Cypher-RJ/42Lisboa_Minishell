@@ -21,26 +21,29 @@ void	execute_command(t_command *cmd, t_shell *shell)
 
 int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 {
+	int	out;
+
+	out = 0;
 	if (!has_fork && cmds->redir)
 	{
 		if (redirector(cmds->redir, shell, 0) != 0)
-			return (1);
+			return (EXIT_FAILURE);
 	}
 	if (!ft_strcmp(cmds->args[0], "cd"))
-		builtin_cd(cmds, shell, has_fork);
+		out = builtin_cd(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "unset"))
-		builtin_unset(cmds, shell, has_fork);
+		out = builtin_unset(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "exit"))
-		builtin_exit(cmds, shell, has_fork);
+		out = builtin_exit(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "export"))
-		builtin_export(cmds, shell, has_fork);
+		out = builtin_export(cmds, shell, has_fork);
 	else if (!ft_strcmp(cmds->args[0], "pwd"))
 		builtin_pwd(cmds, shell);
 	else if (!ft_strcmp(cmds->args[0], "echo"))
 		builtin_echo(cmds, shell);
 	else if (!ft_strcmp(cmds->args[0], "env"))
 		builtin_env(cmds, shell);
-	return (0);
+	return (out);
 }
 
 void	executor(t_shell *shell)
