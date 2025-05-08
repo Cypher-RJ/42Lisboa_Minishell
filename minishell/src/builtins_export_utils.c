@@ -17,9 +17,35 @@ int	is_var_valid(char *str)
 	return (1);
 }
 
+int	get_name_value(char *str, int n_end, int v_end)
+{
+	char	*name;
+	char	*value;
+	int		i;
+
+	i = 0;
+	name = ft_calloc(n_end + 1, sizeof(char));
+	if (!name)
+		return (ft_putendl_fd("Export: Failed to calloc var name", \
+			STDERR_FILENO), EXIT_FAILURE);
+	ft_strlcpy(name, str, n_end +1);
+}
+
 int	export_var(char *str, t_shell *shell, bool has_fork)
 {
-	if (str && shell && has_fork)
-		return (1);
-	return (0);
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+		i++;
+	if (str[i++] == '\0')
+		return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
+	j = i;
+	while (str[j])
+		j++;
+	if (get_name_value(str, i, j))
+		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
+	return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
 }
