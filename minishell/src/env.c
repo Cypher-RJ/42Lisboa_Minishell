@@ -1,11 +1,21 @@
 #include "../includes/minishell.h"
 
-/* static char	*get_var_name(char *arg)
+char *remove_outer_quotes(char *str)
 {
-	if (arg[0] != '$' || arg[1] == '\0')
+	size_t len;
+
+	if (!str)
 		return (NULL);
-	return (arg + 1);
-} */
+	len = ft_strlen(str);
+	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"' && str[len - 1] == '"')))
+	{
+		char *clean = ft_substr(str, 1, len - 2);
+		free(str);
+		return clean;
+	}
+	return str;
+}
+
 
 static char	*find_env_value(char *var_name, char **envp)
 {
@@ -23,30 +33,27 @@ static char	*find_env_value(char *var_name, char **envp)
 	return (ft_strdup(""));
 }
 
-char	*expand_env_variable(char *arg, char **envp)
+char *expand_env_variable(const char *arg, char **envp)
 {
 	int		i = 0;
 	int		in_single = 0;
 	int		in_double = 0;
 	char	*result = ft_strdup("");
-	char	*var;
-	char	*val;
-	char	*tmp;
+	char	*var, *val, *tmp;
 
 	while (arg[i])
 	{
 		if (arg[i] == '\'' && !in_double)
 		{
-			printf("ola");
 			in_single = !in_single;
-			i++; // não adiciona aspas externas ao resultado
-			continue ;
+			i++;
+			continue;
 		}
 		else if (arg[i] == '"' && !in_single)
 		{
 			in_double = !in_double;
-			i++; // não adiciona aspas externas ao resultado
-			continue ;
+			i++;
+			continue;
 		}
 		else if (arg[i] == '$' && !in_single && arg[i + 1])
 		{
@@ -68,9 +75,10 @@ char	*expand_env_variable(char *arg, char **envp)
 			i++;
 		}
 	}
-	free(arg);
 	return (result);
 }
+
+
 
 static int	handle_redirection(char **args, int *fd, int flags, int i)
 {

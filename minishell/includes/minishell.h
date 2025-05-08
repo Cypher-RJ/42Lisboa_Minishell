@@ -41,7 +41,7 @@ char		*get_env_path(t_shell *shell);
 int			is_executable(char *filepath);
 void		setup_signals(void);
 void		signal_handler(int sig);
-char		*expand_env_variable(char *arg, char **envp);
+char		*expand_env_variable(const char *arg, char **envp);
 void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
 char		**copy_shlvl(char **envp);
@@ -64,6 +64,7 @@ void		handle_input(char *input, t_shell *shell, t_command **cmds);
 void		cleanup_and_exit(t_shell *shell, t_command *cmds);
 t_command	*build_redir(t_command *cmds);
 void		free_commands(t_command *head);
+char		*remove_outer_quotes(char *str);
 
 // pipes & pipe_functions
 void		child_pipes(int prev_fd, bool next, int fd[], t_shell *shell);

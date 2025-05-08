@@ -14,6 +14,7 @@ int	handle_segment(char *input, char **arg_slot, int *i)
 {
 	int	start;
 	int	in_quotes;
+	char quote_char;
 
 	in_quotes = 0;
 	while (input[*i] == ' ' || input[*i] == '\t')
@@ -21,8 +22,16 @@ int	handle_segment(char *input, char **arg_slot, int *i)
 	start = *i;
 	while (input[*i])
 	{
-		if (input[*i] == '"' && (*i == 0 || input[*i - 1] != '\\'))
-			in_quotes = !in_quotes;
+		if ((input[*i] == '"' || input[*i] == '\'') && (*i == 0 || input[*i - 1] != '\\'))
+		{
+			if (!in_quotes)
+			{
+				quote_char = input[*i];
+				in_quotes = 1;
+			}
+			else if (input[*i] == quote_char)
+				in_quotes = 0;
+		}
 		else if (input[*i] == '|' && !in_quotes)
 			break ;
 		(*i)++;
@@ -107,8 +116,13 @@ int	check_syntax(char *input)
 		else if (input[i] == '"' && !in_s && (i == 0 || input[i - 1] != '\\'))
 			in_d = !in_d;
 		else if (!in_s && !in_d)
+		{
 			if (check_pipe_and_ampersand(input, &i, &expect))
 				return (1);
+			else
+				i++;
+			continue;
+		}
 		i++;
 	}
 	if (expect)
@@ -120,23 +134,49 @@ int	check_syntax_redir(char *input)
 {
 	int	i;
 	int	expect_command;
+    int in_s;
+    int in_d;
 
 	i = 0;
 	expect_command = 1;
+	in_s = 0;
+	in_d = 0;
+
 	while (input[i])
 	{
-		if (input[i] == '>' || input[i] == '<')
+		if (input[i] == '\'' && !in_d && (i == 0 || input[i - 1] != '\\'))
 		{
-			if (input[i + 1] == '>' || input[i + 1] == '<')
-			{
-				if (input[i + 2] == '>' || input[i + 2] == '<')
-					return (print_syntax_error("minishell: syntax error near unexpected token `>'\n"));
-				i++;
-			}
-			expect_command = 1;
+			in_s = !in_s;
+			i++;
+			continue;
 		}
-		else if (input[i] != ' ' && input[i] != '\t')
-			expect_command = 0;
+		else if (input[i] == '"' && !in_s && (i == 0 || input[i - 1] != '\\'))
+		{
+			in_d = !in_d;
+			i++;
+			continue;
+		}
+		if (!in_s && !in_d)
+		{
+			if (input[i] == '>' || input[i] == '<')
+			{
+				if (input[i + 1] == '>' || input[i + 1] == '<')
+				{
+					if (input[i + 2] == '>' || input[i + 2] == '<')
+						return (print_syntax_error("minishell: syntax error near unexpected token `>'\n"));
+					i++;
+				}
+				i++;
+				while (input[i] == ' ' || input[i] == '\t')
+					i++;
+				if (!input[i] || input[i] == '>' || input[i] == '<' || input[i] == '|')
+					return (print_syntax_error("minishell: syntax error near unexpected token `newline'\n"));
+				expect_command = 0;
+				continue;
+			}
+			else if (input[i] != ' ' && input[i] != '\t')
+				expect_command = 0;
+		}
 		i++;
 	}
 	if (expect_command)

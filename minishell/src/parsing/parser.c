@@ -6,6 +6,7 @@ static int	count_words(char *str)
 	int	in_word;
 	int	in_quotes;
 	int	i;
+	char quote_char;
 
 	count = 0;
 	in_word = 0;
@@ -13,14 +14,29 @@ static int	count_words(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '"' && (i == 0 || str[i - 1] != '\\'))
-			in_quotes = !in_quotes;
-		if (str[i] != '|' && str[i] != ' ' && in_word == 0)
+		if ((str[i] == '"' || str[i] == '\'') && (i == 0 || str[i - 1] != '\\'))
+		{
+			if (!in_quotes)
+			{
+				quote_char = str[i];
+				in_quotes = 1;
+				if (in_word == 0)
+				{
+					in_word = 1;
+					count++;
+				}
+			}
+			else if (str[i] == quote_char)
+			{
+				in_quotes = 0;
+			}
+		}
+		else if (str[i] != '|' && str[i] != ' ' && in_word == 0)
 		{
 			in_word = 1;
 			count++;
 		}
-		else if ((str[i] == '|' && !in_quotes) || str[i] == ' ')
+		else if (!in_quotes && ((str[i] == '|') || str[i] == ' '))
 			in_word = 0;
 		i++;
 	}
@@ -63,11 +79,15 @@ char	**split_cmds(char *input)
 char	**ft_split_quotes(char *str)
 {
 	int		i = 0, k = 0, start;
-	char	**result = malloc(sizeof(char *) * (count_words(str) + 2));
+	char	**result;
 	char	quote;
+	int		word_count;
 
+	word_count = count_words(str);
+	result = malloc(sizeof(char *) * (word_count + 1));
 	if (!str || !result)
 		return (NULL);
+
 	while (str[i])
 	{
 		while (str[i] == ' ')
@@ -83,16 +103,19 @@ char	**ft_split_quotes(char *str)
 				i++;
 			if (str[i])
 				i++;
-			result[k++] = ft_substr(str, start, i - start);
+			result[k] = ft_substr(str, start, i - start);
+			if (result[k] != NULL)
+				k++;
 		}
 		else
 		{
 			start = i;
 			while (str[i] && str[i] != ' ' && str[i] != '\'' && str[i] != '"')
 				i++;
-			result[k++] = ft_substr(str, start, i - start);
+			result[k] = ft_substr(str, start, i - start);
+			if (result[k] != NULL)
+			k++;
 		}
-		printf("%s\n", result[k]);
 	}
 	result[k] = NULL;
 	return (result);
