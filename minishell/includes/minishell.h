@@ -96,6 +96,7 @@ int			is_str_numeric(const char *str);
 long long	ft_ms_atoll(const char *str);
 int			builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork);
 int			export_putenv(t_shell *shell, bool has_fork);
+int			is_var_valid(char *str);
 
 //free
 void		free_total(t_shell *shell);
