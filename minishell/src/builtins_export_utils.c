@@ -32,7 +32,7 @@ int	make_name_value(char *str, int n_end, int v_end, t_shell *shell)
 	if (v_end == n_end)
 		value = NULL;
 	else
-		value = ft_calloc(n_end + 1, sizeof(char));
+		value = ft_calloc(v_end - n_end + 1, sizeof(char));
 	if (!value && v_end != n_end)
 		return (ft_putendl_fd("Export: Failed to calloc var value", \
 			STDERR_FILENO), EXIT_FAILURE);

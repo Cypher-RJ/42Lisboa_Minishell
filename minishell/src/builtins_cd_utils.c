@@ -18,7 +18,6 @@ int	increase_envp(t_shell *shell)
 		envtmp[i] = shell->envp[i];
 		i++;
 	}
-	//ft_free_split(shell->envp);
 	free(shell->envp);
 	shell->envp = envtmp;
 	return (EXIT_SUCCESS);
