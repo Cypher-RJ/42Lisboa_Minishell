@@ -91,6 +91,7 @@ int			builtin_exit(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_export(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_unset(t_command *cmds, t_shell *shell, bool has_fork);
 int			how_exit(char *msg, bool has_fork, int out, t_shell *shell);
+int			rep_add_envp(char *trgt, char *str, t_shell *shell);
 
 //builtin utils
 int			is_str_numeric(const char *str);

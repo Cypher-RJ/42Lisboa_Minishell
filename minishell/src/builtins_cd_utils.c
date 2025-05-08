@@ -18,7 +18,8 @@ int	increase_envp(t_shell *shell)
 		envtmp[i] = shell->envp[i];
 		i++;
 	}
-	ft_free_split(shell->envp);
+	//ft_free_split(shell->envp);
+	free(shell->envp);
 	shell->envp = envtmp;
 	return (EXIT_SUCCESS);
 }
@@ -38,13 +39,16 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 		res = increase_envp(shell);
 	if (res)
 		return (res);
-	tmp = ft_strjoin(trgt, str);
+	if (trgt && str)
+		tmp = ft_strjoin(trgt, str);
+	else if (trgt && !str)
+		tmp = ft_strdup(trgt);
 	if (!tmp)
 		return (write(2, "Failed to add var to envp", 26), EXIT_FAILURE);
 	if (shell->envp[i])
 		free(shell->envp[i]);
 	shell->envp[i] = tmp;
-	return (0);
+	return (res);
 }
 
 int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
