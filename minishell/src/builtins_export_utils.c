@@ -43,7 +43,8 @@ int	make_name_value(char *str, int n_end, int v_end, t_shell *shell)
 		ft_strlcpy(value, &str[n_end], v_end - n_end + 1);
 	res = rep_add_envp(name, value, shell);
 	free(name);
-	free(value);
+	if (value)
+		free(value);
 	return (res);
 }
 

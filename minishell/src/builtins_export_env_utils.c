@@ -60,8 +60,10 @@ void	put_envtmp(char *envtmp)
 	{
 		write(1, "=", 2);
 		i++;
+		if (envtmp[i] == '\0')
+			ft_putstr_fd("\"\"", STDOUT_FILENO);
 	}
-	else if (envtmp[i] != '\0')
+	if (envtmp[i] != '\0')
 	{
 		ft_putstr_fd("\"", STDOUT_FILENO);
 		ft_putstr_fd(&envtmp[i], STDOUT_FILENO);
