@@ -56,14 +56,17 @@ void	put_envtmp(char *envtmp)
 		ft_putchar_fd(envtmp[i], STDOUT_FILENO);
 		i++;
 	}
-	if (envtmp[i] == '=' && envtmp[i + 1] != '\0')
+	if (envtmp[i] == '=')
 	{
-		ft_putstr_fd("=\"", STDOUT_FILENO);
-		ft_putstr_fd(envtmp[i], STDOUT_FILENO);
+		write(1, "=", 2);
+		i++;
+	}
+	else if (envtmp[i] != '\0')
+	{
+		ft_putstr_fd("\"", STDOUT_FILENO);
+		ft_putstr_fd(&envtmp[i], STDOUT_FILENO);
 		ft_putstr_fd("\"", STDOUT_FILENO);
 	}
-	else
-		write(1, "=", 2);
 	write(STDOUT_FILENO, "\n", 2);
 }
 

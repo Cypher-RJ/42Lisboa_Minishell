@@ -14,7 +14,7 @@ int	unset_var(char *str, t_shell *shell)
 	j = i;
 	while (str[j])
 		j++;
-	if (make_name_value(str, i, j, shell))
-		return (EXIT_FAILURE);
+	if (shell)
+		return (EXIT_SUCCESS);
 	return (EXIT_SUCCESS);
 }
