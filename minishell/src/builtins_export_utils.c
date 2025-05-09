@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int	is_var_valid(char *str)
+int	is_var_valid(char *str, bool is_unset)
 {
 	int	i;
 
@@ -9,9 +9,12 @@ int	is_var_valid(char *str)
 		i++;
 	if ((str[i] != '=' && str[i] != '\0') || !ft_isalpha(str[0]))
 	{
-		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-		ft_putstr_fd(str, STDERR_FILENO);
-		ft_putstr_fd("': not a valid identifier", STDERR_FILENO);
+		if (!is_unset)
+		{
+			ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+			ft_putstr_fd(str, STDERR_FILENO);
+			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+		}
 		return (0);
 	}
 	return (1);
@@ -53,9 +56,10 @@ int	export_var(char *str, t_shell *shell)
 	j = 0;
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
-	if (str[i++] == '\0')
-		return (EXIT_SUCCESS);
-	j = i;
+	if (str[i] == '\0')
+		j = i;
+	else
+		j = ++i;
 	while (str[j])
 		j++;
 	if (make_name_value(str, i, j, shell))

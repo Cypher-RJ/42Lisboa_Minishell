@@ -23,6 +23,24 @@ int	increase_envp(t_shell *shell)
 	return (EXIT_SUCCESS);
 }
 
+int	find_trgt_env(t_shell *shell, char *trgt)
+{
+	size_t	len;
+	int		i;
+
+	len = ft_strlen(trgt);
+	i = 0;
+	while (shell->envp[i])
+	{
+		if (!ft_strncmp(shell->envp[i], trgt, len))
+		{
+			if (shell->envp[i][len] == '=' || shell->envp[i][len] == '\0')
+				break;
+		}
+		i++;
+	}
+}
+
 int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 {
 	char	*tmp;
@@ -31,9 +49,9 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 
 	tmp	= NULL;
 	res = 0;
-	i = 0;
-	while (shell->envp[i] && ft_strncmp(shell->envp[i], trgt, ft_strlen(trgt)))
-		i++;
+	i = find_trgt_env(shell, trgt);
+	//while (shell->envp[i] && ft_strncmp(shell->envp[i], trgt, ft_strlen(trgt)))
+	//	i++;
 	if (shell->envp[i] == NULL)
 		res = increase_envp(shell);
 	if (res)

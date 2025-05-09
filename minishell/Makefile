@@ -6,6 +6,7 @@ SRCS = src/builtins_cd_utils.c \
 		src/builtins_export_env_utils.c \
 		src/builtins_export_utils.c \
 		src/builtins_special.c \
+		src/builtins_unset_utils.c \
 		src/builtins.c \
 		src/env.c \
 		src/execution.c \

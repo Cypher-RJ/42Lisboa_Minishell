@@ -46,6 +46,27 @@ void	sort_envtmp(char **envtmp)
 	}
 }
 
+void	put_envtmp(char *envtmp)
+{
+	int	i;
+
+	i = 0;
+	while (envtmp[i] != 0 && envtmp[i] != '=')
+	{
+		ft_putchar_fd(envtmp[i], STDOUT_FILENO);
+		i++;
+	}
+	if (envtmp[i] == '=' && envtmp[i + 1] != '\0')
+	{
+		ft_putstr_fd("=\"", STDOUT_FILENO);
+		ft_putstr_fd(envtmp[i], STDOUT_FILENO);
+		ft_putstr_fd("\"", STDOUT_FILENO);
+	}
+	else
+		write(1, "=", 2);
+	write(STDOUT_FILENO, "\n", 2);
+}
+
 int export_putenv(t_shell *shell, bool has_fork)
 {
 	char	**envtmp;
@@ -60,7 +81,7 @@ int export_putenv(t_shell *shell, bool has_fork)
 	while (envtmp[i])
 	{
 		ft_putstr_fd("declare -x ", STDOUT_FILENO);
-		ft_putendl_fd(envtmp[i], STDOUT_FILENO);
+		put_envtmp(envtmp[i]);
 		i++;
 	}
 	free(envtmp);
