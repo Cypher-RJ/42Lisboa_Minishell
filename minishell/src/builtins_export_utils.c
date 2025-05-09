@@ -44,7 +44,7 @@ int	make_name_value(char *str, int n_end, int v_end, t_shell *shell)
 	return (res);
 }
 
-int	export_var(char *str, t_shell *shell, bool has_fork)
+int	export_var(char *str, t_shell *shell)
 {
 	int	i;
 	int	j;
@@ -54,11 +54,11 @@ int	export_var(char *str, t_shell *shell, bool has_fork)
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
 	if (str[i++] == '\0')
-		return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
+		return (EXIT_SUCCESS);
 	j = i;
 	while (str[j])
 		j++;
 	if (make_name_value(str, i, j, shell))
-		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
-	return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
