@@ -1,5 +1,34 @@
 #include "../includes/minishell.h"
 
+int	unset_env(t_shell *shell, int pos)
+{
+	char	**envtmp;
+	int		i;
+	int		j;
+
+	envtmp = NULL;
+	i = 0;
+	j = 0;
+	while (shell->envp[i])
+		i++;
+	if (i > 0)
+		envtmp = ft_calloc(i, sizeof(char *));
+	if (!envtmp)
+		return (write(2, "Failed to malloc new envp", 26), EXIT_FAILURE);
+	i = 0;
+	while (shell->envp[j] != NULL)
+	{
+		if (j == pos)
+			j++;
+		if (shell->envp[j] != NULL)
+			envtmp[i++] = shell->envp[j++];
+	}
+	free(shell->envp[pos]);
+	free(shell->envp);
+	shell->envp = envtmp;
+	return (EXIT_SUCCESS);
+}
+
 int	unset_var(char *str, t_shell *shell)
 {
 	int	i;
@@ -18,7 +47,7 @@ int	unset_var(char *str, t_shell *shell)
 			break;
 		j++;
 	}
-	if (!shell->envp[j])
+	if (shell->envp[j] == NULL)
 		return (EXIT_SUCCESS);
 	return (unset_env(shell, j));
 }

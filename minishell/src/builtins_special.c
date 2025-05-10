@@ -78,7 +78,7 @@ int	builtin_unset(t_command *thiscmd, t_shell *shell, bool has_fork)
 	int i;
 	int	valid;
 
-	i = 0;
+	i = 1;
 	valid = 0;
 	if (!thiscmd->args[1])
 		return (how_exit(NULL ,has_fork, EXIT_SUCCESS, shell));
