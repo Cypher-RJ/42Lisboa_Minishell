@@ -64,7 +64,7 @@ int builtin_export(t_command *thiscmd, t_shell *shell, bool has_fork)
 		return (export_putenv(shell, has_fork));
 	while (thiscmd->args[i])
 	{
-		if (!is_var_valid(thiscmd->args[i], 0))
+		if (!is_var_valid(thiscmd->args[i]))
 			valid |= 1;
 		else if (export_var(thiscmd->args[i], shell))
 			return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
@@ -84,9 +84,7 @@ int	builtin_unset(t_command *thiscmd, t_shell *shell, bool has_fork)
 		return (how_exit(NULL ,has_fork, EXIT_SUCCESS, shell));
 	while (thiscmd->args[i])
 	{
-		if (!is_var_valid(thiscmd->args[i], 1))
-			continue;
-		else if (unset_var(thiscmd->args[i], shell))
+		if (unset_var(thiscmd->args[i], shell))
 			return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
 		i++;
 	}
