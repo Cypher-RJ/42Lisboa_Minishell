@@ -1,11 +1,16 @@
 #include "../includes/minishell.h"
 
-char	**build_env_str(char *trgt, char *str, char *envp)
+char	*build_env_str(char *trgt, char *str)
 {
-	int	size;
+	char	*line;
 
-	size = ft_strlen(trgt);
-	if (envp )
+	if (trgt && str)
+		line = ft_strjoin(trgt, str);
+	else
+		line = ft_strdup(trgt);
+	if (!line)
+		return (NULL);
+	return (line);
 }
 
 int	is_var_valid(char *str)
@@ -62,10 +67,7 @@ int	export_var(char *str, t_shell *shell)
 	j = 0;
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
-	if (str[i] == '\0')
-		j = i;
-	else
-		j = ++i;
+	j = i;
 	while (str[j])
 		j++;
 	if (make_name_value(str, i, j, shell))

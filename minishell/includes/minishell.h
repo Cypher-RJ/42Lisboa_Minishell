@@ -94,16 +94,17 @@ int			builtin_exit(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_export(t_command *cmds, t_shell *shell, bool has_fork);
 int			builtin_unset(t_command *cmds, t_shell *shell, bool has_fork);
 int			how_exit(char *msg, bool has_fork, int out, t_shell *shell);
-int			rep_add_envp(char *trgt, char *str, t_shell *shell);
 
 //builtin utils
-int			is_str_numeric(const char *str);
 long long	ft_ms_atoll(const char *str);
+int			is_str_numeric(const char *str);
 int			builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork);
 int			export_putenv(t_shell *shell, bool has_fork);
 int			is_var_valid(char *str);
 int			export_var(char *str, t_shell *shell);
 int			unset_var(char *str, t_shell *shell);
+int			rep_add_envp(char *trgt, char *str, t_shell *shell);
+char		*build_env_str(char *trgt, char *str);
 
 //free
 void		free_total(t_shell *shell);

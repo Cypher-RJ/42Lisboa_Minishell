@@ -53,11 +53,9 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 		res = increase_envp(shell);
 	if (res)
 		return (res);
-	/* if (trgt && str)
-		tmp = ft_strjoin(trgt, str);
-	else if (trgt && !str)
-		tmp = ft_strdup(trgt); */
-	tmp = build_env_str(trgt, str, shell->envp[i]);
+	if (shell->envp[i] && str == NULL)
+		return (res);
+	tmp = build_env_str(trgt, str);
 	if (!tmp)
 		return (write(2, "Failed to add var to envp", 26), EXIT_FAILURE);
 	if (shell->envp[i])
@@ -68,13 +66,18 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 
 int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 {
-	if (rep_add_envp("OLDPWD", oldpwd, shell))
-	{
-		free(oldpwd);
-		free(newpwd);
-		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
-	}
-	if (rep_add_envp("PWD", newpwd, shell))
+	char *temp;
+
+	temp = ft_strjoin("=", oldpwd);
+	free(oldpwd);
+	oldpwd = temp;
+	temp = ft_strjoin("=", newpwd);
+	free(newpwd);
+	newpwd = temp;
+	if (!oldpwd || !newpwd)
+		return (how_exit("Failed to create env values for cd", has_fork, EXIT_FAILURE, shell));
+	if (rep_add_envp("OLDPWD", oldpwd, shell) \
+		|| rep_add_envp("PWD", newpwd, shell))
 	{
 		free(oldpwd);
 		free(newpwd);
