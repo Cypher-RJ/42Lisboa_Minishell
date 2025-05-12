@@ -42,14 +42,22 @@ void	builtin_echo(t_command *thiscmd, t_shell *shell)
 
 	i = 1;
 	no_nl = false;
-	if (thiscmd->args[i] && !(ft_strcmp(thiscmd->args[i++], "-n")))
-		no_nl = true;
+	if (thiscmd->args[1] && !(ft_strncmp(thiscmd->args[1], "-n", 2)))
+	{
+		while (thiscmd->args[1][i] == 'n')
+			i++;
+		if (thiscmd->args[1][i] == '\0')
+			no_nl = true;
+		if (no_nl == true)
+			i = 2;
+		else
+			i = 1;
+	}
 	while (thiscmd->args[i])
 	{
-		ft_putstr_fd(thiscmd->args[i], STDOUT_FILENO);
-		if (thiscmd->args[i + 1])
+		ft_putstr_fd(thiscmd->args[i++], STDOUT_FILENO);
+		if (thiscmd->args[i])
 			write(1, " ", 1);
-		i++;
 	}
 	if (!no_nl)
 		write(1, "\n", 1);
