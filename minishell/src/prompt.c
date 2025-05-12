@@ -9,7 +9,7 @@ char	*build_prompt(void)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		cwd = ft_strdup("unknown");
-	tmp = ft_strjoin("\001\033[1;34m\002", cwd); // Add BOLD_BLUE for cwd
+	tmp = ft_strjoin("\001\033[1;34m\002", cwd);
 	free(cwd);
 	if (!tmp)
 		return (NULL);
@@ -41,7 +41,6 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	}
 	ft_free_split(strs);
 	resolve_path(*cmds, shell);
-	// printf("%s\n", (*cmds)->path);
 }
 
 void	cleanup_and_exit(t_shell *shell, t_command *cmds)

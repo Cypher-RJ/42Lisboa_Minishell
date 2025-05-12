@@ -1,12 +1,11 @@
 #include "../includes/minishell.h"
 
-
 void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 {
-	child_pipes(prev_fd, (thiscmd->next != NULL), fd, shell); // se falhar faz exit da child, sem espinhas
-	redirector(thiscmd->redir, shell, 1); // se redir != null, faz redir ate == null. Se comeca null, nao faz nada
-	execute_builtin(thiscmd, shell, 1);//se encontra comando faz exit success ou failure deposi de executar, se nao segue para exec_command
-	execute_command(thiscmd, shell);//executa e faz exit success ou exit com erro
+	child_pipes(prev_fd, (thiscmd->next != NULL), fd, shell);
+	redirector(thiscmd->redir, shell, 1);
+	execute_builtin(thiscmd, shell, 1);
+	execute_command(thiscmd, shell);
 }
 
 int	daddy_time(int *prev_fd, bool next, int fd[])
@@ -33,13 +32,13 @@ void	executor_fork(t_shell *shell)
 	while (thiscmd != NULL)
 	{
 		if (make_pipe(fd, (thiscmd->next != NULL)) == -1)
-			break;
+			break ;
 		pid = fork_it();
 		if (pid == -1)
-			break;
-		if (pid == 0) // Processo filho
+			break ;
+		if (pid == 0)
 			child_labor(prev_fd, thiscmd, fd, shell);
-		prev_fd = daddy_time(&prev_fd, (thiscmd->next != NULL), fd);// So o pai chega aqui
+		prev_fd = daddy_time(&prev_fd, (thiscmd->next != NULL), fd);
 		thiscmd = thiscmd->next;
 	}
 	thiscmd = shell->cmds;

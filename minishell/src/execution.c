@@ -2,7 +2,7 @@
 
 void	execute_command(t_command *cmd, t_shell *shell)
 {
-	char *errstr;
+	char	*errstr;
 
 	errstr = NULL;
 	if (cmd->path == NULL)
@@ -48,7 +48,8 @@ int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 
 void	executor(t_shell *shell)
 {
-	if (shell->cmds->next == NULL && (is_unique_builtin(shell->cmds->args[0]) == 1))
+	if (shell->cmds->next == NULL && \
+		(is_unique_builtin(shell->cmds->args[0]) == 1))
 	{
 		execute_builtin(shell->cmds, shell, 0);
 	}

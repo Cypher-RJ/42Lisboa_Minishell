@@ -1,8 +1,8 @@
 #include "../includes/minishell.h"
 
-void free_redir_list(t_redirect *redir)
+void	free_redir_list(t_redirect *redir)
 {
-	t_redirect *tmp;
+	t_redirect	*tmp;
 
 	while (redir)
 	{
@@ -16,7 +16,7 @@ void free_redir_list(t_redirect *redir)
 
 void	free_command_list(t_command *cmds)
 {
-	t_command *tmp;
+	t_command	*tmp;
 
 	while (cmds)
 	{

@@ -66,9 +66,9 @@ char	*get_path(char *cmd, t_shell *shell)
 	return (full_path);
 }
 
-void resolve_path(t_command *cmds, t_shell *shell)
+void	resolve_path(t_command *cmds, t_shell *shell)
 {
-	t_command *current;
+	t_command	*current;
 
 	current = cmds;
 	while (current)

@@ -19,9 +19,11 @@ int	is_str_numeric(const char *str)
 
 long long	ft_ms_atoll(const char *str)
 {
-	long long	result = 0;
-	int			sign = 1;
+	long long	result;
+	int			sign;
 
+	result = 0;
+	sign = 1;
 	while (*str == ' ' || (*str >= 9 && *str <= 13))
 		str++;
 	if (*str == '+' || *str == '-')

@@ -20,6 +20,7 @@ char	**copy_env(char **envp)
 	}
 	return (dest);
 }
+
 void	sort_envtmp(char **envtmp)
 {
 	int		i;
@@ -72,7 +73,7 @@ void	put_envtmp(char *envtmp)
 	write(STDOUT_FILENO, "\n", 2);
 }
 
-int export_putenv(t_shell *shell, bool has_fork)
+int	export_putenv(t_shell *shell, bool has_fork)
 {
 	char	**envtmp;
 	int		i;

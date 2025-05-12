@@ -32,12 +32,11 @@ int	find_tgt_env(char **envp, char *tgt)
 	i = 0;
 	if (tgt[l - 1] != '=')
 	{
-		while (envp[i])
+		while (envp[i++])
 		{
-			if (!ft_strncmp(envp[i], tgt, l) && (envp[i][l] == '\0' \
-				|| envp[i][l] == '='))
+			if (!ft_strncmp(envp[i - 1], tgt, l) && (envp[i - 1][l] == '\0' \
+				|| envp[i - 1][l] == '='))
 				return (-1);
-			i++;
 		}
 	}
 	if (tgt[l - 1] == '=')
@@ -59,7 +58,7 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 	int		i;
 	int		res;
 
-	tmp	= NULL;
+	tmp = NULL;
 	res = 0;
 	i = find_tgt_env(shell->envp, trgt);
 	if (i < 0)
@@ -99,12 +98,12 @@ int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 	return (EXIT_SUCCESS);
 }
 
-int builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
+int	builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 {
-    char *old_pwd;
-	char *new_pwd;
+	char	*old_pwd;
+	char	*new_pwd;
 
-    old_pwd = getcwd(NULL, 0);
+	old_pwd = getcwd(NULL, 0);
 	if (!old_pwd && shell)
 		return (how_exit("getcwd() failed to allocate", has_fork, \
 			EXIT_FAILURE, shell));
@@ -121,7 +120,7 @@ int builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 		return (how_exit("getcwd() failed to allocate", has_fork, \
 			EXIT_FAILURE, shell));
 	}
-	if (adjust_envp(old_pwd, new_pwd,has_fork, shell))
+	if (adjust_envp(old_pwd, new_pwd, has_fork, shell))
 		return (EXIT_FAILURE);
-    return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
+	return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
 }

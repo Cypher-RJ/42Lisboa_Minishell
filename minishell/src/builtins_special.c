@@ -2,13 +2,13 @@
 
 int	is_unique_builtin(char *cmd)
 {
-	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "exit") || 
-		!ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
+	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "exit") \
+		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
 }
 
 int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (thiscmd->args[2])
@@ -31,7 +31,7 @@ int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 
 int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 {
-	long long status;
+	long long	status;
 
 	status = EXIT_SUCCESS;
 	ft_putendl_fd("exit", STDERR_FILENO);
@@ -42,7 +42,7 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(thiscmd->args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		how_exit(NULL, 1, EXIT_FAILURE, shell); //
+		how_exit(NULL, 1, EXIT_FAILURE, shell);
 	}
 	else if (thiscmd->args[2])
 		return (how_exit("minishell: exit: too many arguments", \
@@ -53,9 +53,9 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 	return (how_exit(NULL, 1, (unsigned char)status, shell));
 }
 
-int builtin_export(t_command *thiscmd, t_shell *shell, bool has_fork)
+int	builtin_export(t_command *thiscmd, t_shell *shell, bool has_fork)
 {
-	int i;
+	int	i;
 	int	valid;
 
 	i = 1;
@@ -75,13 +75,13 @@ int builtin_export(t_command *thiscmd, t_shell *shell, bool has_fork)
 
 int	builtin_unset(t_command *thiscmd, t_shell *shell, bool has_fork)
 {
-	int i;
+	int	i;
 	int	valid;
 
 	i = 1;
 	valid = 0;
 	if (!thiscmd->args[1])
-		return (how_exit(NULL ,has_fork, EXIT_SUCCESS, shell));
+		return (how_exit(NULL, has_fork, EXIT_SUCCESS, shell));
 	while (thiscmd->args[i])
 	{
 		if (unset_var(thiscmd->args[i], shell))

@@ -68,7 +68,7 @@ char		*remove_outer_quotes(char *str);
 
 // pipes & pipe_functions
 void		child_pipes(int prev_fd, bool next, int fd[], t_shell *shell);
-pid_t		fork_it();
+pid_t		fork_it(void);
 int			make_pipe(int fd[], bool has_next);
 void		executor_fork(t_shell *shell);
 

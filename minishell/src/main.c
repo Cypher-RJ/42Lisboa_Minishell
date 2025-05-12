@@ -21,6 +21,9 @@ char	**copy_shlvl(char **envp)
 	return (new_envp);
 }
 
+//Isto falha se o shlvl nao existir. Tem que receber o t_shell,
+//e se acrescentar-lhe mais uma linha ao envp antes fazer as 
+//duas linhas finais
 void	increment_shlvl(char **envp)
 {
 	int		i;
@@ -43,9 +46,6 @@ void	increment_shlvl(char **envp)
 		}
 		i++;
 	}
-	// se SHLVL não existir, ele aqui esta no \0. Precisas fazer um malloc de new_envp de i+1,
-	// recopiar o envp para new_envp, liberar o envp, e depois fazer estas linhas seguintes. 
-	// ou podes assumir que ele existe sempre....
 	envp[i] = ft_strdup("SHLVL=1");
 	envp[i + 1] = NULL;
 }
@@ -53,7 +53,7 @@ void	increment_shlvl(char **envp)
 int	main(int ac, char **av, char **envp)
 {
 	char	**my_envp;
-	t_shell *shell;
+	t_shell	*shell;
 
 	(void)ac;
 	(void)av;

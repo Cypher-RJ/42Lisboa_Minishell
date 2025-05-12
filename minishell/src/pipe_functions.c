@@ -14,7 +14,7 @@ int	make_pipe(int fd[], bool has_next)
 	}
 }
 
-pid_t	fork_it()
+pid_t	fork_it(void)
 {
 	pid_t	pid;
 
@@ -26,7 +26,7 @@ pid_t	fork_it()
 
 void	child_pipes(int prev_fd, bool next, int fd[], t_shell *shell)
 {
-	if (prev_fd != -1) // se nao for primeiro comando
+	if (prev_fd != -1)
 	{
 		if (dup2(prev_fd, STDIN_FILENO) == -1)
 		{
@@ -37,7 +37,7 @@ void	child_pipes(int prev_fd, bool next, int fd[], t_shell *shell)
 		}
 		close(prev_fd);
 	}
-	if (next == 1) // se nao for ultimo comando
+	if (next == 1)
 	{
 		if (dup2(fd[1], STDOUT_FILENO) == -1)
 		{

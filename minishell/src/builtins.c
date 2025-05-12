@@ -22,7 +22,7 @@ int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 
 void	builtin_pwd(t_command *thiscmd, t_shell *shell)
 {
-	char *cwd;
+	char	*cwd;
 
 	cwd = NULL;
 	if (thiscmd->args[1])
@@ -73,7 +73,7 @@ void	builtin_env(t_command *cmds, t_shell *shell)
 		how_exit("env: too many arguments", 1, EXIT_FAILURE, shell);
 	while (shell->envp[i] && cmds)
 	{
-		ft_putendl_fd( shell->envp[i], STDOUT_FILENO);
+		ft_putendl_fd(shell->envp[i], STDOUT_FILENO);
 		i++;
 	}
 	how_exit(NULL, 1, EXIT_SUCCESS, shell);

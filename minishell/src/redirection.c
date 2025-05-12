@@ -20,7 +20,7 @@ int	redirect_input(char *file, t_shell *shell, bool has_fork)
 
 int	heredoc_readline(char *word, int fd[])
 {
-	char *line;
+	char	*line;
 
 	line = readline("> ");
 	if (!line) // isto precisa de um signal handler. Se for ctr-d faz return, outros sinais ou erro faz exit
@@ -46,7 +46,7 @@ int	redirect_heredoc(char *word, t_shell *shell, bool has_fork)
 	while (1)
 	{
 		if (heredoc_readline(word, fd) == -1)
-			break;
+			break ;
 	}
 	close(fd[1]);
 	if (dup2(fd[0], STDIN_FILENO) == -1)

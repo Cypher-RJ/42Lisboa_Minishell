@@ -44,7 +44,7 @@ int	unset_var(char *str, t_shell *shell)
 	{
 		if (!ft_strncmp(shell->envp[j], str, i) && \
 			(shell->envp[j][i] == '=' || shell->envp[j][i] == '\0'))
-			break;
+			break ;
 		j++;
 	}
 	if (shell->envp[j] == NULL)

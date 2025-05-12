@@ -1,8 +1,8 @@
 #include "../includes/minishell.h"
 
-char *remove_outer_quotes(char *str)
+char	*remove_outer_quotes(char *str)
 {
-	size_t len;
+	size_t	len;
 
 	if (!str)
 		return (NULL);
