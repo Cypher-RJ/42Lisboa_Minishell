@@ -10,6 +10,9 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include <signal.h>
+
+extern volatile sig_atomic_t g_signal_status;
 
 typedef struct s_redirect
 {

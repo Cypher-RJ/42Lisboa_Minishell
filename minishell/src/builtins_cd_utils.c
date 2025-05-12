@@ -30,24 +30,12 @@ int	find_tgt_env(char **envp, char *tgt)
 
 	l = ft_strlen(tgt);
 	i = 0;
-	if (tgt[l - 1] != '=')
+	while (envp[i])
 	{
-		while (envp[i++])
-		{
-			if (!ft_strncmp(envp[i - 1], tgt, l) && (envp[i - 1][l] == '\0' \
-				|| envp[i - 1][l] == '='))
-				return (-1);
-		}
-	}
-	if (tgt[l - 1] == '=')
-	{
-		while (envp[i])
-		{
-			if (!ft_strncmp(envp[i], tgt, l - 1) && (envp[i][l - 1] == '\0' \
-				|| envp[i][l - 1] == '='))
-				return (i);
-			i++;
-		}
+		if (!ft_strncmp(envp[i], tgt, l) && (envp[i][l] == '\0' \
+			|| envp[i][l] == '='))
+			return (i);
+		i++;
 	}
 	return (i);
 }
@@ -61,16 +49,15 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 	tmp = NULL;
 	res = 0;
 	i = find_tgt_env(shell->envp, trgt);
-	if (i < 0)
-		return (0);
 	if (shell->envp[i] == NULL)
 		res = increase_envp(shell);
 	if (res)
 		return (res);
-	if (trgt && str)
+	/* if (trgt && str)
 		tmp = ft_strjoin(trgt, str);
 	else if (trgt && !str)
-		tmp = ft_strdup(trgt);
+		tmp = ft_strdup(trgt); */
+	tmp = build_env_str(trgt, str, shell->envp[i]);
 	if (!tmp)
 		return (write(2, "Failed to add var to envp", 26), EXIT_FAILURE);
 	if (shell->envp[i])
@@ -81,13 +68,13 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 
 int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 {
-	if (rep_add_envp("OLDPWD=", oldpwd, shell))
+	if (rep_add_envp("OLDPWD", oldpwd, shell))
 	{
 		free(oldpwd);
 		free(newpwd);
 		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
 	}
-	if (rep_add_envp("PWD=", newpwd, shell))
+	if (rep_add_envp("PWD", newpwd, shell))
 	{
 		free(oldpwd);
 		free(newpwd);

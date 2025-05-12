@@ -1,5 +1,7 @@
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_signal_status;
+
 char	**copy_shlvl(char **envp)
 {
 	int		i;

@@ -70,6 +70,11 @@ void	prompt_loop(t_shell *shell)
 		free(prompt);
 		if (!input)
 			cleanup_and_exit(shell, cmds);
+		if (g_signal_status)
+		{
+			shell->exit_status = g_signal_status;
+			g_signal_status = 0;
+		}
 		if (!*input)
 		{
 			free(input);

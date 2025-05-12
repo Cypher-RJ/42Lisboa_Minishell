@@ -1,5 +1,13 @@
 #include "../includes/minishell.h"
 
+char	**build_env_str(char *trgt, char *str, char *envp)
+{
+	int	size;
+
+	size = ft_strlen(trgt);
+	if (envp )
+}
+
 int	is_var_valid(char *str)
 {
 	int	i;
