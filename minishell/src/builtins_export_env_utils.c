@@ -47,38 +47,43 @@ void	sort_envtmp(char **envtmp)
 	}
 }
 
-void	put_envtmp(char *envtmp)
+int	put_envtmp(char *envtmp)
 {
-	int	i;
+	int		i;
+	int		eq;
+	char	*line;
 
 	i = 0;
+	eq = 0;
 	while (envtmp[i] != 0 && envtmp[i] != '=')
-	{
-		ft_putchar_fd(envtmp[i], STDOUT_FILENO);
 		i++;
-	}
 	if (envtmp[i] == '=')
 	{
-		write(1, "=", 2);
 		i++;
-		if (envtmp[i] == '\0')
-			ft_putstr_fd("\"\"", STDOUT_FILENO);
+		eq = 1;
 	}
+	line = calloc(i + 1, sizeof(char));
+	if (!line)
+		return (1);
+	ft_strlcat(line, envtmp, i + 1);
+	ft_printf("declare -x %s", line);
 	if (envtmp[i] != '\0')
-	{
-		ft_putstr_fd("\"", STDOUT_FILENO);
-		ft_putstr_fd(&envtmp[i], STDOUT_FILENO);
-		ft_putstr_fd("\"", STDOUT_FILENO);
-	}
-	write(STDOUT_FILENO, "\n", 2);
+		ft_printf("\"%s\"", &envtmp[i]);
+	if (envtmp[i] == '\0' && eq)
+		ft_printf("\"\"");
+	ft_printf("\n");
+	free(line);
+	return (0);
 }
 
 int	export_putenv(t_shell *shell, bool has_fork)
 {
 	char	**envtmp;
 	int		i;
+	int		res;
 
 	i = 0;
+	res = 0;
 	envtmp = copy_env(shell->envp);
 	if (!envtmp)
 		return (how_exit("Failed malloc of envtmp for sort", \
@@ -86,8 +91,10 @@ int	export_putenv(t_shell *shell, bool has_fork)
 	sort_envtmp(envtmp);
 	while (envtmp[i])
 	{
-		ft_putstr_fd("declare -x ", STDOUT_FILENO);
-		put_envtmp(envtmp[i]);
+		res = put_envtmp(envtmp[i]);
+		if (res)
+		return (how_exit("Failed to build export line", \
+			has_fork, EXIT_FAILURE, shell));
 		i++;
 	}
 	free(envtmp);
