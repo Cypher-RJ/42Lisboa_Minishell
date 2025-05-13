@@ -23,7 +23,7 @@ int	heredoc_readline(char *word, int fd[])
 	char	*line;
 
 	line = readline("> ");
-	if (!line) // isto precisa de um signal handler. Se for ctr-d faz return, outros sinais ou erro faz exit
+	if (!line)
 		return (-1);
 	if (strcmp(line, word) == 0)
 	{

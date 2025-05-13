@@ -41,6 +41,7 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	}
 	ft_free_split(strs);
 	resolve_path(*cmds, shell);
+	free(input);
 }
 
 void	cleanup_and_exit(t_shell *shell, t_command *cmds)
@@ -71,19 +72,14 @@ void	prompt_loop(t_shell *shell)
 		if (!input)
 			cleanup_and_exit(shell, cmds);
 		if (g_signal_status)
-		{
-			shell->exit_status = g_signal_status;
-			g_signal_status = 0;
-		}
+			pass_signal_status(shell);
 		if (!*input)
 		{
 			free(input);
 			continue ;
 		}
 		handle_input(input, shell, &cmds);
-		free(input);
 		shell->cmds = cmds;
 		executor(shell);
-		free_command_list(cmds);
 	}
 }

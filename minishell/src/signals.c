@@ -17,3 +17,15 @@ void	setup_signals(void)
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
+
+void	pass_signal_status(t_shell	*shell)
+{
+	shell->exit_status = g_signal_status;
+	g_signal_status = 0;
+}
+
+void	restore_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}

@@ -2,6 +2,7 @@
 
 void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 {
+	restore_signals();
 	child_pipes(prev_fd, (thiscmd->next != NULL), fd, shell);
 	redirector(thiscmd->redir, shell, 1);
 	execute_builtin(thiscmd, shell, 1);

@@ -52,6 +52,15 @@ void	increment_shlvl(char **envp)
 	envp[i + 1] = NULL;
 }
 
+void	disable_echoctl(void)
+{
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;//vscode nao encontra mas compila e funciona
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char	**my_envp;
@@ -59,6 +68,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
+	disable_echoctl();
 	shell = malloc(sizeof(t_shell));
 	my_envp = copy_shlvl(envp);
 	increment_shlvl(my_envp);

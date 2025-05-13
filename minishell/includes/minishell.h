@@ -11,6 +11,8 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <termios.h>
+# include <unistd.h>
 
 extern volatile sig_atomic_t g_signal_status;
 
@@ -42,8 +44,6 @@ char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
 char		*get_env_path(t_shell *shell);
 int			is_executable(char *filepath);
-void		setup_signals(void);
-void		signal_handler(int sig);
 char		*expand_env_variable(const char *arg, char **envp);
 void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
@@ -105,6 +105,12 @@ int			export_var(char *str, t_shell *shell);
 int			unset_var(char *str, t_shell *shell);
 int			rep_add_envp(char *trgt, char *str, t_shell *shell);
 char		*build_env_str(char *trgt, char *str);
+
+//signals
+void		setup_signals(void);
+void		signal_handler(int sig);
+void		pass_signal_status(t_shell	*shell);
+void		restore_signals(void);
 
 //free
 void		free_total(t_shell *shell);
