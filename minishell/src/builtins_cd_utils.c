@@ -88,6 +88,7 @@ int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 	return (EXIT_SUCCESS);
 }
 
+// ! cd dentro de um file que se apaga parte
 int	builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 {
 	char	*old_pwd;

@@ -120,3 +120,10 @@ char	**ft_split_quotes(char *str)
 	result[k] = NULL;
 	return (result);
 }
+
+
+
+
+
+//! ? depois do $
+//! 

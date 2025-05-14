@@ -57,6 +57,15 @@ char *expand_env_variable(const char *arg, char **envp)
 		}
 		else if (arg[i] == '$' && !in_single && arg[i + 1])
 		{
+			if (arg[i + 1] == '?')
+			{
+				val = ft_itoa(g_signal_status);
+				tmp = ft_strjoin_free(result, val);
+				free(val);
+				result = tmp;
+				i += 2; // Skip "$?"
+				continue;
+			}
 			int start = ++i;
 			while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
 				i++;
