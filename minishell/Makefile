@@ -17,6 +17,7 @@ SRCS = src/builtins_cd_utils.c \
 		src/pipes.c \
 		src/prompt.c \
 		src/redirection.c \
+		src/signals_heredoc.c \
 		src/signals.c \
 		src/utils.c \
 \

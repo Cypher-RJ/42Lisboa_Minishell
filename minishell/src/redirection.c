@@ -40,6 +40,7 @@ int	redirect_heredoc(char *word, t_shell *shell, bool has_fork)
 {
 	int		fd[2];
 
+	setup_heredoc_signals();
 	if (pipe(fd) == -1)
 		return (how_exit("Failed to open HEREDOC pipe", \
 			has_fork, EXIT_FAILURE, shell));
@@ -49,6 +50,7 @@ int	redirect_heredoc(char *word, t_shell *shell, bool has_fork)
 			break ;
 	}
 	close(fd[1]);
+	restore_signals();
 	if (dup2(fd[0], STDIN_FILENO) == -1)
 	{
 		close(fd[0]);
