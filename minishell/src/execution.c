@@ -50,9 +50,7 @@ void	executor(t_shell *shell)
 {
 	if (shell->cmds->next == NULL && \
 		(is_unique_builtin(shell->cmds->args[0]) == 1))
-	{
 		execute_builtin(shell->cmds, shell, 0);
-	}
 	else
 		executor_fork(shell);
 }
