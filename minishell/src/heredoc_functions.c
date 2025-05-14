@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	heredoc_readline(char *word, int fd[])
+void	heredoc_readline(char *word, int fd[], t_shell *shell)
 {
 	char	*line;
 
@@ -12,13 +12,13 @@ void	heredoc_readline(char *word, int fd[])
 		if (!line)
 		{
 			close(fd[1]);
-			exit(-1);
+			how_exit(NULL, 1, EXIT_FAILURE, shell);
 		}
 		if (strcmp(line, word) == 0)
 		{
 			close(fd[1]);
 			free(line);
-			exit(-1);
+			how_exit(NULL, 1, EXIT_SUCCESS, shell);
 		}
 		write(fd[1], line, strlen(line));
 		write(fd[1], "\n", 1);
@@ -31,6 +31,7 @@ void	heredoc_readline(char *word, int fd[])
 int	redirect_heredoc(t_redirect *redir, t_shell *shell)
 {
 	int		fd[2];
+	int		status;
 	pid_t	pid;
 
 	if (pipe(fd) < 0)
@@ -43,11 +44,15 @@ int	redirect_heredoc(t_redirect *redir, t_shell *shell)
 		return (perror("Failed to fork heredoc\n"), 1);
 	}
 	if (pid == 0)
-		heredoc_readline(redir->passorfile, fd);
+		heredoc_readline(redir->passorfile, fd, shell);
 	restore_signals();
 	close(fd[1]);
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		return (shell->exit_status = 128 + SIGINT, 1);
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+		return (1);
 	redir->hf_fd = fd[0];
-	waitpid(pid, NULL, 0);
 	return (EXIT_SUCCESS);
 }
 

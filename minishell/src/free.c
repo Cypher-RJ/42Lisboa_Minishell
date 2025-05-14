@@ -9,6 +9,8 @@ void	free_redir_list(t_redirect *redir)
 		tmp = redir->next;
 		free(redir->direction);
 		free(redir->passorfile);
+		if (redir->hf_fd != -1)
+			close(redir->hf_fd);
 		free(redir);
 		redir = tmp;
 	}

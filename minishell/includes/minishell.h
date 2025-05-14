@@ -80,6 +80,7 @@ void		executor_fork(t_shell *shell);
 
 // redirection
 int			redirector(t_redirect *redir, t_shell *shell, bool has_fork);
+int			find_heredocs(t_shell *shell);
 
 //execution
 void		executor(t_shell *shell);
