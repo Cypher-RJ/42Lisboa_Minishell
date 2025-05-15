@@ -18,47 +18,6 @@ int	redirect_input(char *file, t_shell *shell, bool has_fork)
 	return (EXIT_SUCCESS);
 }
 
-int	heredoc_readline(char *word, int fd[])
-{
-	char	*line;
-
-	line = readline("> ");
-	if (!line)
-		return (-1);
-	if (strcmp(line, word) == 0)
-	{
-		free(line);
-		return (-1);
-	}
-	write(fd[1], line, strlen(line));
-	write(fd[1], "\n", 1);
-	free(line);
-	return (EXIT_SUCCESS);
-}
-
-int	redirect_heredoc(char *word, t_shell *shell, bool has_fork)
-{
-	int		fd[2];
-
-	if (pipe(fd) == -1)
-		return (how_exit("Failed to open HEREDOC pipe", \
-			has_fork, EXIT_FAILURE, shell));
-	while (1)
-	{
-		if (heredoc_readline(word, fd) == -1)
-			break ;
-	}
-	close(fd[1]);
-	if (dup2(fd[0], STDIN_FILENO) == -1)
-	{
-		close(fd[0]);
-		return (how_exit("Failed to dup2 HEREDOC fd[0] to STDIN", \
-			has_fork, EXIT_FAILURE, shell));
-	}
-	close(fd[0]);
-	return (EXIT_SUCCESS);
-}
-
 int	redirect_output(char *file, int appd, t_shell *shell, bool has_fork)
 {
 	int	fd;

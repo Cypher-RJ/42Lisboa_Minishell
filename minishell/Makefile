@@ -9,6 +9,7 @@ SRCS = src/builtins_cd_utils.c \
 		src/builtins_unset_utils.c \
 		src/builtins.c \
 		src/env.c \
+		src/heredoc_functions.c \
 		src/execution.c \
 		src/free.c \
 		src/main.c \
@@ -17,6 +18,7 @@ SRCS = src/builtins_cd_utils.c \
 		src/pipes.c \
 		src/prompt.c \
 		src/redirection.c \
+		src/signals_heredoc.c \
 		src/signals.c \
 		src/utils.c \
 \

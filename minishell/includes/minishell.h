@@ -1,6 +1,8 @@
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "signal_config.h"
 # include "../libft/inc/ft_printf.h"
 # include "../libft/inc/get_next_line.h"
 # include "../libft/inc/libft.h"
@@ -20,6 +22,7 @@ typedef struct s_redirect
 {
 	char				*direction;
 	char				*passorfile;
+	int					hf_fd;
 	struct s_redirect	*next;
 }						t_redirect;
 
@@ -77,6 +80,7 @@ void		executor_fork(t_shell *shell);
 
 // redirection
 int			redirector(t_redirect *redir, t_shell *shell, bool has_fork);
+int			find_heredocs(t_shell *shell);
 
 //execution
 void		executor(t_shell *shell);
@@ -111,6 +115,8 @@ void		setup_signals(void);
 void		signal_handler(int sig);
 void		pass_signal_status(t_shell	*shell);
 void		restore_signals(void);
+void		sigint_heredoc_handler(int sig);
+void		setup_heredoc_signals(void);
 
 //free
 void		free_total(t_shell *shell);
