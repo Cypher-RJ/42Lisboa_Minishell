@@ -30,7 +30,8 @@ t_command	*build_command_list(char **cmds, t_shell *shell)
 			if (!is_single_quoted(args[j]))
 			{
 				char *temp = args[j];
-				expanded = expand_env_variable(args[j], shell->envp);
+				expanded = expand_env_variable(args[j], shell->envp, \
+					shell->exit_status);
 				if (!expanded)
 				{
 					ft_free_split(args);

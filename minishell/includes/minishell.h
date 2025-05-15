@@ -47,7 +47,7 @@ char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
 char		*get_env_path(t_shell *shell);
 int			is_executable(char *filepath);
-char		*expand_env_variable(const char *arg, char **envp);
+char		*expand_env_variable(const char *arg, char **envp, int last_exit);
 void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
 char		**copy_shlvl(char **envp);

@@ -33,7 +33,7 @@ static char	*find_env_value(char *var_name, char **envp)
 	return (ft_strdup(""));
 }
 
-char *expand_env_variable(const char *arg, char **envp)
+char *expand_env_variable(const char *arg, char **envp, int last_exit)
 {
 	int		i = 0;
 	int		in_single = 0;
@@ -59,7 +59,7 @@ char *expand_env_variable(const char *arg, char **envp)
 		{
 			if (arg[i + 1] == '?')
 			{
-				val = ft_itoa(g_signal_status);
+				val = ft_itoa(last_exit);
 				tmp = ft_strjoin_free(result, val);
 				free(val);
 				result = tmp;

@@ -54,5 +54,4 @@ void	wait_for_children(pid_t last_pid, t_shell *shell)
 		}
 	}
 	shell->exit_status = exit_code;
-	g_signal_status = shell->exit_status;
 }
