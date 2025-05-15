@@ -28,7 +28,7 @@ void	heredoc_readline(char *word, int fd[], t_shell *shell)
 	exit(0);
 }
 
-int	redirect_heredoc(t_redirect *redir, t_shell *shell)
+int	store_heredoc(t_redirect *redir, t_shell *shell)
 {
 	int		fd[2];
 	int		status;
@@ -71,7 +71,7 @@ int	find_heredocs(t_shell *shell)
 		{
 			thisredir->hf_fd = -1;
 			if (ft_strncmp(thisredir->direction, "<<", 2) == 0)
-				res = redirect_heredoc(thisredir, shell);
+				res = store_heredoc(thisredir, shell);
 			if (res)
 				return (res);
 			thisredir = thisredir->next;
