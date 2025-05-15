@@ -17,6 +17,7 @@ int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 		free_total(shell);
 		exit (out);
 	}
+	g_signal_status = shell->exit_status;
 	return (out);
 }
 

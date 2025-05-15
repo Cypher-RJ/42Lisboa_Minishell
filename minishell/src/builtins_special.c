@@ -2,6 +2,8 @@
 
 int	is_unique_builtin(char *cmd)
 {
+	if (!cmd)
+		return (1);
 	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "exit") \
 		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
 }

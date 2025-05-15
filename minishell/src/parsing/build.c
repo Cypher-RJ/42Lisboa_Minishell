@@ -122,6 +122,7 @@ t_command	*build_redir(t_command *cmds)
 			}
 			redirect->direction = ft_strdup(cmds->args[i]);
 			redirect->passorfile = ft_strdup(cmds->args[i + 1]);
+			redirect->hf_fd = -1; //precisei inicializar isto, sorry
 			if (!redirect->direction || !redirect->passorfile)
 			{
 				free(redirect->direction);
