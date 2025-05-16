@@ -97,29 +97,34 @@ char	**ft_split_quotes(char *str)
 
 		if (str[i] == '\'' || str[i] == '"')
 		{
-			quote = str[i++];
-			start = i - 1;
+			quote = str[i];
+			start = i; // include the quote
+			i++;
 			while (str[i] && str[i] != quote)
 				i++;
-			if (str[i])
-				i++;
-			result[k] = ft_substr(str, start, i - start);
-			if (result[k] != NULL)
-				k++;
+			if (str[i] == quote)
+			{
+				i++; // include the closing quote
+				result[k++] = ft_substr(str, start, i - start);
+			}
+			else
+			{
+				// Unterminated quote: take until end
+				result[k++] = ft_substr(str, start, i - start);
+			}
 		}
 		else
 		{
 			start = i;
 			while (str[i] && str[i] != ' ' && str[i] != '\'' && str[i] != '"')
 				i++;
-			result[k] = ft_substr(str, start, i - start);
-			if (result[k] != NULL)
-			k++;
+			result[k++] = ft_substr(str, start, i - start);
 		}
 	}
 	result[k] = NULL;
 	return (result);
 }
+
 
 
 
