@@ -2,43 +2,35 @@
 
 static int	count_words(char *str)
 {
-	int	count;
-	int	in_word;
-	int	in_quotes;
-	int	i;
-	char quote_char;
+	int count = 0;
+	int i = 0;
 
-	count = 0;
-	in_word = 0;
-	in_quotes = 0;
-	i = 0;
 	while (str[i])
 	{
-		if ((str[i] == '"' || str[i] == '\'') && (i == 0 || str[i - 1] != '\\'))
+		// Skip spaces
+		while (str[i] == ' ')
+			i++;
+
+		if (!str[i])
+			break;
+
+		// Handle a quoted segment
+		if (str[i] == '\'' || str[i] == '"')
 		{
-			if (!in_quotes)
-			{
-				quote_char = str[i];
-				in_quotes = 1;
-				if (in_word == 0)
-				{
-					in_word = 1;
-					count++;
-				}
-			}
-			else if (str[i] == quote_char)
-			{
-				in_quotes = 0;
-			}
-		}
-		else if (str[i] != '|' && str[i] != ' ' && in_word == 0)
-		{
-			in_word = 1;
+			char quote = str[i++];
+			while (str[i] && str[i] != quote)
+				i++;
+			if (str[i] == quote)
+				i++;
 			count++;
 		}
-		else if (!in_quotes && ((str[i] == '|') || str[i] == ' '))
-			in_word = 0;
-		i++;
+		else
+		{
+			// Regular word (unquoted)
+			while (str[i] && str[i] != ' ' && str[i] != '"' && str[i] != '\'')
+				i++;
+			count++;
+		}
 	}
 	return (count);
 }
@@ -124,11 +116,3 @@ char	**ft_split_quotes(char *str)
 	result[k] = NULL;
 	return (result);
 }
-
-
-
-
-
-
-//! ? depois do $
-//! 

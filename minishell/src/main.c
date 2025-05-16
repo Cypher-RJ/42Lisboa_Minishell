@@ -75,7 +75,5 @@ int	main(int ac, char **av, char **envp)
 	shell->envp = my_envp;
 	shell->exit_status = 0;
 	prompt_loop(shell);
-	ft_free_split(my_envp);
-	free(shell);
 	return (0);
 }

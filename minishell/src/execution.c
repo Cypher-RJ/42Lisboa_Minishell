@@ -58,6 +58,7 @@ void	executor(t_shell *shell)
 	else
 		executor_fork(shell);
 	free_command_list(shell->cmds);
+	shell->cmds = NULL;
 }
 
 /* 

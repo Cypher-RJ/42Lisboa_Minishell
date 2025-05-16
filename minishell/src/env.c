@@ -3,17 +3,19 @@
 char	*remove_outer_quotes(char *str)
 {
 	size_t	len;
+	char	*clean;
 
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
 	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"' && str[len - 1] == '"')))
 	{
-		char *clean = ft_substr(str, 1, len - 2);
-		free(str);
-		return clean;
+		clean = ft_substr(str, 1, len - 2);
+		if (clean)
+			free(str);
+		return (clean);
 	}
-	return str;
+	return (str);
 }
 
 
@@ -105,8 +107,7 @@ char *expand_env_variable(const char *arg, char **envp, int last_exit)
 			i++;
 		}
 	}
-	// Remove only the outermost quotes after expansion
-	return (remove_outer_quotes(result));
+	return (result);
 }
 
 
