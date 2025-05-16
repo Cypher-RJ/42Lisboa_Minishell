@@ -30,7 +30,8 @@ t_command	*build_command_list(char **cmds, t_shell *shell)
 			if (!is_single_quoted(args[j]))
 			{
 				char *temp = args[j];
-				expanded = expand_env_variable(args[j], shell->envp);
+				expanded = expand_env_variable(args[j], shell->envp, \
+					shell->exit_status);
 				if (!expanded)
 				{
 					ft_free_split(args);
@@ -122,6 +123,7 @@ t_command	*build_redir(t_command *cmds)
 			}
 			redirect->direction = ft_strdup(cmds->args[i]);
 			redirect->passorfile = ft_strdup(cmds->args[i + 1]);
+			redirect->hf_fd = -1; //precisei inicializar isto, sorry
 			if (!redirect->direction || !redirect->passorfile)
 			{
 				free(redirect->direction);

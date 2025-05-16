@@ -1,21 +1,23 @@
 #include "../includes/minishell.h"
 
-void	execute_command(t_command *cmd, t_shell *shell)
+void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 {
 	char	*errstr;
 
 	errstr = NULL;
+	if (cmd->args[0] == NULL)
+		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
 	if (cmd->path == NULL)
 	{
 		errstr = ft_strjoin(cmd->args[0], ": command not found\n");
 		perror(errstr);
 		free(errstr);
-		how_exit(NULL, 1, 127, shell);
+		how_exit(NULL, has_fork, 127, shell);
 	}
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
 	{
 		perror("Failure to execute execve\n");
-		how_exit(NULL, 1, EXIT_FAILURE, shell);
+		how_exit(NULL, has_fork, EXIT_FAILURE, shell);
 	}
 }
 
@@ -27,7 +29,7 @@ int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 	if (!has_fork && cmds->redir)
 	{
 		if (redirector(cmds->redir, shell, 0) != 0)
-			return (EXIT_FAILURE);
+			return (how_exit(NULL, 0, EXIT_FAILURE, shell));
 	}
 	if (!ft_strcmp(cmds->args[0], "cd"))
 		out = builtin_cd(cmds, shell, has_fork);
@@ -50,11 +52,12 @@ void	executor(t_shell *shell)
 {
 	if (find_heredocs(shell))
 		return ;
-	if (shell->cmds->next == NULL && \
+	if (shell->cmds->next == NULL && shell->cmds->args[0] &&
 		(is_unique_builtin(shell->cmds->args[0]) == 1))
 		execute_builtin(shell->cmds, shell, 0);
 	else
 		executor_fork(shell);
+	free_command_list(shell->cmds);
 }
 
 /* 

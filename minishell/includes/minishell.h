@@ -47,7 +47,7 @@ char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
 char		*get_env_path(t_shell *shell);
 int			is_executable(char *filepath);
-char		*expand_env_variable(const char *arg, char **envp);
+char		*expand_env_variable(const char *arg, char **envp, int last_exit);
 void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
 char		**copy_shlvl(char **envp);
@@ -84,7 +84,7 @@ int			find_heredocs(t_shell *shell);
 
 //execution
 void		executor(t_shell *shell);
-void		execute_command(t_command *cmd, t_shell *shell);
+void		execute_command(t_command *cmd, t_shell *shell, bool has_fork);
 int			execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
 
 //builtins && builtins_special
@@ -117,6 +117,7 @@ void		pass_signal_status(t_shell	*shell);
 void		restore_signals(void);
 void		sigint_heredoc_handler(int sig);
 void		setup_heredoc_signals(void);
+void		wait_for_children(pid_t last_pid, t_shell *shell);
 
 //free
 void		free_total(t_shell *shell);

@@ -5,8 +5,13 @@ void	child_labor(int prev_fd, t_command *thiscmd, int fd[], t_shell *shell)
 	restore_signals();
 	child_pipes(prev_fd, (thiscmd->next != NULL), fd, shell);
 	redirector(thiscmd->redir, shell, 1);
-	execute_builtin(thiscmd, shell, 1);
-	execute_command(thiscmd, shell);
+	if (thiscmd->args[0] == NULL)
+		how_exit(NULL, 1, EXIT_SUCCESS, shell);
+	else
+	{
+		execute_builtin(thiscmd, shell, 1);
+		execute_command(thiscmd, shell, 1);
+	}
 }
 
 int	daddy_time(int *prev_fd, bool next, int fd[])
@@ -42,10 +47,5 @@ void	executor_fork(t_shell *shell)
 		prev_fd = daddy_time(&prev_fd, (thiscmd->next != NULL), fd);
 		thiscmd = thiscmd->next;
 	}
-	thiscmd = shell->cmds;
-	while (thiscmd != NULL)
-	{
-		wait(NULL);
-		thiscmd = thiscmd->next;
-	}
+	wait_for_children(pid, shell);
 }
