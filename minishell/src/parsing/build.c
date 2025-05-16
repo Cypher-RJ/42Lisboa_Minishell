@@ -40,18 +40,23 @@ t_command	*build_command_list(char **cmds, t_shell *shell)
 				}
 				args[j] = expanded;
 				if (temp != expanded)
+				{
 					free(temp);
+					temp = NULL; // Prevent double-free
+				}
 			}
 			args[j] = remove_outer_quotes(args[j]);
 			if (ft_strlen(args[j]) == 0)
 			{
 				free(args[j]);
+				args[j] = NULL; // Prevent double-free
 				k = j;
 				while (args[k])
 				{
 					args[k] = args[k + 1];
 					k++;
 				}
+				// After shifting, do not increment j; we'll re-visit the entry
 				continue;
 			}
 			j++;
