@@ -40,23 +40,44 @@ char *expand_env_variable(const char *arg, char **envp)
 	int		in_double = 0;
 	char	*result = ft_strdup("");
 	char	*var, *val, *tmp;
+	char	outer_quote = 0;
+
+	// Detect outermost quote type
+	if (arg[0] == '\'' || arg[0] == '"') {
+		outer_quote = arg[0];
+	}
 
 	while (arg[i])
 	{
+		// Toggle quote states, but preserve the outermost quote context
 		if (arg[i] == '\'' && !in_double)
 		{
 			in_single = !in_single;
+			tmp = ft_strjoin_free(result, "'");
+			result = tmp;
 			i++;
 			continue;
 		}
 		else if (arg[i] == '"' && !in_single)
 		{
 			in_double = !in_double;
+			tmp = ft_strjoin_free(result, "\"");
+			result = tmp;
 			i++;
 			continue;
 		}
 		else if (arg[i] == '$' && !in_single && arg[i + 1])
 		{
+			// Don't expand variables inside single quotes
+			if (outer_quote == '\'' && in_single)
+			{
+				char buf[2] = { arg[i], '\0' };
+				tmp = ft_strjoin_free(result, buf);
+				result = tmp;
+				i++;
+				continue;
+			}
+			
 			if (arg[i + 1] == '?')
 			{
 				val = ft_itoa(g_signal_status);
@@ -84,7 +105,8 @@ char *expand_env_variable(const char *arg, char **envp)
 			i++;
 		}
 	}
-	return (result);
+	// Remove only the outermost quotes after expansion
+	return (remove_outer_quotes(result));
 }
 
 
