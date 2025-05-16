@@ -97,17 +97,21 @@ char	**ft_split_quotes(char *str)
 
 		if (str[i] == '\'' || str[i] == '"')
 		{
-			quote = str[i++];
-			start = i;
+			quote = str[i];
+			start = i; // include the quote
+			i++;
 			while (str[i] && str[i] != quote)
 				i++;
 			if (str[i] == quote)
 			{
+				i++; // include the closing quote
 				result[k++] = ft_substr(str, start, i - start);
-				i++;
 			}
 			else
-				result[k++] = ft_substr(str, start - 1, i - start + 1);
+			{
+				// Unterminated quote: take until end
+				result[k++] = ft_substr(str, start, i - start);
+			}
 		}
 		else
 		{
