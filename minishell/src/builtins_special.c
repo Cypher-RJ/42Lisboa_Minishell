@@ -47,7 +47,7 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(thiscmd->args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		how_exit(NULL, 1, EXIT_FAILURE, shell);
+		how_exit(NULL, 1, 2, shell);
 	}
 	else if (thiscmd->args[2])
 		return (how_exit("minishell: exit: too many arguments", \

@@ -90,7 +90,7 @@ int			execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
 //builtins && builtins_special
 int			is_builtin(char *cmd);
 int			is_unique_builtin(char *cmd);
-void		builtin_pwd(t_command *thiscmd, t_shell *shell);
+void		builtin_pwd(t_shell *shell);
 void		builtin_echo(t_command *cmds, t_shell *shell);
 void		builtin_env(t_command *cmds, t_shell *shell);
 int			builtin_cd(t_command *cmds, t_shell *shell, bool has_fork);

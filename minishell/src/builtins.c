@@ -21,13 +21,11 @@ int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 	return (out);
 }
 
-void	builtin_pwd(t_command *thiscmd, t_shell *shell)
+void	builtin_pwd(t_shell *shell)
 {
 	char	*cwd;
 
 	cwd = NULL;
-	if (thiscmd->args[1])
-		how_exit("pwd: too many arguments", 1, EXIT_FAILURE, shell);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 		how_exit("failed to allocate\n", 1, EXIT_FAILURE, shell);
