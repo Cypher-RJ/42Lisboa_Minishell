@@ -81,5 +81,6 @@ void	prompt_loop(t_shell *shell)
 		handle_input(input, shell, &cmds);
 		shell->cmds = cmds;
 		executor(shell);
+		cmds = NULL;
 	}
 }

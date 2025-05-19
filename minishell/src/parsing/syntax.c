@@ -10,38 +10,52 @@ int	is_single_quoted(char *str)
 	return (len >= 2 && str[0] == '\'' && str[len - 1] == '\'');
 }
 
-int	handle_segment(char *input, char **arg_slot, int *i)
+int handle_segment(char *input, char **arg_slot, int *i)
 {
-	int	start;
-	int	in_quotes;
-	char quote_char;
+    int     start;
+    int     in_quotes = 0;
+    char    quote_char = 0;
 
-	in_quotes = 0;
-	while (input[*i] == ' ' || input[*i] == '\t')
-		(*i)++;
-	start = *i;
-	while (input[*i])
-	{
-		if ((input[*i] == '"' || input[*i] == '\'') && (*i == 0 || input[*i - 1] != '\\'))
-		{
-			if (!in_quotes)
-			{
-				quote_char = input[*i];
-				in_quotes = 1;
-			}
-			else if (input[*i] == quote_char)
-				in_quotes = 0;
-		}
-		else if (input[*i] == '|' && !in_quotes)
-			break ;
-		(*i)++;
-	}
-	if (start == *i)
-		return (1);
-	*arg_slot = ft_substr(input, start, *i - start);
-	if (!*arg_slot)
-		return (0);
-	return (*arg_slot != NULL);
+    // Skip leading whitespace
+    while (input[*i] == ' ' || input[*i] == '\t')
+        (*i)++;
+    
+    start = *i;
+    
+    // Process characters until the end or a pipe outside quotes
+    while (input[*i])
+    {
+        // Handle quotes - keep track of whether we're inside quotes
+        if ((input[*i] == '"' || input[*i] == '\'') && (*i == 0 || input[*i - 1] != '\\'))
+        {
+            if (!in_quotes)
+            {
+                quote_char = input[*i];
+                in_quotes = 1;
+            }
+            else if (input[*i] == quote_char)
+            {
+                in_quotes = 0;
+            }
+        }
+        // Only break on a pipe if we're not inside quotes
+        else if (input[*i] == '|' && !in_quotes)
+        {
+            break;
+        }
+        (*i)++;
+    }
+    
+    // If we didn't advance, there's nothing here
+    if (start == *i)
+        return (1);
+    
+    // Extract the segment
+    *arg_slot = ft_substr(input, start, *i - start);
+    if (!*arg_slot)
+        return (0);
+    
+    return (*arg_slot != NULL);
 }
 
 int	check_pipe_and_ampersand(char *input, int *i, int *expect)

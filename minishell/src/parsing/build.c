@@ -1,83 +1,115 @@
 #include "../../includes/minishell.h"
 
-t_command	*build_command_list(char **cmds, t_shell *shell)
+static int is_completely_quoted(char *str)
 {
-	t_command	*head;
-	t_command	*current;
-	char		**args;
-	int			i;
-	int			j;
-	char		*expanded;
-	t_command	*new_node;
-	int			k;
+    size_t len = ft_strlen(str);
+    
+    if (len < 2)
+        return (0);
+        
+    // Check for matching quotes at beginning and end with no inner quotes of same type
+    if ((str[0] == '\'' && str[len-1] == '\'' && !strchr(str+1, '\'')) ||
+        (str[0] == '"' && str[len-1] == '"' && !strchr(str+1, '"')))
+        return (1);
+        
+    return (0);
+}
 
-	if (!cmds || !cmds[0])
-		return (NULL);
-	head = NULL;
-	current = NULL;
-	i = 0;
-	while (cmds[i])
-	{
-		args = ft_split_quotes(cmds[i]);
-		if (!args)
-		{
-			free_commands(head);
-			return (NULL);
-		}
-		j = 0;
-		while (args[j])
-		{
-			if (!is_single_quoted(args[j]))
-			{
-				char *temp = args[j];
-				expanded = expand_env_variable(args[j], shell->envp, \
-					shell->exit_status);
-				if (!expanded)
-				{
-					ft_free_split(args);
-					free_commands(head);
-					return (NULL);
-				}
-				args[j] = expanded;
-				if (temp != expanded)
-				{
-					free(temp);
-					temp = NULL; // Prevent double-free
-				}
-			}
-			args[j] = remove_outer_quotes(args[j]);
-			if (ft_strlen(args[j]) == 0)
-			{
-				free(args[j]);
-				args[j] = NULL; // Prevent double-free
-				k = j;
-				while (args[k])
-				{
-					args[k] = args[k + 1];
-					k++;
-				}
-				// After shifting, do not increment j; we'll re-visit the entry
-				continue;
-			}
-			j++;
-		}
-		new_node = ft_calloc(1, sizeof(t_command));
-		if (!new_node)
-		{
-			ft_free_split(args);
-			free_commands(head);
-			return (NULL);
-		}
-		new_node->args = args;
-		new_node->next = NULL;
-		if (!head)
-			head = new_node;
-		else
-			current->next = new_node;
-		current = new_node;
-		i++;
-	}
-	return (head);
+t_command *build_command_list(char **cmds, t_shell *shell)
+{
+    t_command   *head = NULL;
+    t_command   *current = NULL;
+    char        **args;
+    int         i, j;
+    char        *expanded;
+    t_command   *new_node;
+    int         k;
+    int         quote_preserved;
+
+    if (!cmds || !cmds[0])
+        return (NULL);
+    
+    i = 0;
+    while (cmds[i])
+    {
+        args = ft_split_quotes(cmds[i]);
+        if (!args)
+        {
+            free_commands(head);
+            return (NULL);
+        }
+        
+        j = 0;
+        while (args[j])
+        {
+            quote_preserved = 0;
+            
+            // Preserve single quotes completely - no expansion inside
+            if (is_single_quoted(args[j]))
+            {
+                // Remove only the outermost quotes and don't expand
+                args[j] = remove_outer_quotes(args[j]); 
+                quote_preserved = 1;
+            }
+            // For anything not in single quotes, do expansion
+            else if (!quote_preserved)
+            {
+                char *temp = args[j];
+                expanded = expand_env_variable(args[j], shell->envp, shell->exit_status);
+                if (!expanded)
+                {
+                    ft_free_split(args);
+                    free_commands(head);
+                    return (NULL);
+                }
+                args[j] = expanded;
+                if (temp != expanded)
+                {
+                    free(temp);
+                    temp = NULL; // Prevent double-free
+                }
+                
+                // Now remove quotes after expansion
+                args[j] = remove_outer_quotes(args[j]);
+            }
+            
+            // Remove empty arguments after expansion
+            if (ft_strlen(args[j]) == 0)
+            {
+                free(args[j]);
+                args[j] = NULL; // Prevent double-free
+                k = j;
+                while (args[k])
+                {
+                    args[k] = args[k + 1];
+                    k++;
+                }
+                // After shifting, do not increment j; we'll re-visit the entry
+                continue;
+            }
+            j++;
+        }
+        
+        // Create a new command node
+        new_node = ft_calloc(1, sizeof(t_command));
+        if (!new_node)
+        {
+            ft_free_split(args);
+            free_commands(head);
+            return (NULL);
+        }
+        new_node->args = args;
+        new_node->next = NULL;
+        
+        // Add to the command list
+        if (!head)
+            head = new_node;
+        else
+            current->next = new_node;
+        current = new_node;
+        i++;
+    }
+    return (head);
 }
 
 t_command	*build_redir(t_command *cmds)
