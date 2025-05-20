@@ -46,18 +46,23 @@ void	builtin_echo(t_command *thiscmd, t_shell *shell)
 		while (thiscmd->args[1][i] == 'n')
 			i++;
 		if (thiscmd->args[1][i] == '\0')
+		{
 			no_nl = true;
-		if (no_nl == true)
 			i = 2;
+		}
 		else
 			i = 1;
 	}
+	
+	// Print arguments with proper spacing
 	while (thiscmd->args[i])
 	{
-		ft_putstr_fd(thiscmd->args[i++], STDOUT_FILENO);
-		if (thiscmd->args[i])
+		ft_putstr_fd(thiscmd->args[i], STDOUT_FILENO);
+		if (thiscmd->args[i + 1]) // Print space only if there's another argument
 			write(1, " ", 1);
+		i++;
 	}
+	
 	if (!no_nl)
 		write(1, "\n", 1);
 	how_exit(NULL, 1, EXIT_SUCCESS, shell);

@@ -1,115 +1,52 @@
 #include "../../includes/minishell.h"
 
-static int is_completely_quoted(char *str)
+t_command	*build_command_list(char **cmds, t_shell *shell)
 {
-    size_t len = ft_strlen(str);
-    
-    if (len < 2)
-        return (0);
-        
-    // Check for matching quotes at beginning and end with no inner quotes of same type
-    if ((str[0] == '\'' && str[len-1] == '\'' && !strchr(str+1, '\'')) ||
-        (str[0] == '"' && str[len-1] == '"' && !strchr(str+1, '"')))
-        return (1);
-        
-    return (0);
-}
+	t_command	*head;
+	t_command	*current;
+	t_command	*new_node;
+	char		**args;
+	char		*expanded;
+	char		*temp;
+	int			i;
+	int			j;
 
-t_command *build_command_list(char **cmds, t_shell *shell)
-{
-    t_command   *head = NULL;
-    t_command   *current = NULL;
-    char        **args;
-    int         i, j;
-    char        *expanded;
-    t_command   *new_node;
-    int         k;
-    int         quote_preserved;
-
-    if (!cmds || !cmds[0])
-        return (NULL);
-    
-    i = 0;
-    while (cmds[i])
-    {
-        args = ft_split_quotes(cmds[i]);
-        if (!args)
-        {
-            free_commands(head);
-            return (NULL);
-        }
-        
-        j = 0;
-        while (args[j])
-        {
-            quote_preserved = 0;
-            
-            // Preserve single quotes completely - no expansion inside
-            if (is_single_quoted(args[j]))
-            {
-                // Remove only the outermost quotes and don't expand
-                args[j] = remove_outer_quotes(args[j]); 
-                quote_preserved = 1;
-            }
-            // For anything not in single quotes, do expansion
-            else if (!quote_preserved)
-            {
-                char *temp = args[j];
-                expanded = expand_env_variable(args[j], shell->envp, shell->exit_status);
-                if (!expanded)
-                {
-                    ft_free_split(args);
-                    free_commands(head);
-                    return (NULL);
-                }
-                args[j] = expanded;
-                if (temp != expanded)
-                {
-                    free(temp);
-                    temp = NULL; // Prevent double-free
-                }
-                
-                // Now remove quotes after expansion
-                args[j] = remove_outer_quotes(args[j]);
-            }
-            
-            // Remove empty arguments after expansion
-            if (ft_strlen(args[j]) == 0)
-            {
-                free(args[j]);
-                args[j] = NULL; // Prevent double-free
-                k = j;
-                while (args[k])
-                {
-                    args[k] = args[k + 1];
-                    k++;
-                }
-                // After shifting, do not increment j; we'll re-visit the entry
-                continue;
-            }
-            j++;
-        }
-        
-        // Create a new command node
-        new_node = ft_calloc(1, sizeof(t_command));
-        if (!new_node)
-        {
-            ft_free_split(args);
-            free_commands(head);
-            return (NULL);
-        }
-        new_node->args = args;
-        new_node->next = NULL;
-        
-        // Add to the command list
-        if (!head)
-            head = new_node;
-        else
-            current->next = new_node;
-        current = new_node;
-        i++;
-    }
-    return (head);
+	head = NULL;
+	current = NULL;
+	i = 0;
+	if (!cmds || !cmds[0])
+		return (NULL);
+	while (cmds[i])
+	{
+		args = ft_split_quotes(cmds[i]);
+		if (!args)
+			return (free_commands(head), NULL);
+		j = 0;
+		while (args[j])
+		{
+			temp = args[j];
+			expanded = expand_env_variable(args[j], shell->envp,
+					shell->exit_status);
+			if (!expanded)
+				return (ft_free_split(args), free_commands(head), NULL);
+			args[j] = remove_outer_quotes(expanded);
+			if (temp != args[j])
+				free(temp);
+			j++;
+		}
+		new_node = ft_calloc(1, sizeof(t_command));
+		if (!new_node)
+			return (ft_free_split(args), free_commands(head), NULL);
+		new_node->args = args;
+		new_node->next = NULL;
+		if (!head)
+			head = new_node;
+		else
+			current->next = new_node;
+		current = new_node;
+		i++;
+	}
+	return (head);
 }
 
 t_command	*build_redir(t_command *cmds)
@@ -117,8 +54,8 @@ t_command	*build_redir(t_command *cmds)
 	t_redirect	*redirect;
 	t_redirect	*redir_head;
 	t_redirect	*redir_tail;
+	t_redirect	*temp;
 	int			i;
-	t_redirect *temp;
 	int			j;
 
 	if (!cmds)
@@ -160,7 +97,7 @@ t_command	*build_redir(t_command *cmds)
 			}
 			redirect->direction = ft_strdup(cmds->args[i]);
 			redirect->passorfile = ft_strdup(cmds->args[i + 1]);
-			redirect->hf_fd = -1; //precisei inicializar isto, sorry
+			redirect->hf_fd = -1;
 			if (!redirect->direction || !redirect->passorfile)
 			{
 				free(redirect->direction);

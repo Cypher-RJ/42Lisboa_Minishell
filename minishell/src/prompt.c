@@ -26,6 +26,12 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 		return ;
 	add_history(input);
 	strs = split_cmds(input);
+	if (!strs)
+	{
+		*cmds = NULL;
+		free(input);
+		return;
+	}
 	*cmds = build_command_list(strs, shell);
 	current = *cmds;
 	while (current)
@@ -80,7 +86,8 @@ void	prompt_loop(t_shell *shell)
 		}
 		handle_input(input, shell, &cmds);
 		shell->cmds = cmds;
-		executor(shell);
+		if (cmds)
+			executor(shell);
 		cmds = NULL;
 	}
 }

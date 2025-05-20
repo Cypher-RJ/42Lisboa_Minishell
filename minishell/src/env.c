@@ -1,41 +1,43 @@
 #include "../includes/minishell.h"
 
-char *remove_outer_quotes(char *str)
+char	*remove_outer_quotes(char *str)
 {
-    size_t  len;
-    char    *result;
-    int     i = 0;
-    int     in_single = 0;
-    int     in_double = 0;
-    
-    if (!str)
-        return (NULL);
-    
-    len = ft_strlen(str);
-    // Quick check for empty string
-    if (len == 0)
-        return (str);
-    
-    // If the string is completely quoted (starts and ends with matching quotes)
-    // we need to handle it specially
-    if (len >= 2 && 
-        ((str[0] == '\'' && str[len - 1] == '\'' && !strchr(str + 1, '\'')) ||
-            (str[0] == '"' && str[len - 1] == '"' && !strchr(str + 1, '"'))))
-    {
-        // This is a completely quoted string - remove the outer quotes only
-        result = ft_substr(str, 1, len - 2);
-        if (result)
-        {
-            free(str);
-            return (result);
-        }
-        return (str);
-    }
-    
-    // Otherwise, return the string unchanged since we're preserving inner quotes
-    return (str);
-}
+	int		i;
+	int		j;
+	char	*result;
+	char	in_quote;
 
+	i = 0;
+	j = 0;
+	in_quote = 0;
+	if (!str)
+		return (NULL);
+	result = malloc(ft_strlen(str) + 1);
+	if (!result)
+		return (str);
+	while (str[i])
+	{
+		if ((str[i] == '\'' || str[i] == '"') && (i == 0 || str[i - 1] != '\\'))
+		{
+			if (!in_quote)
+				in_quote = str[i];
+			else if (in_quote == str[i])
+			{
+				in_quote = 0;
+				i++;
+				continue ;
+			}
+			else
+				result[j++] = str[i];
+		}
+		else if (str[i])
+			result[j++] = str[i];
+		i++;
+	}
+	result[j] = '\0';
+	free(str);
+	return (result);
+}
 
 static char	*find_env_value(char *var_name, char **envp)
 {
@@ -53,78 +55,71 @@ static char	*find_env_value(char *var_name, char **envp)
 	return (ft_strdup(""));
 }
 
-char *expand_env_variable(const char *arg, char **envp, int last_exit)
+char	*expand_env_variable(const char *arg, char **envp, int last_exit)
 {
-    int     i = 0;
-    int     in_single = 0;
-    int     in_double = 0;
-    char    *result = ft_strdup("");
-    char    *var, *val, *tmp;
+	int		i;
+	int		in_single;
+	int		in_double;
+	char	*result;
+	int		start;
+	char	buf[2];
+	char	*var;
+	char	*val;
+	char	*tmp;
 
-    while (arg[i])
-    {
-        // Handle single quotes - anything inside is literal (including the quotes)
-        if (arg[i] == '\'' && !in_double)
-        {
-            // Toggle single quote state
-            in_single = !in_single;
-            
-            // Add the single quote to the result
-            tmp = ft_strjoin_free(result, "'");
-            result = tmp;
-            i++;
-            continue;
-        }
-        // Handle double quotes - variables get expanded inside
-        else if (arg[i] == '"' && !in_single)
-        {
-            // Toggle double quote state
-            in_double = !in_double;
-            
-            // Add the double quote to the result
-            tmp = ft_strjoin_free(result, "\"");
-            result = tmp;
-            i++;
-            continue;
-        }
-        // Handle environment variables - don't expand inside single quotes
-        else if (arg[i] == '$' && !in_single && arg[i + 1])
-        {
-            // Handle $? special case
-            if (arg[i + 1] == '?')
-            {
-                val = ft_itoa(last_exit);
-                tmp = ft_strjoin_free(result, val);
-                free(val);
-                result = tmp;
-                i += 2; // Skip "$?"
-                continue;
-            }
-            // Handle normal environment variables
-            int start = ++i;
-            while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
-                i++;
-            
-            // Extract variable name and get its value
-            var = ft_substr(arg, start, i - start);
-            val = find_env_value(var, envp);
-            free(var);
-            
-            // Add the value to our result
-            tmp = ft_strjoin_free(result, val);
-            free(val);
-            result = tmp;
-        }
-        else
-        {
-            // Add any other character directly
-            char buf[2] = { arg[i], '\0' };
-            tmp = ft_strjoin_free(result, buf);
-            result = tmp;
-            i++;
-        }
-    }
-    return (result);
+	i = 0;
+	in_single = 0;
+	in_double = 0;
+	result = ft_strdup("");
+	while (arg[i])
+	{
+		buf[0] = arg[i];
+		buf[1] = '\0';
+		if (arg[i] == '\'' && !in_double)
+		{
+			in_single = !in_single;
+			tmp = ft_strjoin_free(result, "'");
+			result = tmp;
+			i++;
+			continue ;
+		}
+		else if (arg[i] == '"' && !in_single)
+		{
+			in_double = !in_double;
+			tmp = ft_strjoin_free(result, "\"");
+			result = tmp;
+			i++;
+			continue ;
+		}
+		else if (arg[i] == '$' && !in_single && arg[i + 1])
+		{
+			if (arg[i + 1] == '?')
+			{
+				val = ft_itoa(last_exit);
+				tmp = ft_strjoin_free(result, val);
+				free(val);
+				result = tmp;
+				i += 2;
+				continue ;
+			}
+			start = ++i;
+			while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
+				i++;
+			var = ft_substr(arg, start, i - start);
+			val = find_env_value(var, envp);
+			free(var);
+			tmp = ft_strjoin_free(result, val);
+			free(val);
+			result = tmp;
+		}
+		else
+		{
+			tmp = ft_strjoin_free(result, buf);
+			result = tmp;
+			i++;
+		}
+	}
+	return (result);
 }
 
 static int	handle_redirection(char **args, int *fd, int flags, int i)
