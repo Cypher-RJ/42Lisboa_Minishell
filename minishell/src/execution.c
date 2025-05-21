@@ -2,17 +2,13 @@
 
 void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 {
-	char	*errstr;
-
-	errstr = NULL;
 	if (cmd->args[0] == NULL)
 		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
 	if (cmd->path == NULL)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		errstr = ft_strjoin(cmd->args[0], ": command not found\n");
-		perror(errstr);
-		free(errstr);
+		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
 		how_exit(NULL, has_fork, 127, shell);
 	}
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
