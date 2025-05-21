@@ -9,6 +9,7 @@ void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
 	if (cmd->path == NULL)
 	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		errstr = ft_strjoin(cmd->args[0], ": command not found\n");
 		perror(errstr);
 		free(errstr);

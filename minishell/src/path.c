@@ -76,12 +76,6 @@ void	resolve_path(t_command *cmds, t_shell *shell)
 		if (current->args && current->args[0] && !is_builtin(current->args[0]))
 		{
 			current->path = get_path(current->args[0], shell);
-			if (!current->path)
-			{
-				ft_putstr_fd("minishell: command not found: ", 2);
-				ft_putendl_fd(current->args[0], 2);
-				shell->exit_status = 127;
-			}
 		}
 		current = current->next;
 	}
