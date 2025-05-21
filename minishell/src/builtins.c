@@ -10,6 +10,7 @@ int	is_builtin(char *cmd)
 int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 {
 	shell->exit_status = out;
+	g_signal_status = shell->exit_status;
 	if (msg)
 		ft_putendl_fd(msg, STDERR_FILENO);
 	if (has_fork)
@@ -17,7 +18,6 @@ int	how_exit(char *msg, bool has_fork, int out, t_shell *shell)
 		free_total(shell);
 		exit (out);
 	}
-	g_signal_status = shell->exit_status;
 	return (out);
 }
 
@@ -28,7 +28,7 @@ void	builtin_pwd(t_shell *shell)
 	cwd = NULL;
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		how_exit("failed to allocate\n", 1, EXIT_FAILURE, shell);
+		how_exit("failed to allocate", 1, EXIT_FAILURE, shell);
 	ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
 	how_exit(NULL, 1, EXIT_SUCCESS, shell);

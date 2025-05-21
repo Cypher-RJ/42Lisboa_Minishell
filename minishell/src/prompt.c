@@ -105,6 +105,8 @@ void	prompt_loop(t_shell *shell)
 			continue ;
 		}
 		handle_input(input, shell, &cmds);
+		shell->exit_status = g_signal_status;// para verificar no utils.c em print_syntax_error()
+		g_signal_status = 0;// para verificar no utils.c em print_syntax_error()
 		//!-------------------------------------------------------//
 		//print_commands_debug(cmds);
 		//!-------------------------------------------------------//

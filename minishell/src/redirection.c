@@ -6,12 +6,12 @@ int	redirect_input(char *file, t_shell *shell, bool has_fork)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (how_exit("Failed to open output file", \
+		return (how_exit("No such file or directory", \
 			has_fork, EXIT_FAILURE, shell));
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		close(fd);
-		return (how_exit("Failed to dup2 input file fd", \
+		return (how_exit("Dup2 input file fd failed", \
 			has_fork, EXIT_FAILURE, shell));
 	}
 	close(fd);
@@ -26,7 +26,7 @@ int	redirect_heredoc(int hd_fd, t_shell *shell, bool has_fork)
 	if (dup2(hd_fd, STDIN_FILENO) == -1)
 	{
 		close(hd_fd);
-		return (how_exit("Failed to dup2 input file fd", \
+		return (how_exit("Dup2 heredoc fd failed", \
 			has_fork, EXIT_FAILURE, shell));
 	}
 	close(hd_fd);
@@ -47,7 +47,7 @@ int	redirect_output(char *file, int appd, t_shell *shell, bool has_fork)
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
-		return (how_exit("Failed to dup2 output file fd", \
+		return (how_exit("Dup2 output file fd failed", \
 			has_fork, EXIT_FAILURE, shell));
 	}
 	close(fd);
