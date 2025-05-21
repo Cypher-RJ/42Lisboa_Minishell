@@ -91,7 +91,7 @@ char	*expand_env_variable(const char *arg, char **envp, int last_exit)
 			i++;
 			continue ;
 		}
-		else if (arg[i] == '$' && !in_single && arg[i + 1])
+		else if (arg[i] == '$' && !in_single && arg[i + 1] && arg[i + 1] != ' ')
 		{
 			if (arg[i + 1] == '?')
 			{

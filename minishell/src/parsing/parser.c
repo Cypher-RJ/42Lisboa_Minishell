@@ -1,5 +1,47 @@
 #include "../../includes/minishell.h"
 
+// Add this helper function
+static char	*add_spaces_around_redir(const char *input)
+{
+	int	i;
+	int j;
+	int in_quote;
+	char *new_str;
+
+	i = 0;
+	j = 0;
+	new_str = malloc(ft_strlen(input) * 3 + 1);
+	if (!new_str)
+		return (NULL);
+	while (input[i])
+	{
+		if ((input[i] == '\'' || input[i] == '"') && (i == 0 || input[i - 1] != '\\'))
+		{
+			if (!in_quote)
+				in_quote = input[i];
+			else if (in_quote == input[i])
+				in_quote = 0;
+		}
+		if (!in_quote && (input[i] == '<' || input[i] == '>'))
+		{
+			if (i > 0 && input[i - 1] != ' ' && input[i - 1] != '<' && input[i
+				- 1] != '>')
+				new_str[j++] = ' ';
+			new_str[j++] = input[i];
+			if ((input[i + 1] == input[i]))
+				new_str[j++] = input[++i];
+			if (input[i + 1] && input[i + 1] != ' ' && input[i + 1] != '<'
+				&& input[i + 1] != '>')
+				new_str[j++] = ' ';
+		}
+		else
+			new_str[j++] = input[i];
+		i++;
+	}
+	new_str[j] = '\0';
+	return (new_str);
+}
+
 static int	count_words(char *str)
 {
 	int		count;
@@ -45,31 +87,33 @@ static int	count_words(char *str)
 
 char	**split_cmds(char *input)
 {
+	char *preprocessed;
 	char	**args;
 	int		i;
 	int		j;
 
+	preprocessed = add_spaces_around_redir(input);
 	i = 0;
 	j = 0;
-	if (!input || input[0] == '\0' || is_only_spaces(input))
+	if (!preprocessed || preprocessed[0] == '\0' || is_only_spaces(preprocessed))
 		return (NULL);
-	if (check_syntax(input) || check_syntax_redir(input))
+	if (check_syntax(preprocessed) || check_syntax_redir(preprocessed))
 		return (NULL);
-	args = malloc(sizeof(char *) * (count_words(input) + 1));
+	args = malloc(sizeof(char *) * (count_words(preprocessed) + 1));
 	if (!args)
 		return (NULL);
-	while (input[i])
+	while (preprocessed[i])
 	{
-		while (input[i] == ' ')
+		while (preprocessed[i] == ' ')
 			i++;
-		if (!handle_segment(input, &args[j], &i))
+		if (!handle_segment(preprocessed, &args[j], &i))
 		{
 			ft_free_split(args);
 			return (NULL);
 		}
 		if (args[j])
 			j++;
-		if (input[i] == '|')
+		if (preprocessed[i] == '|')
 			i++;
 	}
 	args[j] = NULL;

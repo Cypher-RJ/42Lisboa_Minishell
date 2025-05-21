@@ -50,12 +50,32 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	free(input);
 }
 
+//!-----------------------------------------------------------------------//
+// void	print_commands_debug(t_command *cmds)
+// {
+//     int i;
+//     int cmd_num = 1;
+//     while (cmds)
+//     {
+//         printf("Command #%d:\n", cmd_num++);
+//         if (cmds->args)
+//         {
+//             for (i = 0; cmds->args[i]; i++)
+//                 printf("  arg[%d]: '%s'\n", i, cmds->args[i]);
+//         }
+//         else
+//             printf("  (no args)\n");
+//         cmds = cmds->next;
+//     }
+// }
+//!-----------------------------------------------------------------------//
+
 void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 {
 	int	exit_code;
 
 	exit_code = shell->exit_status;
-	print_syntax_error("exit\n");
+	//!print_syntax_error("exit\n");
 	free_shell(shell);
 	if (cmds)
 		free_command_list(cmds);
@@ -85,6 +105,9 @@ void	prompt_loop(t_shell *shell)
 			continue ;
 		}
 		handle_input(input, shell, &cmds);
+		//!-------------------------------------------------------//
+		//print_commands_debug(cmds);
+		//!-------------------------------------------------------//
 		shell->cmds = cmds;
 		if (cmds)
 			executor(shell);
