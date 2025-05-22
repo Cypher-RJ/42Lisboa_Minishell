@@ -6,7 +6,7 @@ int	redirect_input(char *file, t_shell *shell, bool has_fork)
 
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-		return (how_exit("No such file or directory", \
+		return (how_exit(" No such file or directory", \
 			has_fork, EXIT_FAILURE, shell));
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
