@@ -2,7 +2,9 @@
 
 void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 {
-	if (cmd->args[0] == NULL)
+	int err;
+
+	if (cmd->args[0] == NULL || cmd->args[0][0] == 0)
 		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
 	if (cmd->path == NULL)
 	{
@@ -13,8 +15,14 @@ void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 	}
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
 	{
-		perror("Failure to execute execve\n");
-		how_exit(NULL, has_fork, EXIT_FAILURE, shell);
+		err = errno;
+		perror("Failure to execute execve");
+		if (err == EACCES)
+			how_exit(NULL, has_fork, 126, shell);
+		if (err == ENOENT)
+			how_exit(NULL, has_fork, 127, shell);
+		else
+			how_exit(NULL, has_fork, 1, shell);
 	}
 }
 
@@ -58,7 +66,7 @@ void	executor(t_shell *shell)
 	shell->cmds = NULL;
 }
 
-/* 
+/*
 void	executor(t_shell *shell)
 {
 	//usar isto para ver se esta a capturar e parsar as linhas 
@@ -104,5 +112,5 @@ void	executor(t_shell *shell)
 		shell->cmds = shell->cmds->next;
 	}
 }
- */
+*/
 //  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell
