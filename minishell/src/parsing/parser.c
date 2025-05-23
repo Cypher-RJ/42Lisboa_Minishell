@@ -1,11 +1,10 @@
 #include "../../includes/minishell.h"
 
-// Add this helper function
 static char	*add_spaces_around_redir(const char *input)
 {
 	int	i;
 	int j;
-	int in_quote;
+	int in_quote = 0;
 	char *new_str;
 
 	i = 0;
@@ -96,12 +95,21 @@ char	**split_cmds(char *input)
 	i = 0;
 	j = 0;
 	if (!preprocessed || preprocessed[0] == '\0' || is_only_spaces(preprocessed))
+	{
+		free(preprocessed);
 		return (NULL);
+	}
 	if (check_syntax(preprocessed) || check_syntax_redir(preprocessed))
+	{
+		free(preprocessed);
 		return (NULL);
+	}
 	args = malloc(sizeof(char *) * (count_words(preprocessed) + 1));
 	if (!args)
+	{
+		free(preprocessed);
 		return (NULL);
+	}
 	while (preprocessed[i])
 	{
 		while (preprocessed[i] == ' ')
@@ -109,6 +117,7 @@ char	**split_cmds(char *input)
 		if (!handle_segment(preprocessed, &args[j], &i))
 		{
 			ft_free_split(args);
+			free(preprocessed);
 			return (NULL);
 		}
 		if (args[j])
@@ -117,6 +126,7 @@ char	**split_cmds(char *input)
 			i++;
 	}
 	args[j] = NULL;
+	free(preprocessed);
 	return (args);
 }
 
