@@ -91,8 +91,15 @@ char	*expand_env_variable(const char *arg, char **envp, int last_exit)
 			i++;
 			continue ;
 		}
-		else if (arg[i] == '$' && !in_single && arg[i + 1] && arg[i + 1] != ' ')
+		else if (arg[i] == '$' && !in_single)
 		{
+			if (!arg[i + 1] || (!ft_isalnum(arg[i + 1]) && arg[i + 1] != '_' && arg[i + 1] != '?'))
+			{
+				tmp = ft_strjoin_free(result, "$");
+				result = tmp;
+				i++;
+				continue ;
+			}
 			if (arg[i + 1] == '?')
 			{
 				val = ft_itoa(last_exit);
