@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	error_execve(int err, char *path,t_shell *shell, bool has_fork)
+/*void	error_execve(int err, char *path,t_shell *shell, bool has_fork)
 {
 	if (err == EACCES || err == ENOEXEC || err == ENOEXEC)
 	{
@@ -19,7 +19,7 @@ void	error_execve(int err, char *path,t_shell *shell, bool has_fork)
 		perror("minishell");
 		exit(1); // erro genérico
 	}
-}
+}*/
 
 void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 {
@@ -27,24 +27,24 @@ void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 
 	if (cmd->args[0] == NULL || cmd->args[0][0] == 0)
 		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
-	/*if (cmd->path == NULL)
+	if (cmd->path == NULL)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 		how_exit(NULL, has_fork, 127, shell);
-	}*/
+	}
 	if (execve(cmd->path, cmd->args, shell->envp) == -1)
 	{
 		err = errno;
-		error_execve(err, cmd->path, shell, has_fork);
-		/*perror("Failure to execute execve");
+		//error_execve(err, cmd->path, shell, has_fork);
+		perror("Failure to execute execve");
 		if (err == EACCES)
 			how_exit(NULL, has_fork, 126, shell);
 		else if (err == ENOENT)
 			how_exit(NULL, has_fork, 127, shell);
 		else
-			how_exit(NULL, has_fork, 1, shell);*/
+			how_exit(NULL, has_fork, 1, shell);
 	}
 }
 

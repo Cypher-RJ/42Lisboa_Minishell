@@ -75,7 +75,7 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 	int	exit_code;
 
 	exit_code = shell->exit_status;
-	//!print_syntax_error("exit\n");
+	print_syntax_error("exit\n");
 	free_shell(shell);
 	if (cmds)
 		free_command_list(cmds);
@@ -105,8 +105,8 @@ void	prompt_loop(t_shell *shell)
 			continue ;
 		}
 		handle_input(input, shell, &cmds);
-		shell->exit_status = g_signal_status;// para verificar no utils.c em print_syntax_error()
-		g_signal_status = 0;// para verificar no utils.c em print_syntax_error()
+		shell->exit_status = g_signal_status;
+		g_signal_status = 0;
 		//!-------------------------------------------------------//
 		//print_commands_debug(cmds);
 		//!-------------------------------------------------------//
