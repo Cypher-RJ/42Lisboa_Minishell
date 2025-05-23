@@ -15,6 +15,7 @@
 # include <signal.h>
 # include <termios.h>
 # include <unistd.h>
+# include <errno.h>
 
 extern volatile sig_atomic_t g_signal_status;
 
