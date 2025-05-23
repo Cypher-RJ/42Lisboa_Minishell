@@ -42,13 +42,17 @@ int	redirect_output(char *file, int appd, t_shell *shell, bool has_fork)
 	else
 		fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd < 0)
-		return (how_exit("Failed to open output file", \
-			has_fork, EXIT_FAILURE, shell));
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(file, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		return (how_exit(strerror(errno), has_fork, 1, shell));
+	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
-		return (how_exit("Dup2 output file fd failed", \
-			has_fork, EXIT_FAILURE, shell));
+		return (how_exit("minishell: dup2 (stdout)", has_fork, \
+			EXIT_FAILURE, shell));
 	}
 	close(fd);
 	return (EXIT_SUCCESS);
