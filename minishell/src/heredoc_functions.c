@@ -2,11 +2,27 @@
 
 void	eof_heredoc(char *word)
 {
+	if (g_signal_status == 0 && word)
+	{
 	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `"\
 		, STDERR_FILENO);
 	ft_putstr_fd(word, STDERR_FILENO);
 	ft_putendl_fd("')", STDERR_FILENO);
-	//how_exit(NULL, 1, EXIT_SUCCESS, shell);
+	}
+}
+
+int	check_child(int status, int fd[2], t_shell *shell, t_redirect *redir)
+{
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		return (close(fd[0]), shell->exit_status = 128 + SIGINT, 1);
+	if (WIFEXITED(status))
+	{
+		if (WEXITSTATUS(status) == 42)
+			eof_heredoc(redir->passorfile);
+		else if (WEXITSTATUS(status) != 0)
+			return (close(fd[0]), 1);
+	}
+	return (EXIT_SUCCESS);
 }
 
 void	heredoc_readline(char *word, int fd[], t_shell *shell)
@@ -24,7 +40,7 @@ void	heredoc_readline(char *word, int fd[], t_shell *shell)
 			if (g_signal_status)
 				how_exit(NULL, 1, 128 + SIGINT, shell);
 			else
-				how_exit(NULL, 1, EXIT_SUCCESS, shell);
+				how_exit(NULL, 1, 42, shell);
 		}
 		if (strcmp(line, word) == 0)
 		{
@@ -57,12 +73,8 @@ int	store_heredoc(t_redirect *redir, t_shell *shell)
 		heredoc_readline(redir->passorfile, fd, shell);
 	close(fd[1]);
 	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		return (close(fd[0]), shell->exit_status = 128 + SIGINT, 1);
-	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-		return (close(fd[0]), 1);
-	else
-		eof_heredoc(redir->passorfile);
+	if (check_child(status, fd, shell, redir))
+		return (EXIT_FAILURE);
 	restore_signals();
 	return (redir->hf_fd = fd[0], EXIT_SUCCESS);
 }
