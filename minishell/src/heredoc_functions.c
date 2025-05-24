@@ -1,5 +1,14 @@
 #include "../includes/minishell.h"
 
+void	eof_heredoc(char *word)
+{
+	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `"\
+		, STDERR_FILENO);
+	ft_putstr_fd(word, STDERR_FILENO);
+	ft_putendl_fd("')", STDERR_FILENO);
+	//how_exit(NULL, 1, EXIT_SUCCESS, shell);
+}
+
 void	heredoc_readline(char *word, int fd[], t_shell *shell)
 {
 	char	*line;
@@ -15,7 +24,7 @@ void	heredoc_readline(char *word, int fd[], t_shell *shell)
 			if (g_signal_status)
 				how_exit(NULL, 1, 128 + SIGINT, shell);
 			else
-				how_exit(NULL, 1, EXIT_FAILURE, shell);
+				how_exit(NULL, 1, EXIT_SUCCESS, shell);
 		}
 		if (strcmp(line, word) == 0)
 		{
@@ -52,9 +61,10 @@ int	store_heredoc(t_redirect *redir, t_shell *shell)
 		return (close(fd[0]), shell->exit_status = 128 + SIGINT, 1);
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
 		return (close(fd[0]), 1);
+	else
+		eof_heredoc(redir->passorfile);
 	restore_signals();
-	redir->hf_fd = fd[0];
-	return (EXIT_SUCCESS);
+	return (redir->hf_fd = fd[0], EXIT_SUCCESS);
 }
 
 int	find_heredocs(t_shell *shell)
