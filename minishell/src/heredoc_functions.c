@@ -12,7 +12,10 @@ void	heredoc_readline(char *word, int fd[], t_shell *shell)
 		if (!line)
 		{
 			close(fd[1]);
-			how_exit(NULL, 1, EXIT_FAILURE, shell);
+			if (g_signal_status)
+				how_exit(NULL, 1, 128 + SIGINT, shell);
+			else
+				how_exit(NULL, 1, EXIT_FAILURE, shell);
 		}
 		if (strcmp(line, word) == 0)
 		{
@@ -24,8 +27,6 @@ void	heredoc_readline(char *word, int fd[], t_shell *shell)
 		write(fd[1], "\n", 1);
 		free(line);
 	}
-	close(fd[1]);
-	exit(0);
 }
 
 int	store_heredoc(t_redirect *redir, t_shell *shell)
@@ -45,13 +46,13 @@ int	store_heredoc(t_redirect *redir, t_shell *shell)
 	}
 	if (pid == 0)
 		heredoc_readline(redir->passorfile, fd, shell);
-	restore_signals();
 	close(fd[1]);
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		return (shell->exit_status = 128 + SIGINT, 1);
+		return (close(fd[0]), shell->exit_status = 128 + SIGINT, 1);
 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-		return (1);
+		return (close(fd[0]), 1);
+	restore_signals();
 	redir->hf_fd = fd[0];
 	return (EXIT_SUCCESS);
 }

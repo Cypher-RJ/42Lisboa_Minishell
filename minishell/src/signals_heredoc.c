@@ -3,6 +3,7 @@
 void	sigint_heredoc_handler(int sig)
 {
 	(void)sig;
+	g_signal_status = 1;
 	write(1, "\n", 1);
 	close(0); // Fecha STDIN para forçar readline a retornar NULL
 }

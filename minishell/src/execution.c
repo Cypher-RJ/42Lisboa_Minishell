@@ -71,7 +71,10 @@ int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 void	executor(t_shell *shell)
 {
 	if (find_heredocs(shell))
+	{
+		free_command_list(shell->cmds);
 		return ;
+	}
 	if (shell->cmds->next == NULL && shell->cmds->args[0] &&
 		(is_unique_builtin(shell->cmds->args[0]) == 1))
 		execute_builtin(shell->cmds, shell, 0);
