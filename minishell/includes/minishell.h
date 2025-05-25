@@ -79,9 +79,10 @@ pid_t		fork_it(void);
 int			make_pipe(int fd[], bool has_next);
 void		executor_fork(t_shell *shell);
 
-// redirection
+// redirection & heredocs
 int			redirector(t_redirect *redir, t_shell *shell, bool has_fork);
 int			find_heredocs(t_shell *shell);
+void		capture_heredoc(char *line, int fd, t_shell *shell);
 
 //execution
 void		executor(t_shell *shell);

@@ -9,6 +9,7 @@ SRCS = src/builtins_cd_utils.c \
 		src/builtins_unset_utils.c \
 		src/builtins.c \
 		src/env.c \
+		src/heredoc_expansion.c \
 		src/heredoc_functions.c \
 		src/execution.c \
 		src/free.c \

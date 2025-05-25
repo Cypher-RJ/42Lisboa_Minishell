@@ -48,8 +48,7 @@ void	heredoc_readline(char *word, int fd[], t_shell *shell)
 			free(line);
 			how_exit(NULL, 1, EXIT_SUCCESS, shell);
 		}
-		write(fd[1], line, strlen(line));
-		write(fd[1], "\n", 1);
+		capture_heredoc(line, fd[1], shell);
 		free(line);
 	}
 }
