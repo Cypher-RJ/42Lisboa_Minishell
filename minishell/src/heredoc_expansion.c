@@ -12,14 +12,21 @@ int	put_line_hd(int fd, int pos, char *line)
 
 int	put_expansion_hd(int fd, int pos, char *line, t_shell *shell)
 {
-	int	i;//posicao final da expansao
+	int	i;
 	int j;
 
 	i = pos;
 	j = 0;
 	if (!ft_isalpha(line[pos]))
-		return (ft_putchar_fd(line[pos - 1], fd), pos);
-	while (line[i] && ft_isalnum(line[i]))
+	{
+		if (line[pos] == '$')
+			return (ft_putnbr_fd(getpid(), fd), pos + 1);
+		else if (line[pos] == '?')
+			return (ft_putnbr_fd(shell->exit_status, fd), pos + 1);
+		else
+			return (ft_putchar_fd(line[pos - 1], fd), pos);
+	}
+	while (line[i] && (ft_isalnum(line[i]) || line[i] == '_'))
 		i++;
 	while (shell->envp[j])
 	{
@@ -28,7 +35,7 @@ int	put_expansion_hd(int fd, int pos, char *line, t_shell *shell)
 			return (ft_putstr_fd(&shell->envp[j][i - pos + 1], fd), i);
 		j++;
 	}
-	return (pos);
+	return (pos + 1);
 }
 
 void	capture_heredoc(char *line, int fd, t_shell *shell)
