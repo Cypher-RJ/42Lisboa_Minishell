@@ -84,7 +84,7 @@ void	executor(t_shell *shell)
 	shell->cmds = NULL;
 }
 
-/*
+/* 
 void	executor(t_shell *shell)
 {
 	//usar isto para ver se esta a capturar e parsar as linhas 
@@ -130,5 +130,5 @@ void	executor(t_shell *shell)
 		shell->cmds = shell->cmds->next;
 	}
 }
-*/
+ */
 //  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell

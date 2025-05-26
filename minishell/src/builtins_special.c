@@ -18,7 +18,7 @@ int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 	if (i > 2)
 		return (how_exit("minishell: cd: too many arguments", has_fork, \
 			EXIT_FAILURE, shell));
-	else if (i == 1)
+	else if (i == 1 || !ft_strcmp(thiscmd->args[1], "~"))
 		cd_go_home(shell, has_fork);
 	else if (!ft_strcmp(thiscmd->args[1], "-"))
 		cd_go_oldpwd(thiscmd, shell, has_fork);
