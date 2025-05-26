@@ -3,7 +3,8 @@
 		"get_next_line.h": "c",
 		"sstream": "cpp",
 		"minishell.h": "c",
-		"stat.h": "c"
+		"stat.h": "c",
+		"format": "c"
 	},
 	"cmake.sourceDirectory": "/home/rcesar-d/42_student/Rank03/my_minishell/minishell/tests"
 }

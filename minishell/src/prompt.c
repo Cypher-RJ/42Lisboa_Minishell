@@ -1,12 +1,14 @@
 #include "../includes/minishell.h"
 
-char	*build_prompt(void)
+char	*build_prompt(t_shell *shell)
 {
 	char	*cwd;
 	char	*prompt;
 	char	*tmp;
 
 	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		cwd = get_pwd(shell);
 	if (!cwd)
 		cwd = ft_strdup("unknown");
 	tmp = ft_strjoin("\001\033[1;34m\002", cwd);
@@ -92,7 +94,7 @@ void	prompt_loop(t_shell *shell)
 	while (1)
 	{
 		setup_signals();
-		prompt = build_prompt();
+		prompt = build_prompt(shell);
 		input = readline(prompt);
 		free(prompt);
 		if (!input)

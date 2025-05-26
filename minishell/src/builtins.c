@@ -26,9 +26,9 @@ void	builtin_pwd(t_shell *shell)
 	char	*cwd;
 
 	cwd = NULL;
-	cwd = getcwd(NULL, 0);
+	cwd = get_pwd(shell);
 	if (!cwd)
-		how_exit("failed to allocate", 1, EXIT_FAILURE, shell);
+		how_exit("failed to allocate to PWD", 1, EXIT_FAILURE, shell);
 	ft_putendl_fd(cwd, STDOUT_FILENO);
 	free(cwd);
 	how_exit(NULL, 1, EXIT_SUCCESS, shell);

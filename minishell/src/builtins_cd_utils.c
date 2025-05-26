@@ -94,9 +94,9 @@ int	builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 	char	*old_pwd;
 	char	*new_pwd;
 
-	old_pwd = getcwd(NULL, 0);
-	if (!old_pwd && shell)
-		return (how_exit("getcwd() failed to allocate", has_fork, \
+	old_pwd = get_pwd(shell);
+	if (!old_pwd)
+		return (how_exit("Failed to allocate to OLDPWD", has_fork, \
 			EXIT_FAILURE, shell));
 	if (chdir(strdir) != 0)
 	{

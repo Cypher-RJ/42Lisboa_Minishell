@@ -32,3 +32,22 @@ int	cd_go_oldpwd(t_command *thiscmd, t_shell *shell, bool has_fork)
 	else
 		return (builtin_cd_exec(thiscmd->args[1], shell, has_fork));
 }
+
+char	*get_pwd(t_shell *shell)
+{
+	int		i;
+	char	*pwd;
+
+	pwd = getcwd(NULL, 0);
+	if (pwd == NULL)
+	{
+		i = 0;
+		while (shell->envp[i] && ft_strncmp(shell->envp[i], "PWD=", 4))
+			i++;
+		if (!shell->envp[i] || shell->envp[i][4] == '\0')
+			return (NULL);
+		else
+			pwd = ft_strdup(&shell->envp[i][4]);
+	}
+	return (pwd);
+}

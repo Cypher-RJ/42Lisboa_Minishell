@@ -53,7 +53,7 @@ void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
 char		**copy_shlvl(char **envp);
 char		*ft_strjoin_free(char *s1, const char *s2);
-char		*build_prompt(void);
+char		*build_prompt(t_shell *shell);
 char		*ft_strjoin_chr(char *s, char c);
 char		**split_cmds(char *input);
 int			handle_segment(char *input, char **arg_slot, int *i);
@@ -113,6 +113,7 @@ int			rep_add_envp(char *trgt, char *str, t_shell *shell);
 char		*build_env_str(char *trgt, char *str);
 int			cd_go_home(t_shell *shell, bool has_fork);
 int			cd_go_oldpwd(t_command *thiscmd, t_shell *shell, bool has_fork);
+char		*get_pwd(t_shell *shell);
 
 //signals
 void		setup_signals(void);
