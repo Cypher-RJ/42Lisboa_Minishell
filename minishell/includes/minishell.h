@@ -111,6 +111,8 @@ int			export_var(char *str, t_shell *shell);
 int			unset_var(char *str, t_shell *shell);
 int			rep_add_envp(char *trgt, char *str, t_shell *shell);
 char		*build_env_str(char *trgt, char *str);
+int			cd_go_home(t_shell *shell, bool has_fork);
+int			cd_go_oldpwd(t_command *thiscmd, t_shell *shell, bool has_fork);
 
 //signals
 void		setup_signals(void);
