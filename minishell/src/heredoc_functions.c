@@ -13,13 +13,16 @@ void	eof_heredoc(char *word)
 
 int	check_child(int status, int fd[2], t_shell *shell, t_redirect *redir)
 {
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		return (close(fd[0]), shell->exit_status = 128 + SIGINT, 1);
+	int	code;
+
 	if (WIFEXITED(status))
 	{
-		if (WEXITSTATUS(status) == 42)
+		code = WEXITSTATUS(status);
+		if (code == 130)
+			return (close(fd[0]), shell->exit_status = code, 1);
+		else if (code == 42)
 			eof_heredoc(redir->passorfile);
-		else if (WEXITSTATUS(status) != 0)
+		else if (code != 0)
 			return (close(fd[0]), 1);
 	}
 	return (EXIT_SUCCESS);
@@ -74,7 +77,6 @@ int	store_heredoc(t_redirect *redir, t_shell *shell)
 	waitpid(pid, &status, 0);
 	if (check_child(status, fd, shell, redir))
 		return (EXIT_FAILURE);
-	restore_signals();
 	return (redir->hf_fd = fd[0], EXIT_SUCCESS);
 }
 
@@ -95,10 +97,10 @@ int	find_heredocs(t_shell *shell)
 			if (ft_strncmp(thisredir->direction, "<<", 2) == 0)
 				res = store_heredoc(thisredir, shell);
 			if (res)
-				return (res);
+				return (restore_signals(), res);
 			thisredir = thisredir->next;
 		}
 		thiscmd = thiscmd->next;
 	}
-	return (res);
+	return (restore_signals(), res);
 }
