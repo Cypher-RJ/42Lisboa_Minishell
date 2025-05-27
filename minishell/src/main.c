@@ -70,7 +70,10 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	disable_echoctl();
 	shell = malloc(sizeof(t_shell));
+
+	//!PROTEGER NO ENV
 	my_envp = copy_shlvl(envp);
+	
 	increment_shlvl(my_envp);
 	shell->envp = my_envp;
 	shell->exit_status = 0;

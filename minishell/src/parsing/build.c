@@ -1,15 +1,72 @@
 #include "../../includes/minishell.h"
 
+static char	**process_args(char **args, t_shell *shell)
+{
+	char	*expanded;
+	char	*temp;
+	int		j;
+
+	j = 0;
+	while (args[j])
+	{
+		temp = args[j];
+		expanded = expand_env_variable(args[j], shell->envp,
+				shell->exit_status);
+		if (!expanded)
+			return (NULL);
+		args[j] = remove_outer_quotes(expanded);
+		if (temp != args[j])
+			free(temp);
+		j++;
+	}
+	return (args);
+}
+
+static t_command	*create_new_command(char **args)
+{
+	t_command	*new_node;
+
+	new_node = ft_calloc(1, sizeof(t_command));
+	if (!new_node)
+		return (NULL);
+	new_node->args = args;
+	new_node->next = NULL;
+	return (new_node);
+}
+
+static int	process_command(char *cmd, t_shell *shell, t_command **head,
+		t_command **current)
+{
+	char		**args;
+	t_command	*new_node;
+
+	args = ft_split_quotes(cmd);
+	if (!args)
+		return (0);
+	if (!process_args(args, shell))
+	{
+		ft_free_split(args);
+		return (0);
+	}
+	new_node = create_new_command(args);
+	if (!new_node)
+	{
+		ft_free_split(args);
+		return (0);
+	}
+	if (!*head)
+		*head = new_node;
+	else
+		(*current)->next = new_node;
+	*current = new_node;
+	return (1);
+}
+
 t_command	*build_command_list(char **cmds, t_shell *shell)
 {
 	t_command	*head;
 	t_command	*current;
-	t_command	*new_node;
-	char		**args;
-	char		*expanded;
-	char		*temp;
 	int			i;
-	int			j;
 
 	head = NULL;
 	current = NULL;
@@ -18,45 +75,97 @@ t_command	*build_command_list(char **cmds, t_shell *shell)
 		return (NULL);
 	while (cmds[i])
 	{
-		args = ft_split_quotes(cmds[i]);
-		if (!args)
-			return (free_commands(head), NULL);
-		j = 0;
-		while (args[j])
+		if (!process_command(cmds[i], shell, &head, &current))
 		{
-			temp = args[j];
-			expanded = expand_env_variable(args[j], shell->envp,
-					shell->exit_status);
-			if (!expanded)
-				return (ft_free_split(args), free_commands(head), NULL);
-			args[j] = remove_outer_quotes(expanded);
-			if (temp != args[j])
-				free(temp);
-			j++;
+			free_commands(head);
+			return (NULL);
 		}
-		new_node = ft_calloc(1, sizeof(t_command));
-		if (!new_node)
-			return (ft_free_split(args), free_commands(head), NULL);
-		new_node->args = args;
-		new_node->next = NULL;
-		if (!head)
-			head = new_node;
-		else
-			current->next = new_node;
-		current = new_node;
 		i++;
 	}
 	return (head);
 }
 
-t_command	*build_redir(t_command *cmds)
+static void	free_redirect_list(t_redirect *redir_head)
+{
+	t_redirect	*temp;
+
+	while (redir_head)
+	{
+		temp = redir_head;
+		redir_head = redir_head->next;
+		free(temp->direction);
+		free(temp->passorfile);
+		free(temp);
+	}
+}
+
+static t_redirect	*create_redirect(char *direction, char *file)
 {
 	t_redirect	*redirect;
+
+	redirect = malloc(sizeof(t_redirect));
+	if (!redirect)
+		return (NULL);
+	redirect->direction = ft_strdup(direction);
+	redirect->passorfile = ft_strdup(file);
+	redirect->hf_fd = -1;
+	redirect->next = NULL;
+	if (!redirect->direction || !redirect->passorfile)
+	{
+		free(redirect->direction);
+		free(redirect->passorfile);
+		free(redirect);
+		return (NULL);
+	}
+	return (redirect);
+}
+
+static int	is_redirect_op(char *str)
+{
+	return (ft_strcmp(str, "<") == 0 || ft_strcmp(str, ">") == 0
+		|| ft_strcmp(str, "<<") == 0 || ft_strcmp(str, ">>") == 0);
+}
+
+static void	shift_args_left(char **args, int start)
+{
+	int	j;
+
+	j = start;
+	while (args[j + 2])
+	{
+		args[j] = args[j + 2];
+		j++;
+	}
+	args[j] = NULL;
+	args[j + 1] = NULL;
+}
+
+static int	process_redirect(t_command *cmds, int i, t_redirect **redir_head,
+		t_redirect **redir_tail)
+{
+	t_redirect	*redirect;
+
+	if (!cmds->args[i + 1])
+		return (0);
+	redirect = create_redirect(cmds->args[i], cmds->args[i + 1]);
+	if (!redirect)
+		return (0);
+	if (!*redir_head)
+		*redir_head = redirect;
+	else
+		(*redir_tail)->next = redirect;
+	*redir_tail = redirect;
+	free(cmds->args[i]);
+	free(cmds->args[i + 1]);
+	shift_args_left(cmds->args, i);
+	return (1);
+}
+
+t_command	*build_redir(t_command *cmds)
+{
 	t_redirect	*redir_head;
 	t_redirect	*redir_tail;
-	t_redirect	*temp;
 	int			i;
-	int			j;
 
 	if (!cmds)
 		return (NULL);
@@ -65,70 +174,13 @@ t_command	*build_redir(t_command *cmds)
 	i = 0;
 	while (cmds->args && cmds->args[i])
 	{
-		if (cmds->args[i] && (ft_strcmp(cmds->args[i], "<") == 0
-				|| ft_strcmp(cmds->args[i], ">") == 0
-				|| ft_strcmp(cmds->args[i], "<<") == 0
-				|| ft_strcmp(cmds->args[i], ">>") == 0))
+		if (cmds->args[i] && is_redirect_op(cmds->args[i]))
 		{
-			if (!cmds->args[i + 1])
+			if (!process_redirect(cmds, i, &redir_head, &redir_tail))
 			{
-				while (redir_head)
-				{
-					temp = redir_head;
-					redir_head = redir_head->next;
-					free(temp->direction);
-					free(temp->passorfile);
-					free(temp);
-				}
+				free_redirect_list(redir_head);
 				return (NULL);
 			}
-			redirect = malloc(sizeof(t_redirect));
-			if (!redirect)
-			{
-				while (redir_head)
-				{
-					temp = redir_head;
-					redir_head = redir_head->next;
-					free(temp->direction);
-					free(temp->passorfile);
-					free(temp);
-				}
-				return (NULL);
-			}
-			redirect->direction = ft_strdup(cmds->args[i]);
-			redirect->passorfile = ft_strdup(cmds->args[i + 1]);
-			redirect->hf_fd = -1;
-			if (!redirect->direction || !redirect->passorfile)
-			{
-				free(redirect->direction);
-				free(redirect->passorfile);
-				free(redirect);
-				while (redir_head)
-				{
-					temp = redir_head;
-					redir_head = redir_head->next;
-					free(temp->direction);
-					free(temp->passorfile);
-					free(temp);
-				}
-				return (NULL);
-			}
-			redirect->next = NULL;
-			if (!redir_head)
-				redir_head = redirect;
-			else
-				redir_tail->next = redirect;
-			redir_tail = redirect;
-			free(cmds->args[i]);
-			free(cmds->args[i + 1]);
-			j = i;
-			while (cmds->args[j + 2])
-			{
-				cmds->args[j] = cmds->args[j + 2];
-				j++;
-			}
-			cmds->args[j] = NULL;
-			cmds->args[j + 1] = NULL;
 			continue ;
 		}
 		i++;

@@ -42,36 +42,39 @@ typedef struct s_shell
 	t_command	*cmds;
 }				t_shell;
 
+int			is_executable(char *filepath);
+char		*ft_strjoin_free(char *s1, const char *s2);
+char		*ft_strjoin_chr(char *s, char c);
+int			print_syntax_error(char *msg);
+
+// env
 void		prompt_loop(t_shell *shell);
-int			detect_redirections(char **args, int *fd_in, int *fd_out);
 char		*get_path(char *cmd, t_shell *shell);
 char		*search_path(char *cmd, char **paths);
 char		*get_env_path(t_shell *shell);
-int			is_executable(char *filepath);
-char		*expand_env_variable(const char *arg, char **envp, int last_exit);
-void		ft_free_split(char **array);
 void		increment_shlvl(char **envp);
 char		**copy_shlvl(char **envp);
-char		*ft_strjoin_free(char *s1, const char *s2);
 char		*build_prompt(t_shell *shell);
-char		*ft_strjoin_chr(char *s, char c);
-char		**split_cmds(char *input);
-int			handle_segment(char *input, char **arg_slot, int *i);
+char		*expand_env_variable(const char *arg, char **envp, int last_exit);
+void		resolve_path(t_command *head, t_shell *shell);
+
+// parse utils
 int			check_pipe_and_ampersand(char *input, int *i, int *expect);
+int			detect_redirections(char **args, int *fd_in, int *fd_out);
+int			handle_segment(char *input, char **arg_slot, int *i);
+void		handle_input(char *input, t_shell *shell, t_command **cmds);
 int			is_only_spaces(char *input);
 int			has_unclosed_quotes(char *input);
 int			check_syntax(char *input);
-int			print_syntax_error(char *msg);
-t_command	*build_command_list(char **cmds, t_shell *shell);
 int			check_syntax_redir(char *input);
-char		**ft_split_quotes(char *str);
 int			is_single_quoted(char *str);
-void		resolve_path(t_command *head, t_shell *shell);
-void		handle_input(char *input, t_shell *shell, t_command **cmds);
-void		cleanup_and_exit(t_shell *shell, t_command *cmds);
+
+// build command list
+t_command	*build_command_list(char **cmds, t_shell *shell);
 t_command	*build_redir(t_command *cmds);
-void		free_commands(t_command *head);
 char		*remove_outer_quotes(char *str);
+char		**ft_split_quotes(char *str);
+char		**split_cmds(char *input);
 
 // pipes & pipe_functions
 void		child_pipes(int prev_fd, bool next, int fd[], t_shell *shell);
@@ -129,5 +132,8 @@ void		free_total(t_shell *shell);
 void		free_shell(t_shell *shell);
 void		free_command_list(t_command *cmd);
 void		free_redir_list(t_redirect *redir);
+void		free_commands(t_command *head);
+void		ft_free_split(char **array);
+void		cleanup_and_exit(t_shell *shell, t_command *cmds);
 
 #endif
