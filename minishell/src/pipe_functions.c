@@ -18,6 +18,8 @@ pid_t	fork_it(void)
 {
 	pid_t	pid;
 
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
 		perror("Failed create a fork");

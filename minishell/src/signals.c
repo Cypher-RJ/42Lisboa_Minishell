@@ -34,8 +34,10 @@ void	wait_for_children(pid_t last_pid, t_shell *shell)
 {
 	int		status;
 	pid_t	pid;
-	int		exit_code = 0;
+	int		exit_code;
+	int 	sig;
 
+	exit_code = 0;
 	while ((pid = wait(&status)) > 0)
 	{
 		if (pid == last_pid)
@@ -44,7 +46,7 @@ void	wait_for_children(pid_t last_pid, t_shell *shell)
 				exit_code = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 			{
-				int sig = WTERMSIG(status);
+				sig = WTERMSIG(status);
 				if (sig == SIGINT)
 					write(1, "\n", 1);
 				else if (sig == SIGQUIT)
@@ -54,4 +56,5 @@ void	wait_for_children(pid_t last_pid, t_shell *shell)
 		}
 	}
 	shell->exit_status = exit_code;
+	setup_signals();
 }
