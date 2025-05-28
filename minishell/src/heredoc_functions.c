@@ -97,10 +97,10 @@ int	find_heredocs(t_shell *shell)
 			if (ft_strncmp(thisredir->direction, "<<", 2) == 0)
 				res = store_heredoc(thisredir, shell);
 			if (res)
-				return (restore_signals(), res);
+				return (setup_signals(), res);
 			thisredir = thisredir->next;
 		}
 		thiscmd = thiscmd->next;
 	}
-	return (restore_signals(), res);
+	return (setup_signals(), res);
 }
