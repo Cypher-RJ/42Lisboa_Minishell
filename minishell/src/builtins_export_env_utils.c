@@ -93,8 +93,8 @@ int	export_putenv(t_shell *shell, bool has_fork)
 	{
 		res = put_envtmp(envtmp[i]);
 		if (res)
-		return (how_exit("Failed to build export line", \
-			has_fork, EXIT_FAILURE, shell));
+			return (how_exit("Failed to build export line", \
+				has_fork, EXIT_FAILURE, shell));
 		i++;
 	}
 	free(envtmp);

@@ -66,7 +66,7 @@ int	rep_add_envp(char *trgt, char *str, t_shell *shell)
 
 int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 {
-	char *temp;
+	char	*temp;
 
 	temp = ft_strjoin("=", oldpwd);
 	free(oldpwd);
@@ -75,7 +75,8 @@ int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 	free(newpwd);
 	newpwd = temp;
 	if (!oldpwd || !newpwd)
-		return (how_exit("Failed to create env values for cd", has_fork, EXIT_FAILURE, shell));
+		return (how_exit("Failed to create env values for cd", \
+			has_fork, EXIT_FAILURE, shell));
 	if (rep_add_envp("OLDPWD", oldpwd, shell) \
 		|| rep_add_envp("PWD", newpwd, shell))
 	{
@@ -88,7 +89,6 @@ int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 	return (EXIT_SUCCESS);
 }
 
-// ! cd dentro de um file que se apaga parte
 int	builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 {
 	char	*old_pwd;

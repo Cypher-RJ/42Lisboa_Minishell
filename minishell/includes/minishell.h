@@ -1,4 +1,3 @@
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -17,7 +16,7 @@
 # include <unistd.h>
 # include <errno.h>
 
-extern volatile sig_atomic_t g_signal_status;
+extern volatile sig_atomic_t	g_signal_status;
 
 typedef struct s_redirect
 {
@@ -91,6 +90,7 @@ void		capture_heredoc(char *line, int fd, t_shell *shell);
 void		executor(t_shell *shell);
 void		execute_command(t_command *cmd, t_shell *shell, bool has_fork);
 int			execute_builtin(t_command *cmds, t_shell *shell, bool has_fork);
+int			check_empty_first(t_shell *shell);
 
 //builtins && builtins_special
 int			is_builtin(char *cmd);

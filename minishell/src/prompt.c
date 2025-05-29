@@ -32,7 +32,7 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	{
 		*cmds = NULL;
 		free(input);
-		return;
+		return ;
 	}
 	*cmds = build_command_list(strs, shell);
 	current = *cmds;
@@ -84,6 +84,13 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 	exit(exit_code);
 }
 
+void	no_input_signal(t_shell *shell, char *input)
+{
+	if (g_signal_status)
+		pass_signal_status(shell);
+	free(input);
+}
+
 void	prompt_loop(t_shell *shell)
 {
 	char		*input;
@@ -99,19 +106,13 @@ void	prompt_loop(t_shell *shell)
 		free(prompt);
 		if (!input)
 			cleanup_and_exit(shell, cmds);
-		if (g_signal_status)
-			pass_signal_status(shell);
 		if (!*input)
 		{
-			free(input);
+			no_input_signal(shell, input);
 			continue ;
 		}
 		handle_input(input, shell, &cmds);
-		shell->exit_status = g_signal_status;
-		g_signal_status = 0;
-		//!-------------------------------------------------------//
-		//print_commands_debug(cmds);
-		//!-------------------------------------------------------//
+		pass_signal_status(shell);
 		shell->cmds = cmds;
 		if (cmds)
 			executor(shell);

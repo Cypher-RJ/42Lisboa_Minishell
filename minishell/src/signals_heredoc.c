@@ -5,7 +5,7 @@ void	sigint_heredoc_handler(int sig)
 	(void)sig;
 	g_signal_status = 1;
 	write(1, "\n", 1);
-	close(0); // Fecha STDIN para forçar readline a retornar NULL
+	close(0);
 }
 
 void	setup_heredoc_signals(void)
@@ -22,7 +22,7 @@ void	setup_heredoc_signals(void)
 int	signal_fork(int status)
 {
 	int		exit_code;
-	int 	sig;
+	int		sig;
 
 	exit_code = 0;
 	sig = 0;

@@ -4,10 +4,10 @@ void	eof_heredoc(char *word)
 {
 	if (g_signal_status == 0 && word)
 	{
-	ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `"\
-		, STDERR_FILENO);
-	ft_putstr_fd(word, STDERR_FILENO);
-	ft_putendl_fd("')", STDERR_FILENO);
+		ft_putstr_fd("warning: here-document delimited by end-of-file \
+			(wanted `", STDERR_FILENO);
+		ft_putstr_fd(word, STDERR_FILENO);
+		ft_putendl_fd("')", STDERR_FILENO);
 	}
 }
 

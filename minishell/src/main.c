@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-volatile sig_atomic_t g_signal_status;
+volatile sig_atomic_t	g_signal_status;
 
 char	**copy_shlvl(char **envp)
 {
@@ -23,9 +23,6 @@ char	**copy_shlvl(char **envp)
 	return (new_envp);
 }
 
-//Isto falha se o shlvl nao existir. Tem que receber o t_shell,
-//e se acrescentar-lhe mais uma linha ao envp antes fazer as 
-//duas linhas finais
 void	increment_shlvl(char **envp)
 {
 	int		i;
@@ -57,7 +54,7 @@ void	disable_echoctl(void)
 	struct termios	term;
 
 	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag &= ~ECHOCTL;//vscode nao encontra mas compila e funciona
+	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
@@ -70,10 +67,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	disable_echoctl();
 	shell = malloc(sizeof(t_shell));
-
-	//!PROTEGER NO ENV
 	my_envp = copy_shlvl(envp);
-	
 	increment_shlvl(my_envp);
 	shell->envp = my_envp;
 	shell->exit_status = 0;

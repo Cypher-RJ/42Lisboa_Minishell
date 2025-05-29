@@ -66,7 +66,7 @@ char	*ft_strjoin_chr(char *s, char c)
 
 int	print_syntax_error(char *msg)
 {
-	g_signal_status = 2; // para verificar no prompt.c em prompt_loop()
+	g_signal_status = 2;
 	ft_putstr_fd(msg, 2);
 	return (1);
 }

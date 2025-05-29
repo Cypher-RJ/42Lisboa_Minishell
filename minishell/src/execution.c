@@ -1,5 +1,34 @@
 #include "../includes/minishell.h"
 
+int	check_empty_first(t_shell *shell)
+{
+	int			i;
+	t_command	*thiscmd;
+	char		**temp;
+
+	temp = NULL;
+	thiscmd = shell->cmds;
+	while (thiscmd != NULL)
+	{
+		i = 0;
+		while (thiscmd->args[i])
+			i++;
+		if (i > 1 && thiscmd->args[0][0] == '\0')
+		{
+			temp = ft_calloc(i, sizeof(char *));
+			if (!temp)
+				return (ft_putendl_fd("Temp NULL for empty arg", 2), 1);
+			while (i-- > 0)
+				temp[i] = thiscmd->args[i + 1];
+			free(thiscmd->args[0]);
+			free(thiscmd->args);
+			thiscmd->args = temp;
+		}
+		thiscmd = thiscmd->next;
+	}
+	return (0);
+}
+
 void	manage_execve(int err, char *path, t_shell *shell, bool has_fork)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -70,12 +99,12 @@ int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 
 void	executor(t_shell *shell)
 {
-	if (find_heredocs(shell))
+	if (find_heredocs(shell) || check_empty_first(shell))
 	{
 		free_command_list(shell->cmds);
 		return ;
 	}
-	if (shell->cmds->next == NULL && shell->cmds->args[0] &&
+	if (shell->cmds->next == NULL && shell->cmds->args[0] && \
 		(is_unique_builtin(shell->cmds->args[0]) == 1))
 		execute_builtin(shell->cmds, shell, 0);
 	else
@@ -84,51 +113,5 @@ void	executor(t_shell *shell)
 	shell->cmds = NULL;
 }
 
-/* 
-void	executor(t_shell *shell)
-{
-	//usar isto para ver se esta a capturar e parsar as linhas 
-	//descomentar este e comentar o anterior
-	// echo(ou outro) arg1 "arg2" arg3
-	// arg3 nao esta a aparecer. argumentos depois de um argumento em "" ja nao estao
-	// a entrar 
-	int	i;
-	int j;
-
-	i = 1;
-	while (shell && shell->cmds)
-	{
-		ft_putnbr_fd(i, 1);
-		ft_putendl_fd("o comando:", 1);
-		j = 0;
-		while (shell->cmds->args[j])
-		{
-			write(1, "       *", 8);
-			write(1, shell->cmds->args[j], ft_strlen(shell->cmds->args[j]));
-			ft_putendl_fd("*", 1);
-			j++;
-		}
-		if (shell->cmds->path)
-		{
-			ft_putendl_fd("    no path:", 1);
-			write(1, "       *", 8);
-			write(1, shell->cmds->path, ft_strlen(shell->cmds->path));
-			ft_putendl_fd("*", 1);
-		}
-		while (shell->cmds->redir)
-		{
-			ft_putendl_fd("    com redir:", 1);
-			write(1, "       *", 8);
-			write(1, shell->cmds->redir->direction, ft_strlen(shell->cmds->redir->direction));
-			ft_putendl_fd("*", 1);
-			write(1, "       *", 8);
-			write(1, shell->cmds->redir->passorfile, ft_strlen(shell->cmds->redir->passorfile));
-			ft_putendl_fd("*", 1);
-			shell->cmds->redir = shell->cmds->redir->next;
-		}
-		i++;
-		shell->cmds = shell->cmds->next;
-	}
-}
- */
-//  valgrind --suppressions=readline.supp --show-leak-kinds=all --leak-check=full --track-origins=yes --track-fds=yes ./minishell
+/*valgrind --suppressions=readline.supp --show-leak-kinds=all 
+--leak-check=full --track-origins=yes --track-fds=yes ./minishell*/

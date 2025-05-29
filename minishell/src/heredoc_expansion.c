@@ -13,7 +13,7 @@ int	put_line_hd(int fd, int pos, char *line)
 int	put_expansion_hd(int fd, int pos, char *line, t_shell *shell)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = pos;
 	j = 0;
