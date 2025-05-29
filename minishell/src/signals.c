@@ -35,25 +35,14 @@ void	wait_for_children(pid_t last_pid, t_shell *shell)
 	int		status;
 	pid_t	pid;
 	int		exit_code;
-	int 	sig;
 
 	exit_code = 0;
-	while ((pid = wait(&status)) > 0)
+	pid = wait(&status);
+	while (pid > 0)
 	{
 		if (pid == last_pid)
-		{
-			if (WIFEXITED(status))
-				exit_code = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-			{
-				sig = WTERMSIG(status);
-				if (sig == SIGINT)
-					write(1, "\n", 1);
-				else if (sig == SIGQUIT)
-					write(1, "Quit (core dumped)\n", 19);
-				exit_code = 128 + sig;
-			}
-		}
+			exit_code = signal_fork(status);
+		pid = wait(&status);
 	}
 	shell->exit_status = exit_code;
 	setup_signals();
