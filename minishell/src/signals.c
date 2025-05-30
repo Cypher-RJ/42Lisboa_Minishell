@@ -5,7 +5,7 @@ void	signal_handler(int sig)
 	if (sig == SIGINT)
 	{
 		g_signal_status = 128 + SIGINT;
-		write(1, "\n", 1);
+		write(1, "^C\n", 3);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();

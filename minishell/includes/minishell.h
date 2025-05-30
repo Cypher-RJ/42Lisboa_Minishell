@@ -105,7 +105,7 @@ int			builtin_unset(t_command *cmds, t_shell *shell, bool has_fork);
 int			how_exit(char *msg, bool has_fork, int out, t_shell *shell);
 
 //builtin utils
-long long	ft_ms_atoll(const char *str);
+int			ft_ms_atoll(const char *str, long long *nbr);
 int			is_str_numeric(const char *str);
 int			builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork);
 int			export_putenv(t_shell *shell, bool has_fork);

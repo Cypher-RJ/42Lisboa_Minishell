@@ -46,7 +46,7 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 		return (how_exit("minishell: exit: too many arguments", \
 			has_fork, EXIT_FAILURE, shell));
 	else
-		status = ft_ms_atoll(thiscmd->args[1]);
+		ft_ms_atoll(thiscmd->args[1], &status);
 	shell->exit_status = (unsigned char)status;
 	return (how_exit(NULL, 1, (unsigned char)status, shell));
 }
