@@ -55,8 +55,7 @@ int	handle_segment(char *input, char **arg_slot, int *i)
 static int	handle_ampersand(char *input, int i)
 {
 	if (input[i] == '&' && input[i + 1] == '&')
-		return (print_syntax_error("minishell: syntax error near "
-				"unexpected token `&&'\n"));
+		return (print_syntax_error(" near unexpected token `&&'\n"));
 	return (0);
 }
 
@@ -68,8 +67,7 @@ static int	handle_pipe(char *input, int *i, int *expect)
 		while (input[*i] == ' ')
 			(*i)++;
 		if (!input[*i] || input[*i] == '|')
-			return (print_syntax_error("minishell: syntax error near "
-					"unexpected token `|'\n"));
+			return (print_syntax_error(" near unexpected token `|'\n"));
 		*expect = 1;
 		return (0);
 	}
@@ -117,11 +115,9 @@ int	has_unclosed_quotes(char *input)
 		i++;
 	}
 	if (in_s)
-		return (print_syntax_error("minishell: syntax error: "
-				"unclosed single quote\n"));
+		return (print_syntax_error(": unclosed single quote\n"));
 	if (in_d)
-		return (print_syntax_error("minishell: syntax error: "
-				"unclosed double quote\n"));
+		return (print_syntax_error(": unclosed double quote\n"));
 	return (0);
 }
 
@@ -158,18 +154,18 @@ int	check_syntax(char *input)
 		i++;
 	}
 	if (expect)
-		return (print_syntax_error("minishell: syntax error: "
-				"unexpected end of input\n"));
+		return (print_syntax_error(": unexpected end of input\n"));
 	return (has_unclosed_quotes(input));
 }
 
-static void	update_redir_quote_state(char c, int *in_s, int *in_d, int i,
+static int	update_redir_quote_state(char c, int *in_s, int *in_d, int i,
 		char *input)
 {
 	if (c == '\'' && !*in_d && (i == 0 || input[i - 1] != '\\'))
 		*in_s = !*in_s;
 	else if (c == '"' && !*in_s && (i == 0 || input[i - 1] != '\\'))
 		*in_d = !*in_d;
+	return (1);
 }
 
 static int	handle_redirection_syntax(char *input, int *i)
@@ -177,8 +173,7 @@ static int	handle_redirection_syntax(char *input, int *i)
 	if (input[*i + 1] == '>' || input[*i + 1] == '<')
 	{
 		if (input[*i + 2] == '>' || input[*i + 2] == '<')
-			return (print_syntax_error("minishell: syntax error near "
-					"unexpected token `>'\n"));
+			return (print_syntax_error(" near unexpected token `>'\n"));
 		(*i)++;
 	}
 	(*i)++;
@@ -186,41 +181,33 @@ static int	handle_redirection_syntax(char *input, int *i)
 		(*i)++;
 	if (!input[*i] || input[*i] == '>' || input[*i] == '<'
 		|| input[*i] == '|')
-		return (print_syntax_error("minishell: syntax error near "
-				"unexpected token `newline'\n"));
+		return (print_syntax_error(" near unexpected token `newline'\n"));
 	return (0);
 }
 
 int	check_syntax_redir(char *input)
 {
-	int	i;
-	int	expect_command;
-	int	in_s;
-	int	in_d;
+	int	i = 0;
+	int	expect_cmd = 1;
+	int	in_s = 0;
+	int	in_d = 0;
 
-	i = 0;
-	expect_command = 1;
-	in_s = 0;
-	in_d = 0;
 	while (input[i])
 	{
-		update_redir_quote_state(input[i], &in_s, &in_d, i, input);
-		if (!in_s && !in_d)
+		if (!update_redir_quote_state(input[i], &in_s, &in_d, i, input))
+			return (1);
+		if (!in_s && !in_d && (input[i] == '>' || input[i] == '<'))
 		{
-			if (input[i] == '>' || input[i] == '<')
-			{
-				if (handle_redirection_syntax(input, &i))
-					return (1);
-				expect_command = 0;
-				continue ;
-			}
-			else if (input[i] != ' ' && input[i] != '\t')
-				expect_command = 0;
+			if (handle_redirection_syntax(input, &i))
+				return (1);
+			expect_cmd = 0;
+			continue;
 		}
+		if (!in_s && !in_d && input[i] != ' ' && input[i] != '\t')
+			expect_cmd = 0;
 		i++;
 	}
-	if (expect_command)
-		return (print_syntax_error("minishell: syntax error near "
-				"unexpected token `newline'\n"));
+	if (expect_cmd)
+		return (print_syntax_error(" near unexpected token `newline'\n"));
 	return (0);
 }

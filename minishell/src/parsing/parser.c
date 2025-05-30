@@ -13,14 +13,14 @@ static void	handle_quote_state(char c, int *in_quote, int i, const char *input)
 
 static int	should_add_space_before(const char *input, int i)
 {
-	return (i > 0 && input[i - 1] != ' ' && input[i - 1] != '<'
-			&& input[i - 1] != '>');
+	return (i > 0 && input[i - 1] != ' ' && input[i - 1] != '<' && input[i
+		- 1] != '>');
 }
 
 static int	should_add_space_after(const char *input, int i)
 {
 	return (input[i + 1] && input[i + 1] != ' ' && input[i + 1] != '<'
-			&& input[i + 1] != '>');
+		&& input[i + 1] != '>');
 }
 
 static int	handle_redirection(const char *input, char *new_str, int *i, int *j)
@@ -82,20 +82,19 @@ static int	count_words(char *str)
 	int		count;
 	int		i;
 	int		in_word;
-	char	quote_type;
+	char	quote;
 
 	count = 0;
 	i = 0;
 	in_word = 0;
-	quote_type = 0;
+	quote = 0;
 	while (str[i])
 	{
-		if ((str[i] == '\'' || str[i] == '"') && (i == 0
-				|| str[i - 1] != '\\'))
-			handle_quote_counting(str[i], &quote_type, &in_word, &count);
-		else if (str[i] == ' ' && !quote_type)
+		if ((str[i] == '\'' || str[i] == '"') && (i == 0 || str[i - 1] != '\\'))
+			handle_quote_counting(str[i], &quote, &in_word, &count);
+		else if ((str[i] == ' ' || str[i] == '\t') && !quote)
 			in_word = 0;
-		else if (!in_word && !quote_type)
+		else if (!in_word && !quote)
 		{
 			in_word = 1;
 			count++;
@@ -111,10 +110,7 @@ static char	**allocate_args(char *preprocessed)
 
 	args = malloc(sizeof(char *) * (count_words(preprocessed) + 1));
 	if (!args)
-	{
-		free(preprocessed);
-		return (NULL);
-	}
+		return (free(preprocessed), NULL);
 	return (args);
 }
 
@@ -148,26 +144,15 @@ char	**split_cmds(char *input)
 	preprocessed = add_spaces_around_redir(input);
 	if (!preprocessed || preprocessed[0] == '\0'
 		|| is_only_spaces(preprocessed))
-	{
-		free(preprocessed);
-		return (NULL);
-	}
+		return (free(preprocessed), NULL);
 	if (check_syntax(preprocessed) || check_syntax_redir(preprocessed))
-	{
-		free(preprocessed);
-		return (NULL);
-	}
+		return (free(preprocessed), NULL);
 	args = allocate_args(preprocessed);
 	if (!args)
 		return (NULL);
 	if (!parse_input(preprocessed, args))
-	{
-		ft_free_split(args);
-		free(preprocessed);
-		return (NULL);
-	}
-	free(preprocessed);
-	return (args);
+		return (ft_free_split(args), free(preprocessed), NULL);
+	return (free(preprocessed), args);
 }
 
 static int	count_quote_words(char *str)
@@ -197,9 +182,7 @@ static int	count_quote_words(char *str)
 			}
 		}
 		else if ((str[i] == ' ' || str[i] == '\t') && !quote)
-		{
 			in_word = 0;
-		}
 		else if (!in_word)
 		{
 			in_word = 1;
