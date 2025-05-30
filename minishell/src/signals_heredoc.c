@@ -19,7 +19,7 @@ void	setup_heredoc_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-int	signal_fork(int status)
+int	signal_fork(int status, int *ctrlc)
 {
 	int		exit_code;
 	int		sig;
@@ -31,8 +31,11 @@ int	signal_fork(int status)
 	else if (WIFSIGNALED(status))
 	{
 		sig = WTERMSIG(status);
-		if (sig == SIGINT)
-			write(1, "\n", 1);
+		if (sig == SIGINT && *ctrlc == 0)
+		{
+			write(1, "^C\n", 3);
+			*ctrlc = 1;
+		}
 		else if (sig == SIGQUIT)
 			write(1, "Quit (core dumped)\n", 19);
 		exit_code = 128 + sig;

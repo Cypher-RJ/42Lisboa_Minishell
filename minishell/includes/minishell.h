@@ -126,7 +126,7 @@ void		restore_signals(void);
 void		sigint_heredoc_handler(int sig);
 void		setup_heredoc_signals(void);
 void		wait_for_children(pid_t last_pid, t_shell *shell);
-int			signal_fork(int status);
+int			signal_fork(int status, int *ctrlc);
 
 //free
 void		free_total(t_shell *shell);

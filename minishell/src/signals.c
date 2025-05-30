@@ -35,13 +35,17 @@ void	wait_for_children(pid_t last_pid, t_shell *shell)
 	int		status;
 	pid_t	pid;
 	int		exit_code;
+	int		ctrlc;
 
 	exit_code = 0;
+	ctrlc = 0;
 	pid = wait(&status);
 	while (pid > 0)
 	{
 		if (pid == last_pid)
-			exit_code = signal_fork(status);
+			exit_code = signal_fork(status, &ctrlc);
+		else
+			signal_fork(status, &ctrlc);
 		pid = wait(&status);
 	}
 	shell->exit_status = exit_code;
