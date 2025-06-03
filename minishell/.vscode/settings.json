@@ -6,7 +6,8 @@
 		"stat.h": "c",
 		"format": "c",
 		"errno.h": "c",
-		"ft_printf.h": "c"
+		"ft_printf.h": "c",
+		"numbers": "c"
 	},
 	"cmake.sourceDirectory": "/home/rcesar-d/42_student/Rank03/my_minishell/minishell/tests"
 }

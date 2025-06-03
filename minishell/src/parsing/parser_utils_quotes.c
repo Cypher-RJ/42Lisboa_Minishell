@@ -1,5 +1,20 @@
 #include "../../includes/minishell.h"
 
+static void	handle_quote_opening(char c, int *in_word, char *quote, int *ct)
+{
+	if (!*quote)
+	{
+		*quote = c;
+		if (!*in_word)
+		{
+			*in_word = 1;
+			(*ct)++;
+		}
+	}
+	else if (c == *quote)
+		*quote = 0;
+}
+
 int	count_quote_words(char *str)
 {
 	int		count;
@@ -13,23 +28,11 @@ int	count_quote_words(char *str)
 	quote = 0;
 	while (str[i])
 	{
-		if ((str[i] == '\'' || str[i] == '"') && (i == 0
-				|| str[i - 1] != '\\'))
-		{
-			if (!quote)
-				quote = str[i];
-			else if (str[i] == quote)
-				quote = 0;
-			if (!in_word)
-			{
-				in_word = 1;
-				count++;
-			}
-		}
+		if ((str[i] == '\'' || str[i] == '"')
+			&& (i == 0 || str[i - 1] != '\\'))
+			handle_quote_opening(str[i], &in_word, &quote, &count);
 		else if ((str[i] == ' ' || str[i] == '\t') && !quote)
-		{
 			in_word = 0;
-		}
 		else if (!in_word)
 		{
 			in_word = 1;

@@ -170,4 +170,6 @@ int			is_redirect_op(char *str);
 //parser_utils_quotes.c
 int			count_quote_words(char *str);
 
+char		*add_spaces_around_redir(const char *input);
+
 #endif
