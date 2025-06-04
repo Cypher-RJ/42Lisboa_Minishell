@@ -74,7 +74,7 @@ void		resolve_path(t_command *head, t_shell *shell);
 char		*find_env_value(const char *var, char **envp);
 
 // parse utils
-int			check_pipe_and_ampersand(char *input, int *i, int *expect);
+int			check_pipe_and_ampersand(char *input, int *pos);
 int			detect_redirections(char **args, int *fd_in, int *fd_out);
 int			handle_segment(char *input, char **arg_slot, int *i);
 void		handle_input(char *input, t_shell *shell, t_command **cmds);

@@ -67,6 +67,7 @@ char	*ft_strjoin_chr(char *s, char c)
 int	print_syntax_error(char *msg)
 {
 	g_signal_status = 2;
-	ft_putstr_fd(msg, 2);
+	ft_putstr_fd("minishell: syntax ", STDERR_FILENO);
+	ft_putendl_fd(msg, STDERR_FILENO);
 	return (1);
 }

@@ -68,7 +68,7 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 	int	exit_code;
 
 	exit_code = shell->exit_status;
-	print_syntax_error("exit\n");
+	ft_putendl_fd("exit", STDERR_FILENO);
 	free_shell(shell);
 	if (cmds)
 		free_command_list(cmds);

@@ -1,63 +1,56 @@
 #include "../../includes/minishell.h"
 
-static void	update_redir_quote_state(char c, int *in_s, int *in_d, int i,
-		char *input)
+static void	update_redir_quote_state(char c, int *pos, char *input)
 {
-	if (c == '\'' && !*in_d && (i == 0 || input[i - 1] != '\\'))
-		*in_s = !*in_s;
-	else if (c == '"' && !*in_s && (i == 0 || input[i - 1] != '\\'))
-		*in_d = !*in_d;
+	if (c == '\'' && !pos[3] && (pos[0] == 0 || input[pos[0] - 1] != '\\'))
+		pos[2] = !pos[2];
+	else if (c == '"' && !pos[2] && (pos[0] == 0 || input[pos[0] - 1] != '\\'))
+		pos[3] = !pos[3];
 }
 
-static int	handle_redirection_syntax(char *input, int *i)
+static int	handle_redirection_syntax(char *input, int *pos)
 {
-	if (input[*i + 1] == '>' || input[*i + 1] == '<')
+	if (input[pos[0] + 1] == '>' || input[pos[0] + 1] == '<')
 	{
-		if (input[*i + 2] == '>' || input[*i + 2] == '<')
-			return (print_syntax_error("minishell: syntax error near "
-					"unexpected token `>'\n"));
-		(*i)++;
+		if (input[pos[0] + 2] == '>' || input[pos[0] + 2] == '<')
+			return (print_syntax_error("error near unexpected token `>'"));
+		pos[0]++;
 	}
-	(*i)++;
-	while (input[*i] == ' ' || input[*i] == '\t')
-		(*i)++;
-	if (!input[*i] || input[*i] == '>' || input[*i] == '<'
-		|| input[*i] == '|')
-		return (print_syntax_error("minishell: syntax error near "
-				"unexpected token `newline'\n"));
+	pos[0]++;
+	while (input[pos[0]] == ' ' || input[pos[0]] == '\t')
+		pos[0]++;
+	if (!input[pos[0]] || input[pos[0]] == '>' || input[pos[0]] == '<'
+		|| input[pos[0]] == '|')
+		return (print_syntax_error("error near unexpected token `newline'"));
+	pos[1] = 0;
 	return (0);
 }
 
 int	check_syntax_redir(char *input)
 {
-	int	i;
-	int	expect_command;
-	int	in_s;
-	int	in_d;
+	int	pos[4];
 
-	i = 0;
-	expect_command = 1;
-	in_s = 0;
-	in_d = 0;
-	while (input[i])
+	pos[0] = 0;
+	pos[1] = 1;
+	pos[2] = 0;
+	pos[3] = 0;
+	while (input[pos[0]])
 	{
-		update_redir_quote_state(input[i], &in_s, &in_d, i, input);
-		if (!in_s && !in_d)
+		update_redir_quote_state(input[pos[0]], pos, input);
+		if (!pos[2] && !pos[3])
 		{
-			if (input[i] == '>' || input[i] == '<')
+			if (input[pos[0]] == '>' || input[pos[0]] == '<')
 			{
-				if (handle_redirection_syntax(input, &i))
+				if (handle_redirection_syntax(input, pos))
 					return (1);
-				expect_command = 0;
 				continue ;
 			}
-			else if (input[i] != ' ' && input[i] != '\t')
-				expect_command = 0;
+			else if (input[pos[0]] != ' ' && input[pos[0]] != '\t')
+				pos[1] = 0;
 		}
-		i++;
+		pos[0]++;
 	}
-	if (expect_command)
-		return (print_syntax_error("minishell: syntax error near "
-				"unexpected token `newline'\n"));
+	if (pos[1])
+		return (print_syntax_error("error near unexpected token `newline'"));
 	return (0);
 }

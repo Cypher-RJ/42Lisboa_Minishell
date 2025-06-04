@@ -41,48 +41,42 @@ int	has_unclosed_quotes(char *input)
 		i++;
 	}
 	if (in_s)
-		return (print_syntax_error("minishell: syntax error: "
-				"unclosed single quote\n"));
+		return (print_syntax_error("error: unclosed single quote"));
 	if (in_d)
-		return (print_syntax_error("minishell: syntax error: "
-				"unclosed double quote\n"));
+		return (print_syntax_error("error: unclosed double quote"));
 	return (0);
 }
 
-static void	update_quote_state(char c, int *in_s, int *in_d, int i, char *input)
+static void	update_quote_state(char c, int *pos, char *input)
 {
-	if (c == '\'' && !*in_d && (i == 0 || input[i - 1] != '\\'))
-		*in_s = !*in_s;
-	else if (c == '"' && !*in_s && (i == 0 || input[i - 1] != '\\'))
-		*in_d = !*in_d;
+	if (c == '\'' && !pos[2] && (pos[0] == 0 || input[pos[0] - 1] != '\\'))
+		pos[1] = !pos[1];
+	else if (c == '"' && !pos[1] && (pos[0] == 0 || input[pos[0] - 1] != '\\'))
+		pos[2] = !pos[2];
 }
 
 int	check_syntax(char *input)
 {
-	int	i;
-	int	in_s;
-	int	in_d;
-	int	expect;
+	int	pos[4];
 
-	i = 0;
-	in_s = 0;
-	in_d = 0;
-	expect = 1;
-	while (input[i])
+	pos[0] = 0;
+	pos[1] = 0;
+	pos[2] = 0;
+	pos[3] = 1;
+	while (input[pos[0]])
 	{
-		update_quote_state(input[i], &in_s, &in_d, i, input);
-		if (!in_s && !in_d)
+		update_quote_state(input[pos[0]], pos, input);
+		if (!pos[1] && !pos[2])
 		{
-			if (check_pipe_and_ampersand(input, &i, &expect))
+			if (check_pipe_and_ampersand(input, pos))
 				return (1);
 			else
-				i++;
+				pos[0]++;
 			continue ;
 		}
-		i++;
+		pos[0]++;
 	}
-	if (expect)
-		return (print_syntax_error("minishell: syntax error: "
-				"unexpected end of input\n"));
+	if (pos[3])
+		return (print_syntax_error("error: unexpected end of input"));
 	return (has_unclosed_quotes(input));
 }
