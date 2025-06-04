@@ -1,5 +1,5 @@
 #include "../../includes/minishell.h"
-
+/* 
 int	is_single_quoted(char *str)
 {
 	size_t	len;
@@ -10,81 +10,7 @@ int	is_single_quoted(char *str)
 	return ((len >= 2 && str[0] == '\'' && str[len - 1] == '\'')
 		|| (len >= 2 && str[0] == '"' && str[len - 1] == '"'));
 }
-
-static void	handle_quotes(char c, int *in_quotes, char *quote_char, int i,
-		char *input)
-{
-	if ((c == '"' || c == '\'') && (i == 0 || input[i - 1] != '\\'))
-	{
-		if (!*in_quotes)
-		{
-			*quote_char = c;
-			*in_quotes = 1;
-		}
-		else if (c == *quote_char)
-			*in_quotes = 0;
-	}
-}
-
-int	handle_segment(char *input, char **arg_slot, int *i)
-{
-	int		start;
-	int		in_quotes;
-	char	quote_char;
-
-	in_quotes = 0;
-	quote_char = 0;
-	while (input[*i] == ' ' || input[*i] == '\t')
-		(*i)++;
-	start = *i;
-	while (input[*i])
-	{
-		handle_quotes(input[*i], &in_quotes, &quote_char, *i, input);
-		if (input[*i] == '|' && !in_quotes)
-			break ;
-		(*i)++;
-	}
-	if (start == *i)
-		return (1);
-	*arg_slot = ft_substr(input, start, *i - start);
-	if (!*arg_slot)
-		return (0);
-	return (*arg_slot != NULL);
-}
-
-static int	handle_ampersand(char *input, int i)
-{
-	if (input[i] == '&' && input[i + 1] == '&')
-		return (print_syntax_error(" near unexpected token `&&'\n"));
-	return (0);
-}
-
-static int	handle_pipe(char *input, int *i, int *expect)
-{
-	if (input[*i] == '|')
-	{
-		(*i)++;
-		while (input[*i] == ' ')
-			(*i)++;
-		if (!input[*i] || input[*i] == '|')
-			return (print_syntax_error(" near unexpected token `|'\n"));
-		*expect = 1;
-		return (0);
-	}
-	return (0);
-}
-
-int	check_pipe_and_ampersand(char *input, int *i, int *expect)
-{
-	if (handle_ampersand(input, *i))
-		return (1);
-	if (handle_pipe(input, i, expect))
-		return (1);
-	if (input[*i] != ' ' && input[*i] != '\t')
-		*expect = 0;
-	return (0);
-}
-
+ */
 int	is_only_spaces(char *input)
 {
 	while (*input)
@@ -115,99 +41,42 @@ int	has_unclosed_quotes(char *input)
 		i++;
 	}
 	if (in_s)
-		return (print_syntax_error(": unclosed single quote\n"));
+		return (print_syntax_error("error: unclosed single quote"));
 	if (in_d)
-		return (print_syntax_error(": unclosed double quote\n"));
+		return (print_syntax_error("error: unclosed double quote"));
 	return (0);
 }
 
-static void	update_quote_state(char c, int *in_s, int *in_d, int i, char *input)
+static void	update_quote_state(char c, int *pos, char *input)
 {
-	if (c == '\'' && !*in_d && (i == 0 || input[i - 1] != '\\'))
-		*in_s = !*in_s;
-	else if (c == '"' && !*in_s && (i == 0 || input[i - 1] != '\\'))
-		*in_d = !*in_d;
+	if (c == '\'' && !pos[2] && (pos[0] == 0 || input[pos[0] - 1] != '\\'))
+		pos[1] = !pos[1];
+	else if (c == '"' && !pos[1] && (pos[0] == 0 || input[pos[0] - 1] != '\\'))
+		pos[2] = !pos[2];
 }
 
 int	check_syntax(char *input)
 {
-	int	i;
-	int	in_s;
-	int	in_d;
-	int	expect;
+	int	pos[4];
 
-	i = 0;
-	in_s = 0;
-	in_d = 0;
-	expect = 1;
-	while (input[i])
+	pos[0] = 0;
+	pos[1] = 0;
+	pos[2] = 0;
+	pos[3] = 1;
+	while (input[pos[0]])
 	{
-		update_quote_state(input[i], &in_s, &in_d, i, input);
-		if (!in_s && !in_d)
+		update_quote_state(input[pos[0]], pos, input);
+		if (!pos[1] && !pos[2])
 		{
-			if (check_pipe_and_ampersand(input, &i, &expect))
+			if (check_pipe_and_ampersand(input, pos))
 				return (1);
 			else
-				i++;
+				pos[0]++;
 			continue ;
 		}
-		i++;
+		pos[0]++;
 	}
-	if (expect)
-		return (print_syntax_error(": unexpected end of input\n"));
+	if (pos[3])
+		return (print_syntax_error("error: unexpected end of input"));
 	return (has_unclosed_quotes(input));
-}
-
-static int	update_redir_quote_state(char c, int *in_s, int *in_d, int i,
-		char *input)
-{
-	if (c == '\'' && !*in_d && (i == 0 || input[i - 1] != '\\'))
-		*in_s = !*in_s;
-	else if (c == '"' && !*in_s && (i == 0 || input[i - 1] != '\\'))
-		*in_d = !*in_d;
-	return (1);
-}
-
-static int	handle_redirection_syntax(char *input, int *i)
-{
-	if (input[*i + 1] == '>' || input[*i + 1] == '<')
-	{
-		if (input[*i + 2] == '>' || input[*i + 2] == '<')
-			return (print_syntax_error(" near unexpected token `>'\n"));
-		(*i)++;
-	}
-	(*i)++;
-	while (input[*i] == ' ' || input[*i] == '\t')
-		(*i)++;
-	if (!input[*i] || input[*i] == '>' || input[*i] == '<'
-		|| input[*i] == '|')
-		return (print_syntax_error(" near unexpected token `newline'\n"));
-	return (0);
-}
-
-int	check_syntax_redir(char *input)
-{
-	int	i = 0;
-	int	expect_cmd = 1;
-	int	in_s = 0;
-	int	in_d = 0;
-
-	while (input[i])
-	{
-		if (!update_redir_quote_state(input[i], &in_s, &in_d, i, input))
-			return (1);
-		if (!in_s && !in_d && (input[i] == '>' || input[i] == '<'))
-		{
-			if (handle_redirection_syntax(input, &i))
-				return (1);
-			expect_cmd = 0;
-			continue;
-		}
-		if (!in_s && !in_d && input[i] != ' ' && input[i] != '\t')
-			expect_cmd = 0;
-		i++;
-	}
-	if (expect_cmd)
-		return (print_syntax_error(" near unexpected token `newline'\n"));
-	return (0);
 }

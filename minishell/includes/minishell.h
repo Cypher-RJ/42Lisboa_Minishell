@@ -18,6 +18,21 @@
 
 extern volatile sig_atomic_t	g_signal_status;
 
+typedef struct s_exp
+{
+	const char	*arg;
+	char		**envp;
+	int			last_exit;
+	char		*result;
+	int			i;
+	int			in_single;
+	int			in_double;
+	int			start;
+	char		buf[2];
+	char		*var;
+	char		*val;
+}				t_exp;
+
 typedef struct s_redirect
 {
 	char				*direction;
@@ -56,9 +71,10 @@ char		**copy_shlvl(char **envp);
 char		*build_prompt(t_shell *shell);
 char		*expand_env_variable(const char *arg, char **envp, int last_exit);
 void		resolve_path(t_command *head, t_shell *shell);
+char		*find_env_value(const char *var, char **envp);
 
 // parse utils
-int			check_pipe_and_ampersand(char *input, int *i, int *expect);
+int			check_pipe_and_ampersand(char *input, int *pos);
 int			detect_redirections(char **args, int *fd_in, int *fd_out);
 int			handle_segment(char *input, char **arg_slot, int *i);
 void		handle_input(char *input, t_shell *shell, t_command **cmds);
@@ -66,7 +82,7 @@ int			is_only_spaces(char *input);
 int			has_unclosed_quotes(char *input);
 int			check_syntax(char *input);
 int			check_syntax_redir(char *input);
-int			is_single_quoted(char *str);
+//int			is_single_quoted(char *str);
 
 // build command list
 t_command	*build_command_list(char **cmds, t_shell *shell);
@@ -136,5 +152,24 @@ void		free_redir_list(t_redirect *redir);
 void		free_commands(t_command *head);
 void		ft_free_split(char **array);
 void		cleanup_and_exit(t_shell *shell, t_command *cmds);
+
+//Extras for norminette compliance
+//env_utils.c
+void		process_chars(char *str, char *res, int *i, int *j);
+void		init_exp(t_exp *exp, const char *arg, char **envp, int last_exit);
+void		handle_sord_quotes(int s_or_d, t_exp *exp);
+//env_utils_dollar.c
+void		handle_dollar(t_exp *exp);
+//handle_input_utils.c
+void		handle_input_util(int k, t_command **cds, char *inpt, char **strs);
+//build_redir.c
+void		free_redirect_list(t_redirect *redir_head);
+int			process_redirect(t_command *cmds, int i, t_redirect **redir_head, \
+				t_redirect **redir_tail);
+int			is_redirect_op(char *str);
+//parser_utils_quotes.c
+int			count_quote_words(char *str);
+
+char		*add_spaces_around_redir(const char *input);
 
 #endif

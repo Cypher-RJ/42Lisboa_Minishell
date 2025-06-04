@@ -4,42 +4,21 @@ char	*remove_outer_quotes(char *str)
 {
 	int		i;
 	int		j;
-	char	*result;
-	char	in_quote;
+	char	*res;
 
-	i = 0;
-	j = 0;
-	in_quote = 0;
 	if (!str)
 		return (NULL);
-	result = malloc(ft_strlen(str) + 1);
-	if (!result)
+	i = 0;
+	j = 0;
+	res = malloc(ft_strlen(str) + 1);
+	if (!res)
 		return (str);
-	while (str[i])
-	{
-		if ((str[i] == '\'' || str[i] == '"') && (i == 0 || str[i - 1] != '\\'))
-		{
-			if (!in_quote)
-				in_quote = str[i];
-			else if (in_quote == str[i])
-			{
-				in_quote = 0;
-				i++;
-				continue ;
-			}
-			else
-				result[j++] = str[i];
-		}
-		else if (str[i])
-			result[j++] = str[i];
-		i++;
-	}
-	result[j] = '\0';
+	process_chars(str, res, &i, &j);
 	free(str);
-	return (result);
+	return (res);
 }
 
-static char	*find_env_value(char *var_name, char **envp)
+char	*find_env_value(const char *var_name, char **envp)
 {
 	int		i;
 	size_t	len;
@@ -57,76 +36,29 @@ static char	*find_env_value(char *var_name, char **envp)
 
 char	*expand_env_variable(const char *arg, char **envp, int last_exit)
 {
-	int		i;
-	int		in_single;
-	int		in_double;
-	char	*result;
-	int		start;
-	char	buf[2];
-	char	*var;
-	char	*val;
+	t_exp	exp;
 	char	*tmp;
 
-	i = 0;
-	in_single = 0;
-	in_double = 0;
-	result = ft_strdup("");
-	while (arg[i])
+	if (!arg)
+		return (NULL);
+	init_exp(&exp, arg, envp, last_exit);
+	while (exp.arg[exp.i])
 	{
-		buf[0] = arg[i];
-		buf[1] = '\0';
-		if (arg[i] == '\'' && !in_double)
-		{
-			in_single = !in_single;
-			tmp = ft_strjoin_free(result, "'");
-			result = tmp;
-			i++;
-			continue ;
-		}
-		else if (arg[i] == '"' && !in_single)
-		{
-			in_double = !in_double;
-			tmp = ft_strjoin_free(result, "\"");
-			result = tmp;
-			i++;
-			continue ;
-		}
-		else if (arg[i] == '$' && !in_single)
-		{
-			if (!arg[i + 1] || (!ft_isalnum(arg[i + 1]) && arg[i + 1] != '_' && arg[i + 1] != '?'))
-			{
-				tmp = ft_strjoin_free(result, "$");
-				result = tmp;
-				i++;
-				continue ;
-			}
-			if (arg[i + 1] == '?')
-			{
-				val = ft_itoa(last_exit);
-				tmp = ft_strjoin_free(result, val);
-				free(val);
-				result = tmp;
-				i += 2;
-				continue ;
-			}
-			start = ++i;
-			while (arg[i] && (ft_isalnum(arg[i]) || arg[i] == '_'))
-				i++;
-			var = ft_substr(arg, start, i - start);
-			val = find_env_value(var, envp);
-			free(var);
-			tmp = ft_strjoin_free(result, val);
-			free(val);
-			result = tmp;
-		}
+		exp.buf[0] = exp.arg[exp.i];
+		if (exp.buf[0] == '\'' && !exp.in_double)
+			handle_sord_quotes(0, &exp);
+		else if (exp.buf[0] == '"' && !exp.in_single)
+			handle_sord_quotes(1, &exp);
+		else if (exp.buf[0] == '$' && !exp.in_single)
+			handle_dollar(&exp);
 		else
 		{
-			tmp = ft_strjoin_free(result, buf);
-			result = tmp;
-			i++;
+			tmp = ft_strjoin_free(exp.result, exp.buf);
+			exp.result = tmp;
+			exp.i++;
 		}
 	}
-	return (result);
+	return (exp.result);
 }
 
 static int	handle_redirection(char **args, int *fd, int flags, int i)

@@ -29,22 +29,13 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	add_history(input);
 	strs = split_cmds(input);
 	if (!strs)
-	{
-		*cmds = NULL;
-		free(input);
-		return ;
-	}
+		return ((void)handle_input_util(0, cmds, input, NULL));
 	*cmds = build_command_list(strs, shell);
 	current = *cmds;
 	while (current)
 	{
 		if (!build_redir(current))
-		{
-			ft_free_split(strs);
-			free_command_list(*cmds);
-			*cmds = NULL;
-			return ;
-		}
+			return ((void)handle_input_util(1, cmds, input, strs));
 		current = current->next;
 	}
 	ft_free_split(strs);
@@ -77,7 +68,7 @@ void	cleanup_and_exit(t_shell *shell, t_command *cmds)
 	int	exit_code;
 
 	exit_code = shell->exit_status;
-	ft_putendl_fd("exit", 2);
+	ft_putendl_fd("exit", STDERR_FILENO);
 	free_shell(shell);
 	if (cmds)
 		free_command_list(cmds);
