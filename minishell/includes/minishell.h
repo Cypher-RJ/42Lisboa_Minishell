@@ -82,7 +82,7 @@ int			is_only_spaces(char *input);
 int			has_unclosed_quotes(char *input);
 int			check_syntax(char *input);
 int			check_syntax_redir(char *input);
-int			is_single_quoted(char *str);
+//int			is_single_quoted(char *str);
 
 // build command list
 t_command	*build_command_list(char **cmds, t_shell *shell);

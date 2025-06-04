@@ -31,6 +31,8 @@ SRCS = src/builtins_cd_pwd_utils.c \
 		src/parsing/parser_utils_quotes.c \
 		src/parsing/parser_split_cmds.c \
 		src/parsing/parser_splic_cmds_utils.c \
+		src/parsing/syntax_utils.c \
+		src/parsing/syntax_redir_check.c \
 \
 		src/parsing/parser.c \
 		src/parsing/syntax.c \
