@@ -34,40 +34,6 @@ char	*find_env_value(const char *var_name, char **envp)
 	return (ft_strdup(""));
 }
 
-char	*expand_env_variable(const char *arg, char **envp, int last_exit)
-{
-	t_exp	exp;
-	char	*tmp;
-
-	if (!arg)
-		return (NULL);
-	init_exp(&exp, arg, envp, last_exit);
-	while (exp.arg[exp.i])
-	{
-		exp.buf[0] = exp.arg[exp.i];
-		if (exp.buf[0] == '\'' && !exp.in_double)
-			handle_sord_quotes(0, &exp);
-		else if (exp.buf[0] == '"' && !exp.in_single)
-			handle_sord_quotes(1, &exp);
-		else if (exp.buf[0] == '$' && !exp.in_single)
-		{
-			if (!exp.in_single && !exp.in_double && (exp.arg[exp.i + 1] == '\'' || exp.arg[exp.i + 1] == '"'))
-			{
-				exp.i++;
-				continue;
-			}
-			handle_dollar(&exp);
-		}
-		else
-		{
-			tmp = ft_strjoin_free(exp.result, exp.buf);
-			exp.result = tmp;
-			exp.i++;
-		}
-	}
-	return (exp.result);
-}
-
 static int	handle_redirection(char **args, int *fd, int flags, int i)
 {
 	if (*fd != -1)
