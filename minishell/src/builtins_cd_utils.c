@@ -108,8 +108,8 @@ int	builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 	if (!new_pwd)
 	{
 		free(old_pwd);
-		return (how_exit("getcwd() failed to allocate", has_fork, \
-			EXIT_FAILURE, shell));
+		perror("minishell: error retrieving current directory");
+		return (how_exit(NULL, has_fork, EXIT_FAILURE, shell));
 	}
 	if (adjust_envp(old_pwd, new_pwd, has_fork, shell))
 		return (EXIT_FAILURE);

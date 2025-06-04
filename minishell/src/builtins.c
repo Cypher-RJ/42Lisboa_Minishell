@@ -37,20 +37,20 @@ void	builtin_pwd(t_shell *shell)
 void	builtin_echo(t_command *thiscmd, t_shell *shell)
 {
 	int		i;
+	int		j;
 	bool	no_nl;
 
 	i = 1;
 	no_nl = false;
-	if (thiscmd->args[1] && !(ft_strncmp(thiscmd->args[1], "-n", 2)))
+	while (thiscmd->args[i] && !(ft_strncmp(thiscmd->args[i], "-n", 2)))
 	{
-		while (thiscmd->args[1][i] == 'n')
-			i++;
-		if (thiscmd->args[1][i] == '\0')
+		j = 1;
+		while (thiscmd->args[i][j] == 'n')
+			j++;
+		if (thiscmd->args[i++][j] == '\0')
 			no_nl = true;
-		if (no_nl == true)
-			i = 2;
-		else
-			i = 1;
+		else if (thiscmd->args[--i][j] != '\0')
+			break ;
 	}
 	while (thiscmd->args[i++])
 	{
