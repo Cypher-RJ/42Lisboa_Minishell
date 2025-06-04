@@ -36,7 +36,7 @@ int	is_str_numeric(const char *str)
 	i = 0;
 	if (!str || !str[i])
 		return (0);
-	while (str[i] == '+' || str[i] == '-')
+	if (str[i] == '+' || str[i] == '-')
 		i++;
 	if (!str[i])
 		return (0);
