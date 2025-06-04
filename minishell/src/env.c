@@ -50,7 +50,14 @@ char	*expand_env_variable(const char *arg, char **envp, int last_exit)
 		else if (exp.buf[0] == '"' && !exp.in_single)
 			handle_sord_quotes(1, &exp);
 		else if (exp.buf[0] == '$' && !exp.in_single)
+		{
+			if (!exp.in_single && !exp.in_double && (exp.arg[exp.i + 1] == '\'' || exp.arg[exp.i + 1] == '"'))
+			{
+				exp.i++;
+				continue;
+			}
 			handle_dollar(&exp);
+		}
 		else
 		{
 			tmp = ft_strjoin_free(exp.result, exp.buf);
