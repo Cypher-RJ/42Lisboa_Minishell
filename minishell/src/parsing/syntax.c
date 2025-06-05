@@ -1,16 +1,5 @@
 #include "../../includes/minishell.h"
-/* 
-int	is_single_quoted(char *str)
-{
-	size_t	len;
 
-	if (!str)
-		return (0);
-	len = ft_strlen(str);
-	return ((len >= 2 && str[0] == '\'' && str[len - 1] == '\'')
-		|| (len >= 2 && str[0] == '"' && str[len - 1] == '"'));
-}
- */
 int	is_only_spaces(char *input)
 {
 	while (*input)

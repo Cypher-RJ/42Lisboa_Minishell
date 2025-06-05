@@ -1,6 +1,5 @@
 #include "../includes/minishell.h"
 
-// Checks if a file exists and is executable
 int	is_executable(char *filepath)
 {
 	struct stat	buffer;
@@ -8,7 +7,6 @@ int	is_executable(char *filepath)
 	return (access(filepath, X_OK) == 0 && stat(filepath, &buffer) == 0);
 }
 
-// Gets the PATH variable from `envp`
 char	*get_env_path(t_shell *shell)
 {
 	int	i;
@@ -23,7 +21,6 @@ char	*get_env_path(t_shell *shell)
 	return (NULL);
 }
 
-// Searches for the full path of a command
 char	*search_path(char *cmd, char **paths)
 {
 	int		i;
@@ -47,7 +44,6 @@ char	*search_path(char *cmd, char **paths)
 	return (NULL);
 }
 
-// Finds the full path of a command
 char	*get_path(char *cmd, t_shell *shell)
 {
 	char	*path_var;
