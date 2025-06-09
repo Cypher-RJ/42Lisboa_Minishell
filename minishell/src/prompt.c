@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:27:57 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/06 09:27:58 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/09 09:22:13 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 	if (!strs)
 		return ((void)handle_input_util(0, cmds, input, NULL));
 	*cmds = build_command_list(strs, shell);
+	if (*cmds)
+		check_and_split_expanded_command(*cmds);
 	current = *cmds;
 	while (current)
 	{

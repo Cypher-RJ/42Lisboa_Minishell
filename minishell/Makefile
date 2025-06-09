@@ -28,6 +28,7 @@ SRCS = src/builtins_cd_pwd_utils.c \
 		src/env_utils.c \
 		src/env_utils_dollar.c \
 		src/handle_input_utils.c \
+		src/expansion_utils.c \
 		src/parsing/build_redir.c \
 		src/parsing/parser_utils_quotes.c \
 		src/parsing/parser_split_cmds.c \
