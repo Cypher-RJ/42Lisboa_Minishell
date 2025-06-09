@@ -1,10 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansion_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/09 09:34:08 by rcesar-d          #+#    #+#             */
+/*   Updated: 2025/06/09 09:36:18 by rcesar-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 static int	has_unquoted_space(const char *str)
 {
-	int	in_single = 0, in_double = 0, i;
+	int	in_single;
+	int	in_double;
+	int	i;
 
-	in_single = 0, in_double = 0, i = 0;
+	in_double = 0;
+	in_single = 0;
+	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '\'' && !in_double)

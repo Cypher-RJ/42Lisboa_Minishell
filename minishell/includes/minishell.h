@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:29:09 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/09 09:22:13 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/09 09:35:58 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,6 @@ int			is_redirect_op(char *str);
 int			count_quote_words(char *str);
 
 char		*add_spaces_around_redir(const char *input);
-void check_and_split_expanded_command(t_command *cmd);
+void		check_and_split_expanded_command(t_command *cmd);
 
 #endif
