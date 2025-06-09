@@ -56,6 +56,9 @@ $(NAME): $(OBJS) $(LIBFT)
 %.o: %.c
 	@ $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+val: all
+	@ valgrind --suppressions=readline.supp --show-leak-kinds=all --track-fds=yes ./minishell
+
 clean:
 	@ make -s -C $(LIBFT_DIR) clean
 	@ rm -f $(OBJS)
