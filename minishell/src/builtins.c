@@ -6,7 +6,7 @@
 /*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:17:17 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:17:28 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/06/06 10:28:34 by ddiogo-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,18 @@ void	builtin_echo(t_command *thiscmd, t_shell *shell)
 void	builtin_env(t_command *cmds, t_shell *shell)
 {
 	int	i;
+	int	j;
 
 	i = 0;
 	if (cmds->args[1])
 		how_exit("env: too many arguments", 1, EXIT_FAILURE, shell);
 	while (shell->envp[i] && cmds)
 	{
-		ft_putendl_fd(shell->envp[i], STDOUT_FILENO);
+		j = 0;
+		while (shell->envp[i][j] != '=' && shell->envp[i][j] != '\0')
+			j++;
+		if (shell->envp[i][j] == '=')
+			ft_putendl_fd(shell->envp[i], STDOUT_FILENO);
 		i++;
 	}
 	how_exit(NULL, 1, EXIT_SUCCESS, shell);
