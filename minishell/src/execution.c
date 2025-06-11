@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:19:34 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/11 11:28:37 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:35:05 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	check_empty_first(t_shell *shell)
-{
-	int			i;
-	t_command	*thiscmd;
-	char		**temp;
-
-	temp = NULL;
-	thiscmd = shell->cmds;
-	while (thiscmd != NULL)
-	{
-		i = 0;
-		while (thiscmd->args[i])
-			i++;
-		if (i > 1 && thiscmd->args[0][0] == '\0')
-		{
-			temp = ft_calloc(i, sizeof(char *));
-			if (!temp)
-				return (ft_putendl_fd("Temp NULL for empty arg", 2), 1);
-			while (i-- > 0)
-				temp[i] = thiscmd->args[i + 1];
-			free(thiscmd->args[0]);
-			free(thiscmd->args);
-			thiscmd->args = temp;
-		}
-		thiscmd = thiscmd->next;
-	}
-	return (0);
-}
 
 void	manage_execve(int err, char *path, t_shell *shell, bool has_fork)
 {
@@ -64,13 +35,13 @@ void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 {
 	struct stat	st;
 
-	if (cmd->args[0] == NULL || cmd->args[0][0] == 0)
+	if (cmd->args[0] == NULL)
 		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
-	if (cmd->path == NULL)
+	if (cmd->path == NULL || cmd->args[0][0] == 0|| cmd->args[0][0] == ' ')
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: '", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-		how_exit(": command not found", has_fork, 127, shell);
+		how_exit("': command not found", has_fork, 127, shell);
 	}
 	if (stat(cmd->path, &st) == 0 && (st.st_mode & S_IFMT) == S_IFDIR)
 	{
@@ -111,7 +82,7 @@ int	execute_builtin(t_command *cmds, t_shell *shell, bool has_fork)
 
 void	executor(t_shell *shell)
 {
-	if (find_heredocs(shell) || check_empty_first(shell))
+	if (find_heredocs(shell))
 	{
 		free_command_list(shell->cmds);
 		return ;
