@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:28:04 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/06 09:28:05 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/23 14:11:00 by ddiogo-f         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ void	signal_handler(int sig)
 	if (sig == SIGINT)
 	{
 		g_signal_status = 128 + SIGINT;
-		write(1, "^C\n", 3);
 		rl_on_new_line();
+		write(1, "\n", 1);
+		write(1, "^C\n", 3);
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
