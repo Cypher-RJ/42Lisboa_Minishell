@@ -6,32 +6,30 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:26:20 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/17 13:42:40 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/23 12:11:50 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	should_add_space_before(const char *input, int i)
+static int	should_add_space(const char *input, int i, int pos)
 {
-	return (i > 0 && input[i - 1] != ' ' && input[i - 1] != '<' \
-		&& input[i - 1] != '>');
-}
-
-static int	should_add_space_after(const char *input, int i)
-{
-	return (input[i + 1] && input[i + 1] != ' ' && input[i + 1] != '<' \
-		&& input[i + 1] != '>');
+	if (pos == 0)
+		return (i > 0 && input[i - 1] != ' ' && input[i - 1] != '<' \
+			&& input[i - 1] != '>');
+	else
+		return (input[i + 1] && input[i + 1] != ' ' && input[i + 1] != '<' \
+			&& input[i + 1] != '>');
 }
 
 static int	parse_handle_redir(const char *input, char *new_str, int *i, int *j)
 {
-	if (should_add_space_before(input, *i))
+	if (should_add_space(input, *i, 0))
 		new_str[(*j)++] = ' ';
 	new_str[(*j)++] = input[*i];
 	if (input[*i + 1] == input[*i])
 		new_str[(*j)++] = input[++(*i)];
-	if (should_add_space_after(input, *i))
+	if (should_add_space(input, *i, 1))
 		new_str[(*j)++] = ' ';
 	return (1);
 }
@@ -45,6 +43,15 @@ static void	handle_quote_state(char c, int *in_quote, int i, const char *input)
 		else if (*in_quote == c)
 			*in_quote = 0;
 	}
+}
+
+static void	handle_pipe(const char *input, char *new_str, int i, int *j)
+{
+	if (should_add_space(input, i, 0))
+		new_str[(*j)++] = ' ';
+	new_str[(*j)++] = '|';
+	if (should_add_space(input, i, 1))
+		new_str[(*j)++] = ' ';
 }
 
 char	*add_spaces_around_redir(const char *input)
@@ -66,13 +73,7 @@ char	*add_spaces_around_redir(const char *input)
 		if (!in_quote && (input[i] == '<' || input[i] == '>'))
 			parse_handle_redir(input, new_str, &i, &j);
 		else if (!in_quote && input[i] == '|')
-		{
-			if (should_add_space_before(input, i))
-				new_str[j++] = ' ';
-			new_str[j++] = '|';
-			if (should_add_space_after(input, i))
-				new_str[j++] = ' ';
-		}
+			handle_pipe(input, new_str, i, &j);
 		else
 			new_str[j++] = input[i];
 		i++;

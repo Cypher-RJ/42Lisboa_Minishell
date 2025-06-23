@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:20:55 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:21:04 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/06/23 12:06:12 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,40 @@ int	signal_fork(int status, int *ctrlc)
 		exit_code = 128 + sig;
 	}
 	return (exit_code);
+}
+
+void	delete_first_arg(char **args)
+{
+	int	i;
+
+	i = 0;
+	if (!args || !args[0])
+		return ;
+	free(args[0]);
+	while (args[i + 1])
+	{
+		args[i] = args[i + 1];
+		i++;
+	}
+	args[i] = NULL;
+}
+
+void	delete_empty_first_var_arg(t_command *cmd, char **envp, \
+			int last_exit)
+{
+	char	*expanded;
+
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return ;
+	if (cmd->is_first_arg_var == 1 && cmd->args[0][1] != '\0')
+	{
+		expanded = expand_env_variable(cmd->args[0], envp, last_exit);
+		if (!expanded || expanded[0] == '\0')
+		{
+			free(expanded);
+			delete_first_arg(cmd->args);
+			return ;
+		}
+		free(expanded);
+	}
 }

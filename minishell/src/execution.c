@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:19:34 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/17 14:10:51 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/23 11:59:53 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	execute_command(t_command *cmd, t_shell *shell, bool has_fork)
 
 	if (cmd->args[0] == NULL)
 		how_exit(NULL, has_fork, EXIT_SUCCESS, shell);
-	if (cmd->path == NULL || cmd->args[0][0] == 0|| cmd->args[0][0] == ' ')
+	if (cmd->path == NULL || cmd->args[0][0] == 0 || cmd->args[0][0] == ' ')
 	{
 		ft_putstr_fd("minishell: '", STDERR_FILENO);
 		ft_putstr_fd(cmd->args[0], STDERR_FILENO);

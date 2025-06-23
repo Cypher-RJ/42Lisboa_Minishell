@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:27:57 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/17 13:43:46 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/23 11:59:07 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ void	handle_input(char *input, t_shell *shell, t_command **cmds)
 		return ((void)handle_input_util(0, cmds, input, NULL));
 	*cmds = build_command_list(strs, shell);
 	if (*cmds)
+	{
+		delete_empty_first_var_arg(*cmds, shell->envp, shell->exit_status);
 		check_and_split_expanded_command(*cmds);
+	}
 	current = *cmds;
 	while (current)
 	{

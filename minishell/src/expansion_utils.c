@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 09:34:08 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/17 18:13:38 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/23 11:19:28 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,12 @@ void	check_and_split_expanded_command(t_command *cmd)
 {
 	char	**split;
 	int		i;
-	char	*arg;
 
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return ;
-	arg = cmd->args[0];
-	// Only split if the argument is a pure variable expansion (starts with $ and is not just $ itself)
-	if (arg[0] == '$' && arg[1] && has_unquoted_space(arg))
+	if (has_unquoted_space(cmd->args[0]) && cmd->is_first_arg_var != 0)
 	{
-		split = ft_split_quotes(arg);
+		split = ft_split_quotes(cmd->args[0]);
 		if (!split)
 			return ;
 		i = 0;

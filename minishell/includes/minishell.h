@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:29:09 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/11 11:28:30 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/06/23 11:58:30 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_command
 	char				*path;
 	t_redirect			*redir;
 	struct s_command	*next;
+	int					is_first_arg_var;
 }						t_command;
 
 typedef struct s_shell
@@ -184,5 +185,8 @@ int			count_quote_words(char *str);
 
 char		*add_spaces_around_redir(const char *input);
 void		check_and_split_expanded_command(t_command *cmd);
+void		delete_first_arg(char **args);
+void		delete_empty_first_var_arg(t_command *cmd, char **envp, \
+				int last_exit);
 
 #endif
