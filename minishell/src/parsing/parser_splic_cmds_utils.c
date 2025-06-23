@@ -6,7 +6,7 @@
 /*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:26:20 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/06 09:26:21 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/06/17 13:42:40 by rcesar-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,14 @@ char	*add_spaces_around_redir(const char *input)
 		handle_quote_state(input[i], &in_quote, i, input);
 		if (!in_quote && (input[i] == '<' || input[i] == '>'))
 			parse_handle_redir(input, new_str, &i, &j);
+		else if (!in_quote && input[i] == '|')
+		{
+			if (should_add_space_before(input, i))
+				new_str[j++] = ' ';
+			new_str[j++] = '|';
+			if (should_add_space_after(input, i))
+				new_str[j++] = ' ';
+		}
 		else
 			new_str[j++] = input[i];
 		i++;
