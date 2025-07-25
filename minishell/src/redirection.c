@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:20:46 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:20:52 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:09:59 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ int	redirect_input(char *file, t_shell *shell, bool has_fork)
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (how_exit(" No such file or directory", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		close(fd);
 		return (how_exit("Dup2 input file fd failed", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	}
 	close(fd);
 	return (EXIT_SUCCESS);
@@ -34,12 +34,12 @@ int	redirect_heredoc(int hd_fd, t_shell *shell, bool has_fork)
 {
 	if (hd_fd == -1)
 		return (how_exit("Heredoc fd does not exist", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	if (dup2(hd_fd, STDIN_FILENO) == -1)
 	{
 		close(hd_fd);
 		return (how_exit("Dup2 heredoc fd failed", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	}
 	close(hd_fd);
 	return (EXIT_SUCCESS);
@@ -64,7 +64,7 @@ int	redirect_output(char *file, int appd, t_shell *shell, bool has_fork)
 	{
 		close(fd);
 		return (how_exit("minishell: dup2 (stdout)", has_fork, \
-			EXIT_FAILURE, shell));
+EXIT_FAILURE, shell));
 	}
 	close(fd);
 	return (EXIT_SUCCESS);

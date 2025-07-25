@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_unset_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:17:33 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:17:49 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:06:51 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	unset_var(char *str, t_shell *shell)
 	while (shell->envp[j])
 	{
 		if (!ft_strncmp(shell->envp[j], str, i) && \
-			(shell->envp[j][i] == '=' || shell->envp[j][i] == '\0'))
+(shell->envp[j][i] == '=' || shell->envp[j][i] == '\0'))
 			break ;
 		j++;
 	}

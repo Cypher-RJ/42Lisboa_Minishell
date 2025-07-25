@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:18:12 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:18:17 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:07:26 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	make_name_value(char *str, int n_end, int v_end, t_shell *shell)
 	name = ft_calloc(n_end + 1, sizeof(char));
 	if (!name)
 		return (ft_putendl_fd("Export: Failed to calloc var name", \
-			STDERR_FILENO), EXIT_FAILURE);
+STDERR_FILENO), EXIT_FAILURE);
 	ft_strlcpy(name, str, n_end + 1);
 	if (v_end == n_end)
 		value = NULL;
@@ -60,7 +60,7 @@ int	make_name_value(char *str, int n_end, int v_end, t_shell *shell)
 		value = ft_calloc(v_end - n_end + 1, sizeof(char));
 	if (!value && v_end != n_end)
 		return (ft_putendl_fd("Export: Failed to calloc var value", \
-			STDERR_FILENO), EXIT_FAILURE);
+STDERR_FILENO), EXIT_FAILURE);
 	else if (value && v_end != n_end)
 		ft_strlcpy(value, &str[n_end], v_end - n_end + 1);
 	res = rep_add_envp(name, value, shell);

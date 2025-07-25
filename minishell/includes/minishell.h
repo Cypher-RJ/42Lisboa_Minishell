@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:29:09 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/23 11:58:30 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:02:53 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void		handle_input_util(int k, t_command **cds, char *inpt, char **strs);
 //build_redir.c
 void		free_redirect_list(t_redirect *redir_head);
 int			process_redirect(t_command *cmds, int i, t_redirect **redir_head, \
-				t_redirect **redir_tail);
+t_redirect **redir_tail);
 int			is_redirect_op(char *str);
 //parser_utils_quotes.c
 int			count_quote_words(char *str);
@@ -187,6 +187,6 @@ char		*add_spaces_around_redir(const char *input);
 void		check_and_split_expanded_command(t_command *cmd);
 void		delete_first_arg(char **args);
 void		delete_empty_first_var_arg(t_command *cmd, char **envp, \
-				int last_exit);
+int last_exit);
 
 #endif

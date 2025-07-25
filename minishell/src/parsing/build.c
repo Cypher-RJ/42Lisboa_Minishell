@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:26:16 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/23 12:01:20 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:04:07 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static char	**process_args(char **args, t_shell *shell, int *is_first_arg_var)
 	{
 		temp = args[j];
 		expanded = expand_env_variable(args[j], shell->envp, \
-			shell->exit_status);
+shell->exit_status);
 		if (!expanded)
 			return (NULL);
 		args[j] = remove_outer_quotes(expanded);
@@ -52,7 +52,7 @@ static t_command	*create_new_command(char **args, int is_first_arg_var)
 }
 
 static int	process_command(char *cmd, t_shell *shell, t_command **head, \
-	t_command **current)
+t_command **current)
 {
 	char		**args;
 	t_command	*new_node;

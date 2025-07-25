@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_splic_cmds_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:26:20 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/23 12:11:50 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:05:07 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ static int	should_add_space(const char *input, int i, int pos)
 {
 	if (pos == 0)
 		return (i > 0 && input[i - 1] != ' ' && input[i - 1] != '<' \
-			&& input[i - 1] != '>');
+&& input[i - 1] != '>');
 	else
 		return (input[i + 1] && input[i + 1] != ' ' && input[i + 1] != '<' \
-			&& input[i + 1] != '>');
+&& input[i + 1] != '>');
 }
 
 static int	parse_handle_redir(const char *input, char *new_str, int *i, int *j)

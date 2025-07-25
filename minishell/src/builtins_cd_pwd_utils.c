@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd_pwd_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcesar-d <rcesar-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:27:03 by rcesar-d          #+#    #+#             */
-/*   Updated: 2025/06/06 09:27:10 by rcesar-d         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:11:18 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	cd_go_home(t_shell *shell, bool has_fork)
 		i++;
 	if (!shell->envp[i] || shell->envp[i][5] == '\0')
 		return (how_exit("minishell: cd: HOME not set", has_fork, \
-			EXIT_FAILURE, shell));
+EXIT_FAILURE, shell));
 	else
 		return (builtin_cd_exec(&shell->envp[i][5], shell, has_fork));
 }
@@ -35,12 +35,12 @@ int	cd_go_oldpwd(t_command *thiscmd, t_shell *shell, bool has_fork)
 		i++;
 	if (!shell->envp[i] || shell->envp[i][7] == '\0')
 		return (how_exit("minishell: cd: OLDPWD not set", has_fork, \
-			EXIT_FAILURE, shell));
+EXIT_FAILURE, shell));
 	free(thiscmd->args[1]);
 	thiscmd->args[1] = ft_strdup(&shell->envp[i][7]);
 	if (!thiscmd->args[1])
 		return (how_exit("minishell: cd: Failed malloc from OLDPWD", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	else
 		return (builtin_cd_exec(thiscmd->args[1], shell, has_fork));
 }
