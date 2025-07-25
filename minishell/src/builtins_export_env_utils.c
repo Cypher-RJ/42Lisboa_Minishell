@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_export_env_utils.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:18:31 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:18:35 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:11:49 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,14 @@ int	export_putenv(t_shell *shell, bool has_fork)
 	envtmp = copy_env(shell->envp);
 	if (!envtmp)
 		return (how_exit("Failed malloc of envtmp for sort", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	sort_envtmp(envtmp);
 	while (envtmp[i])
 	{
 		res = put_envtmp(envtmp[i]);
 		if (res)
 			return (how_exit("Failed to build export line", \
-				has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 		i++;
 	}
 	free(envtmp);

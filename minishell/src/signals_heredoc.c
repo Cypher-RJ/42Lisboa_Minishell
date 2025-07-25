@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:20:55 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/23 14:20:36 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:00:56 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	delete_first_arg(char **args)
 }
 
 void	delete_empty_first_var_arg(t_command *cmd, char **envp, \
-			int last_exit)
+int last_exit)
 {
 	char	*expanded;
 

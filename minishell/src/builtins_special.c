@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_special.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:17:42 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:17:47 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:10:42 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	is_unique_builtin(char *cmd)
 	if (!cmd)
 		return (1);
 	return (!ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "exit") \
-		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
+|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
 }
 
 int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
@@ -29,7 +29,7 @@ int	builtin_cd(t_command *thiscmd, t_shell *shell, bool has_fork)
 		i++;
 	if (i > 2)
 		return (how_exit("minishell: cd: too many arguments", has_fork, \
-			EXIT_FAILURE, shell));
+EXIT_FAILURE, shell));
 	else if (i == 1 || !ft_strcmp(thiscmd->args[1], "~"))
 		cd_go_home(shell, has_fork);
 	else if (!ft_strcmp(thiscmd->args[1], "-"))
@@ -56,7 +56,7 @@ int	builtin_exit(t_command *thiscmd, t_shell *shell, bool has_fork)
 	}
 	else if (thiscmd->args[2])
 		return (how_exit("minishell: exit: too many arguments", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	else
 		ft_ms_atoll(thiscmd->args[1], &status);
 	shell->exit_status = (unsigned char)status;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_cd_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:18:50 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:18:57 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:09:03 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	find_tgt_env(char **envp, char *tgt)
 	while (envp[i])
 	{
 		if (!ft_strncmp(envp[i], tgt, l) && (envp[i][l] == '\0' \
-			|| envp[i][l] == '='))
+|| envp[i][l] == '='))
 			return (i);
 		i++;
 	}
@@ -88,9 +88,9 @@ int	adjust_envp(char *oldpwd, char *newpwd, bool has_fork, t_shell *shell)
 	newpwd = temp;
 	if (!oldpwd || !newpwd)
 		return (how_exit("Failed to create env values for cd", \
-			has_fork, EXIT_FAILURE, shell));
+has_fork, EXIT_FAILURE, shell));
 	if (rep_add_envp("OLDPWD", oldpwd, shell) \
-		|| rep_add_envp("PWD", newpwd, shell))
+|| rep_add_envp("PWD", newpwd, shell))
 	{
 		free(oldpwd);
 		free(newpwd);
@@ -109,7 +109,7 @@ int	builtin_cd_exec(char *strdir, t_shell *shell, bool has_fork)
 	old_pwd = get_pwd(shell);
 	if (!old_pwd)
 		return (how_exit("Failed to allocate to OLDPWD", has_fork, \
-			EXIT_FAILURE, shell));
+EXIT_FAILURE, shell));
 	if (chdir(strdir) != 0)
 	{
 		free(old_pwd);

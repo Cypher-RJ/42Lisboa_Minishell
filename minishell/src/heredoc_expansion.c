@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_expansion.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ddiogo-f <ddiogo-f@student.42.fr>          +#+  +:+       +#+        */
+/*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:19:52 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/06/06 09:19:54 by ddiogo-f         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:12:11 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	put_expansion_hd(int fd, int pos, char *line, t_shell *shell)
 	while (shell->envp[j])
 	{
 		if (!ft_strncmp(&line[pos], shell->envp[j], i - pos) && \
-			shell->envp[j][i - pos] == '=')
+shell->envp[j][i - pos] == '=')
 			return (ft_putstr_fd(&shell->envp[j][i - pos + 1], fd), i);
 		j++;
 	}
