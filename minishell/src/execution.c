@@ -6,7 +6,7 @@
 /*   By: darkless12 <darkless12@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 09:19:34 by ddiogo-f          #+#    #+#             */
-/*   Updated: 2025/07/25 19:26:42 by darkless12       ###   ########.fr       */
+/*   Updated: 2025/07/25 19:34:07 by darkless12       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,9 @@ void	executor(t_shell *shell)
 		return ;
 	}
 	if (shell->cmds->next == NULL && shell->cmds->args[0] && \
+!ft_strcmp(shell->cmds->args[0], "export") && !shell->cmds->args[1])
+		executor_fork(shell);
+	else if (shell->cmds->next == NULL && shell->cmds->args[0] && \
 (is_unique_builtin(shell->cmds->args[0]) == 1))
 		execute_builtin(shell->cmds, shell, 0);
 	else
